@@ -1,0 +1,71 @@
+{
+  "type": "object",
+  "properties": {
+    "supplier_name": {
+      "type": "string",
+      "description": "Company name on the letterhead"
+    },
+    "supplier_email": {
+      "type": "string",
+      "description": "Sender / contact email on the document"
+    },
+    "quote_number": {
+      "type": "string",
+      "description": "Quote / quotation / offer number"
+    },
+    "quote_date": {
+      "type": "string",
+      "description": "Date of the quote (ISO if possible)"
+    },
+    "valid_until": {
+      "type": "string",
+      "description": "Validity / expiry date of the offer"
+    },
+    "rfq_reference": {
+      "type": "string",
+      "description": "Buyer's reference, e.g. ATL-run_ab12cd"
+    },
+    "style_name": {
+      "type": "string",
+      "description": "Garment / style quoted"
+    },
+    "currency": {
+      "type": "string",
+      "description": "ISO currency code of the prices (USD, EUR, ...)"
+    },
+    "unit_price": {
+      "type": "number",
+      "description": "Price per finished piece, full package"
+    },
+    "moq": {
+      "type": "number",
+      "description": "Minimum order quantity, pieces per colour"
+    },
+    "lead_time": {
+      "type": "string",
+      "description": "Bulk lead time as printed, e.g. '8 weeks' or '42 days'"
+    },
+    "sample_cost": {
+      "type": "number",
+      "description": "Development / sample cost"
+    },
+    "payment_terms": {
+      "type": "string",
+      "description": "Payment terms as printed"
+    },
+    "incoterm": {
+      "type": "string",
+      "description": "FOB, EXW, CIF, DDP ..."
+    },
+    "notes": {
+      "type": "string",
+      "description": "The mill's message / remarks, verbatim"
+    }
+  },
+  "required": [
+    "supplier_name",
+    "unit_price",
+    "moq",
+    "lead_time"
+  ]
+}
