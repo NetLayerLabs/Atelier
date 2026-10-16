@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import re
 from typing import Any, Optional
 
 from ..config import get_settings
@@ -343,12 +344,32 @@ async def draft_counter_offer(run: PipelineRun, actor: Optional[str] = None) -> 
     return co
 
 
+_NUM = re.compile(r"\d[\d.,\u00a0\u202f' ]*\d|\d")
+
+
+def _as_number(tok: str) -> Optional[float]:
+    """'1.250,00' / '1,250.00' / '250' / "1'250.50" -> float (the last . or , followed by 1-2 digits is decimal)."""
+    t = re.sub(r"[\u00a0\u202f' ]", "", tok)
+    m = re.match(r"^(.*?)([.,](\d{1,2}))?$", t)
+    if not m:
+        return None
+    whole = re.sub(r"[.,]", "", m.group(1))
+    try:
+        return float(f"{whole}.{m.group(3)}" if m.group(3) else whole)
+    except ValueError:
+        return None
+
+
+def states_amount(text: str, value: float) -> bool:
+    """True when `text` writes `value` in any common form: 250, 250.00, 250,00, €250, 1.250,00 …"""
+    return any(abs((_as_number(t) or -1) - value) < 0.005 for t in _NUM.findall(text))
+
+
 async def _live_counter_offer(run: PipelineRun, q: SupplierQuote, lang: str, tgt: dict, ref: str,
                               common: dict, asks: dict):
     p = tgt["price"]
     must = []  # facts the draft has to carry verbatim
-    if p:
-        must.append((i18n.fmt_decimal(p["target_local"], lang), i18n.fmt_decimal(p["target_local"], "en")))
+    amount = float(p["target_local"]) if p else None  # the target price: any written form of the same number
     if q.quote_number:
         must.append((q.quote_number, q.quote_number))
     must.append((ref, ref))
@@ -362,6 +383,11 @@ async def _live_counter_offer(run: PipelineRun, q: SupplierQuote, lang: str, tgt
         if len(body) < 80 or not body_en:
             raise ValueError("draft or English version missing")
         blob, blob_en = f"{subject}\n{body}", f"{subject_en}\n{body_en}"
+        if amount is not None:
+            if not states_amount(blob, amount):
+                raise ValueError(f"the draft must state the target price {i18n.fmt_decimal(amount, lang)}")
+            if not states_amount(blob_en, amount):
+                raise ValueError(f"the English version must state the target price {i18n.fmt_decimal(amount, 'en')}")
         for local, en in must:
             if local not in blob and en not in blob:
                 raise ValueError(f"the draft must state {local}")
