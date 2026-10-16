@@ -86,6 +86,20 @@ export interface Design {
   directionId?: string;
   /** v2: set when the design is (or descends from) a look in a generated collection. */
   collectionId?: string;
+  /** The designer's own sketch / photo instead of a diffusion render. */
+  source?: "designer_upload";
+  /** The vision model's reading of the sketch (only what it can see). */
+  sketchReading?: SketchReading;
+}
+
+export interface SketchReading {
+  garmentType: string;
+  garmentName?: string;
+  description: string;
+  details: string[];
+  colors: string[];
+  fabricsSuggested: string[];
+  model?: string;
 }
 
 export interface BillOfMaterialsItem {

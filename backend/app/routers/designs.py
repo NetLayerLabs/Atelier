@@ -3,12 +3,16 @@ from __future__ import annotations
 import random
 import zlib
 
-from fastapi import APIRouter, Body, Header, HTTPException
+import secrets
+
+from fastapi import APIRouter, Body, File, Form, Header, HTTPException, UploadFile
 
 from ..models import (ApproveRequest, ApproveResponse, Design, DesignsResponse, GenerateRequest,
                       RefineRequest, TrendAnalysis)
+from ..config import UPLOADS_DIR, get_settings
 from ..pipeline import create_run, start_run
-from ..services import workspace
+from ..services import files as filetypes
+from ..services import vision, workspace
 from ..services.diffusion import build_prompt, render_many
 from ..store import DesignMeta, new_id, store
 
@@ -49,6 +53,41 @@ async def generate(req: GenerateRequest) -> DesignsResponse:
                                   base_seeds=seeds, vibes=[vibe] if vibe else [], latest_vibe=vibe,
                                   parent_id=None)
     return DesignsResponse(designs=designs)
+
+
+MAX_SKETCH_BYTES = 12 * 1024 * 1024
+
+
+@router.post("/upload", response_model=DesignsResponse, response_model_exclude_none=True)
+async def upload_design(file: UploadFile = File(...), trend_id: str = Form(..., alias="trendId", max_length=64),
+                        note: str = Form("", max_length=600)) -> DesignsResponse:
+    """The designer's own sketch, drawing or photo as the concept (no diffusion render). The vision model reads it
+    (garment type, silhouette, visible details) and that reading goes into the tech-pack brief, so the factory gets
+    what the designer drew. Raises 503 when the vision model isn't connected - never a made-up reading."""
+    trend = store.trends.get(trend_id)
+    if trend is None:
+        raise HTTPException(404, f"trend '{trend_id}' not found")
+    data = await file.read(MAX_SKETCH_BYTES + 1)
+    if not data:
+        raise HTTPException(422, "the file is empty")
+    if len(data) > MAX_SKETCH_BYTES:
+        raise HTTPException(413, "sketch exceeds 12MB")
+    kind = filetypes.sniff(data, filetypes.IMAGE_KINDS)  # by content, not by name
+    if kind is None:
+        raise HTTPException(415, f"'{file.filename}' is not a PNG, JPEG or WebP image")
+    reading = await vision.read_sketch(vision.ImageInput(public_url="", data=data, content_type=kind.content_type))
+    name = f"sketch_{secrets.token_hex(6)}.{kind.ext}"
+    (UPLOADS_DIR / name).write_bytes(data)
+    note = note.strip()
+    prompt = (f"The designer's own sketch (uploaded, not generated). {reading['description']}"
+              + (f" Details: {'; '.join(reading['details'])}." if reading["details"] else "")
+              + (f" Designer's note: {note}" if note else ""))
+    d = Design(id=new_id("dsn"), trend_id=trend.id, image_url=get_settings().public_url(f"/static/uploads/{name}"),
+               prompt=prompt, garment_type=reading["garmentType"] or trend.garment_type, vibe=note or None, seed=0,
+               source="designer_upload", sketch_reading=reading)
+    store.designs[d.id] = d
+    store.design_meta[d.id] = DesignMeta(base_seed=0, vibes=[note] if note else [])
+    return DesignsResponse(designs=[d])
 
 
 @router.post("/{design_id}/refine", response_model=DesignsResponse, response_model_exclude_none=True)

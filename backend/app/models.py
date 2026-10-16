@@ -127,6 +127,10 @@ class Design(CamelModel):
     # v2 (additive): set when the design came from /direct or a generated collection
     direction_id: Optional[str] = None
     collection_id: Optional[str] = None
+    # The designer's own sketch / photo instead of a diffusion render: "designer_upload", with the vision model's
+    # reading of it (garmentName, description, details, colors, fabricsSuggested, model)
+    source: Optional[str] = None
+    sketch_reading: Optional[dict] = None
 
 
 class BomLine(CamelModel):

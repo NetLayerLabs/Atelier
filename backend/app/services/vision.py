@@ -202,6 +202,76 @@ async def live_analyze(images: list[ImageInput]) -> TrendAnalysis:
     return _trend_from_payload(payload, [i.public_url for i in images])
 
 
+# --------------------------------------------------------------------------- the designer's own sketch
+
+GARMENT_TYPES = ("jacket", "coat", "dress", "skirt", "trousers", "sweater", "shirt", "top")
+
+_SKETCH_SYSTEM = ("You are a senior apparel technical designer. You read a designer's garment sketch exactly as drawn. "
+                  "Respond with ONLY a JSON object, no prose, no markdown.")
+
+_SKETCH_HINT = """This is a designer's own sketch, drawing or photo of ONE garment they want to produce. Read it as a
+technical designer would. Describe only what you can see; do not invent details that are not in the image.
+Return exactly this JSON shape:
+{
+  "garmentType": "one of: jacket, coat, dress, skirt, trousers, sweater, shirt, top",
+  "garmentName": "2-5 word working name for the piece",
+  "description": "2-3 sentences: silhouette, length, closure, collar/neckline, sleeves, pockets, seams, trims",
+  "details": ["3-6 short construction details you can see"],
+  "colors": ["0-4 hex colours visible in the image, like #1F2A44"],
+  "fabricsSuggested": ["1-3 fabrics that suit what is drawn"]
+}"""
+
+
+def _validate_sketch(data: Any) -> dict:
+    if isinstance(data, list) and data:
+        data = data[0]
+    if not isinstance(data, dict):
+        raise ValueError("expected a JSON object")
+    g = str(data.get("garmentType") or data.get("garment_type") or "").strip().lower()
+    if g not in GARMENT_TYPES:
+        g = next((t for t in GARMENT_TYPES if t in g), "")
+    desc = str(data.get("description") or "").strip()
+    if not g or not desc:
+        raise ValueError("garmentType/description missing")
+
+    def strs(v: Any, n: int) -> list[str]:
+        out = [str(x).strip().strip("'\"") for x in (v if isinstance(v, list) else [v] if v else [])]
+        return [x for x in out if x][:n]
+
+    colors = [c for c in (normalize_hex(str(x)) for x in strs(data.get("colors"), 4)) if c]
+    return {"garmentType": g, "garmentName": str(data.get("garmentName") or "").strip()[:80], "description": desc,
+            "details": strs(data.get("details"), 6), "colors": colors,
+            "fabricsSuggested": strs(data.get("fabricsSuggested") or data.get("fabrics_suggested"), 3)}
+
+
+async def read_sketch(image: ImageInput) -> dict:
+    """The live VLM's reading of a designer's sketch (garment type, description, visible details). Raises
+    errors.ServiceError (service "vision") - never a made-up reading."""
+    s = get_settings()
+    if not s.vision_live:
+        raise VisionNotConnected()
+    try:
+        client = make_client(s.amd_vision_endpoint, s.amd_vllm_api_key, s.atelier_vision_timeout)
+        model = await resolve_model(client, s.amd_vision_model)
+
+        def messages(attempt: int) -> list[dict]:
+            text = _SKETCH_HINT if attempt == 0 else _SKETCH_HINT + "\nOutput the JSON object only."
+            return [{"role": "system", "content": _SKETCH_SYSTEM},
+                    {"role": "user", "content": [{"type": "image_url", "image_url": {"url": image.as_openai_url()}},
+                                                 {"type": "text", "text": text}]}]
+
+        reading = await chat_json(client, model, messages, _validate_sketch, max_tokens=600, service="vision",
+                                  purpose="sketch_reading", images=1)
+        reading["model"] = model
+        return reading
+    except ServiceError:
+        raise
+    except Exception as e:  # noqa: BLE001
+        log.warning("sketch reading failed at %s: %s: %s", host_of(s.amd_vision_endpoint), e.__class__.__name__, e)
+        raise ServiceError("vision", f"Vision model call failed at {host_of(s.amd_vision_endpoint)}: "
+                                     f"{e.__class__.__name__}: {str(e)[:160]}") from e
+
+
 async def analyze(images: list[ImageInput]) -> TrendAnalysis:
     """The live VLM's trend analysis. Raises errors.ServiceError (service "vision") - never a made-up trend."""
     s = get_settings()

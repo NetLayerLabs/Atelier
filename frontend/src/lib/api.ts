@@ -197,6 +197,15 @@ export async function generateDesigns(body: {
   });
 }
 
+/** The designer's own sketch / photo as the concept: the vision model reads it into a design. */
+export async function uploadDesign(trendId: string, file: File, note?: string): Promise<{ designs: Design[] }> {
+  const form = new FormData();
+  form.append("file", file, file.name);
+  form.append("trendId", trendId);
+  if (note?.trim()) form.append("note", note.trim());
+  return request<{ designs: Design[] }>("/api/designs/upload", { method: "POST", body: form, timeoutMs: 120_000 });
+}
+
 export async function refineDesign(
   designId: string,
   body: { vibe: string; count?: number },

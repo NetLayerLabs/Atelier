@@ -9,6 +9,7 @@ import {
   errorMessage,
   generateCollection,
   generateDesigns,
+  uploadDesign,
   getRun,
   isNetworkError,
   refineDesign,
@@ -37,7 +38,7 @@ function failure(err: unknown): { error: string; hint?: string } {
 
 export interface Round {
   id: string;
-  kind: "generate" | "refine" | "direct" | "collection";
+  kind: "generate" | "refine" | "direct" | "collection" | "upload";
   parentDesignId?: string;
   vibe?: string;
   /** v2: the structured direction behind a "direct" round. */
@@ -86,6 +87,12 @@ interface AtelierState {
   runAnalyze: (input: AnalyzeInput, previews?: string[]) => Promise<void>;
   retryAnalyze: () => Promise<void>;
   runGenerate: () => Promise<void>;
+  /** The designer's own sketch as a concept (read by the vision model). */
+  upload: AsyncState;
+  runUpload: (file: File, note?: string) => Promise<void>;
+  /** Chapter II opened to upload a sketch (before any concepts were generated). */
+  sketchOpen: boolean;
+  openSketch: () => void;
   select: (id: string) => void;
   runRefine: (vibe: string) => Promise<void>;
   setIdeationMode: (mode: IdeationMode) => void;
@@ -108,6 +115,8 @@ const initial = {
   analyze: { status: "idle" as Status },
   trend: undefined,
   generate: { status: "idle" as Status },
+  upload: { status: "idle" as Status },
+  sketchOpen: false,
   designs: {},
   labels: {},
   rounds: [],
@@ -155,6 +164,10 @@ export const useAtelier = create<AtelierState>((set, get) => {
           (l) => l.startsWith(`${parentLabel}.`) && !l.slice(parentLabel.length + 1).includes("."),
         ).length;
         nextLabels[d.id] = `${parentLabel}.${siblings + 1}`;
+      } else if (round.kind === "upload") {
+        // The designer's sketches: S1, S2 …
+        const prior = rounds.filter((r) => r.kind === "upload").reduce((n, r) => n + r.designIds.length, 0);
+        nextLabels[d.id] = `S${prior + i + 1}`;
       } else if (round.kind === "collection") {
         // Collection looks: L1–L4; later collections continue (L5 …).
         nextLabels[d.id] = `L${priorLooks + i + 1}`;
@@ -237,6 +250,24 @@ export const useAtelier = create<AtelierState>((set, get) => {
         set({ generate: { status: "done" } });
       } else {
         set({ generate: { status: "error", ...failure(res.error) } });
+      }
+    },
+
+    openSketch: () => set({ sketchOpen: true, ideationMode: "concepts" }),
+
+    runUpload: async (file, note) => {
+      const trend = get().trend;
+      if (!trend || get().upload.status === "loading") return;
+      set({ upload: { status: "loading" } });
+      const res = await guarded(() => uploadDesign(trend.id, file, note));
+      if (!res) return;
+      if (res.ok) {
+        addDesigns({ id: `upl-${Date.now()}`, kind: "upload" }, res.value.designs);
+        set({ upload: { status: "done" } });
+        const first = res.value.designs[0];
+        if (first) get().select(first.id);
+      } else {
+        set({ upload: { status: "error", ...failure(res.error) } });
       }
     },
 

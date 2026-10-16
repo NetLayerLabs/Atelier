@@ -1,6 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
+import { useState } from "react";
 import type { Design } from "@/lib/api";
 import { useAtelier } from "@/lib/store";
 import { CollectionStage, IdeationToggle } from "./Collection";
@@ -8,7 +9,12 @@ import {
   Badge,
   Button,
   Card,
+  Chip,
   Eyebrow,
+  Field,
+  FileDrop,
+  IconImage,
+  Input,
   GarmentTag,
   IconArrowRight,
   IconCheck,
@@ -86,14 +92,23 @@ export function DesignCard({
       </div>
       <div className={cx("flex min-w-0 flex-col gap-1.5 px-1.5", compact ? "pt-2.5 pb-1" : "pt-3 pb-1.5")}>
         <div className="flex min-w-0 items-center justify-between gap-2">
-          <GarmentTag tone={selected ? "ink" : "default"}>Look {label}</GarmentTag>
-          {!compact && (
-            <span className="font-mono text-micro text-fg-faint tabular" title="Diffusion seed">
-              #{design.seed}
-            </span>
-          )}
+          <GarmentTag tone={selected ? "ink" : "default"}>
+            {design.source === "designer_upload" ? "Sketch" : "Look"} {label}
+          </GarmentTag>
+          {!compact &&
+            (design.source === "designer_upload" ? (
+              <span className="text-micro text-fg-faint">Your design</span>
+            ) : (
+              <span className="font-mono text-micro text-fg-faint tabular" title="Diffusion seed">
+                #{design.seed}
+              </span>
+            ))}
         </div>
-        {!compact && <span className="truncate text-small text-fg-muted">{design.garmentType}</span>}
+        {!compact && (
+          <span className="truncate text-small text-fg-muted">
+            {design.sketchReading?.garmentName || design.garmentType}
+          </span>
+        )}
         {parentLabel && (
           <span className="truncate text-micro text-fg-faint">
             {design.directionId ? "Directed" : "Refined"} from Look {parentLabel}
@@ -145,6 +160,105 @@ export function IdeationStage() {
   );
 }
 
+/**
+ * The designer's own sketch, drawing or photo as the concept. The vision model (Gemma 4 on AMD) reads it - garment
+ * type, silhouette, the details it can see - and that reading goes into the tech pack, so the factory gets what the
+ * designer drew. No diffusion render involved.
+ */
+function SketchUpload() {
+  const upload = useAtelier((s) => s.upload);
+  const runUpload = useAtelier((s) => s.runUpload);
+  const rounds = useAtelier((s) => s.rounds);
+  const designs = useAtelier((s) => s.designs);
+  const labels = useAtelier((s) => s.labels);
+  const selectedId = useAtelier((s) => s.selectedId);
+  const locked = useAtelier((s) => !!s.runId || s.approve.status === "loading");
+  const select = useAtelier((s) => s.select);
+  const [file, setFile] = useState<File>();
+  const [note, setNote] = useState("");
+  const busy = upload.status === "loading";
+  const ids = rounds.filter((r) => r.kind === "upload").flatMap((r) => r.designIds);
+  const picked = selectedId && ids.includes(selectedId) ? designs[selectedId] : undefined;
+
+  return (
+    <Card pad="lg" className="flex flex-col gap-6" data-demo="sketch-upload">
+      <div className="flex flex-col gap-2">
+        <Eyebrow>Your own design</Eyebrow>
+        <p className="text-display-m text-fg">Start from your sketch.</p>
+        <p className="max-w-2xl text-body text-fg-muted">
+          Upload a drawing or a photo of your design. Gemma 4 on AMD reads what you drew and writes it into the tech
+          pack, so the factory makes your design, not a guess.
+        </p>
+      </div>
+      {!locked && (
+        <div className="grid gap-4 md:grid-cols-[1fr_1fr]">
+          <FileDrop
+            accept="image/png,image/jpeg,image/webp"
+            onFiles={(f) => setFile(f[0])}
+            busy={busy}
+            icon={<IconImage size={20} />}
+            title={file ? file.name : "Drop your sketch or photo"}
+            hint="PNG, JPEG or WebP · up to 12 MB"
+            aria-label="Upload your sketch"
+          />
+          <div className="flex flex-col gap-4">
+            <Field label="Note for the tech pack" optional hint="e.g. 'shorter sleeves, gold thread on the collar'">
+              <Input value={note} maxLength={600} onChange={(e) => setNote(e.target.value)} disabled={busy} />
+            </Field>
+            <Button
+              onClick={() => file && runUpload(file, note)}
+              disabled={!file || busy}
+              loading={busy}
+              trailing={<IconArrowRight size={16} />}
+              trailingBadge
+            >
+              {busy ? "Gemma 4 is reading your sketch…" : "Read my sketch"}
+            </Button>
+          </div>
+        </div>
+      )}
+      {upload.status === "error" &&
+        (upload.hint ? (
+          <NotConnected service="Vision model" hint={upload.hint}>
+            {upload.error ?? "Sketches are read only by a live vision model, and none answered."}
+          </NotConnected>
+        ) : (
+          <ErrorNotice title="Could not read the sketch" message={upload.error} />
+        ))}
+      {ids.length > 0 && (
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
+          {ids.map((id, i) => (
+            <DesignCard
+              key={id}
+              design={designs[id]}
+              label={labels[id]}
+              index={i}
+              selected={selectedId === id}
+              disabled={locked}
+              onSelect={() => select(id)}
+            />
+          ))}
+        </div>
+      )}
+      {picked?.sketchReading && (
+        <div className="rounded-panel border border-line bg-paper-2 p-4">
+          <p className="text-micro text-fg-faint">
+            What {picked.sketchReading.model ?? "the vision model"} read in Sketch {labels[picked.id]}
+          </p>
+          <p className="mt-2 text-body text-fg">{picked.sketchReading.description}</p>
+          {picked.sketchReading.details.length > 0 && (
+            <div className="mt-3 flex flex-wrap gap-2">
+              {picked.sketchReading.details.map((d) => (
+                <Chip key={d}>{d}</Chip>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </Card>
+  );
+}
+
 function ConceptsStage() {
   const generate = useAtelier((s) => s.generate);
   const rounds = useAtelier((s) => s.rounds);
@@ -157,9 +271,11 @@ function ConceptsStage() {
 
   const genRounds = rounds.filter((r) => r.kind === "generate");
   const latest = genRounds[genRounds.length - 1];
+  const sketchFirst = useAtelier((s) => s.sketchOpen) && !latest; // "Start from my sketch": the upload leads
 
   return (
     <div className="flex flex-col gap-6">
+      {sketchFirst && <SketchUpload />}
       {generate.status === "idle" && !latest && (
         <Card pad="lg" className="flex flex-col items-start gap-5 sm:flex-row sm:items-center sm:justify-between">
           <div>
@@ -223,6 +339,7 @@ function ConceptsStage() {
           </div>
         </>
       )}
+      {!sketchFirst && <SketchUpload />}
     </div>
   );
 }

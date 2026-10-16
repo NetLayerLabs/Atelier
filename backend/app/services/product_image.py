@@ -49,4 +49,4 @@ def design_png(image_url: str) -> tuple[Optional[bytes], str]:
     except Exception as e:  # noqa: BLE001
         log.warning("design render -> PNG failed: %s", e)
         return None, f"could not convert the render to PNG ({e.__class__.__name__})"
-    return png, "PNG render from the diffusion model"
+    return png, "design image as PNG"

@@ -316,9 +316,10 @@ _doc_titles: dict[str, str] = {}
 
 
 def library_headers() -> dict[str, str]:
-    """Library ("memories") calls: the personal X-User-ApiKey when set (an app key may get 401 there)."""
+    """Library ("memories") calls: the app key (verified live 2026-10-16: it lists and uploads documents, while a
+    personal key gets 401 "missing the required scope: Api" on REST); the personal key only when no app key is set."""
     s = get_settings()
-    if s.evolus_user_api_key:
+    if s.evolus_user_api_key and not s.evolus_api_key:
         return {"X-User-ApiKey": s.evolus_user_api_key, s.evolus_app_id_header: s.evolus_workspace_id,
                 "Accept": "application/json"}
     return headers()

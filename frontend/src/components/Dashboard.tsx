@@ -50,12 +50,14 @@ export function Dashboard() {
 
   const [chooseAnother, setChooseAnother] = useState(false);
 
-  const showIdeation = generate.status !== "idle" || collectionGen.status !== "idle";
+  const sketchOpen = useAtelier((s) => s.sketchOpen);
+  const openSketch = useAtelier((s) => s.openSketch);
+  const showIdeation = generate.status !== "idle" || collectionGen.status !== "idle" || sketchOpen;
   const showVibe = !!selectedId;
   const showProduction = approve.status === "loading" || approve.status === "done" || !!run;
 
   useScrollOn(analyze.status === "done", "chapter-trend");
-  useScrollOn(generate.status === "loading" || collectionGen.status === "loading", "chapter-ideation");
+  useScrollOn(generate.status === "loading" || collectionGen.status === "loading" || sketchOpen, "chapter-ideation");
   useScrollOn(showVibe, "chapter-vibe");
   useScrollOn(approve.status === "done", "chapter-production");
 
@@ -93,7 +95,10 @@ export function Dashboard() {
                     >
                       Generate four concepts
                     </Button>
-                    <Button variant="secondary" size="lg" onClick={() => runCollection(4)}>
+                    <Button variant="secondary" size="lg" onClick={openSketch} data-demo="sketch">
+                      Start from my sketch
+                    </Button>
+                    <Button variant="ghost" size="lg" onClick={() => runCollection(4)}>
                       Compose a collection
                     </Button>
                   </>
@@ -127,7 +132,13 @@ export function Dashboard() {
             id="chapter-ideation"
             numeral="II"
             kicker="Generative ideation"
-            title={ideationMode === "collection" ? "The collection" : "Four concepts"}
+            title={
+              ideationMode === "collection"
+                ? "The collection"
+                : generate.status === "idle" && sketchOpen
+                  ? "Your design"
+                  : "Four concepts"
+            }
           >
             <IdeationStage />
           </Chapter>
