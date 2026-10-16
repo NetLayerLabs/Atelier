@@ -173,6 +173,13 @@ async def graphql(query: str, variables: Optional[dict[str, Any]] = None, *,
             if throttled and attempt == 0:
                 await asyncio.sleep(1.0)
                 continue
+            denied = any("not approved to access" in str(e.get("message", "")) or
+                         (e.get("extensions") or {}).get("code") == "ACCESS_DENIED" for e in errors if isinstance(e, dict))
+            if denied and not s.shopify_admin_token and attempt == 0:
+                # Access was granted after this token was issued (scope change, reinstall, protected customer data
+                # approval): a client-credentials token carries the grants of its issue time, so fetch a new one.
+                _token_cache.pop(s.shopify_base, None)
+                continue
             msg = "; ".join(str(e.get("message", e)) if isinstance(e, dict) else str(e) for e in errors)
             raise ShopifyError(f"Shopify GraphQL error: {msg[:300]}")
         return body.get("data") or {}

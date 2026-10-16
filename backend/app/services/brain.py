@@ -94,6 +94,15 @@ def _pick_citations(data: Any, retrieved: list[Citation]) -> list[Citation]:
     return chosen or list(retrieved)
 
 
+
+def _why(e: Exception) -> str:
+    """A readable reason, also for exceptions without a message (httpx.ReadTimeout() -> "timed out")."""
+    text = str(e).strip()
+    if not text:
+        name = e.__class__.__name__
+        text = "timed out (the model took too long to answer)" if "Timeout" in name else name
+    return text[:160]
+
 async def think_json(purpose: str, messages: MessagesFn, validate: Callable[[Any], T], *,
                      knowledge_query: Optional[str] = None, max_tokens: int = 1500, temperature: float = 0.4,
                      timeout: Optional[float] = None) -> Thought[T]:
@@ -129,7 +138,7 @@ async def think_json(purpose: str, messages: MessagesFn, validate: Callable[[Any
         except Exception as e:  # noqa: BLE001
             log.warning("%s: Evolus agent failed (%s: %s) -> %s", purpose, e.__class__.__name__, e,
                         "direct vLLM" if s.llm_live else "error")
-            errors.append(f"Evolus agent: {str(e)[:160]}")
+            errors.append(f"Evolus agent: {_why(e)}")
     if s.llm_live:
         from .openai_compat import chat_json, make_client, resolve_model
 
@@ -142,7 +151,7 @@ async def think_json(purpose: str, messages: MessagesFn, validate: Callable[[Any
                            _pick_citations(captured.get("data"), retrieved), errors)
         except Exception as e:  # noqa: BLE001
             log.warning("%s: direct vLLM failed (%s: %s)", purpose, e.__class__.__name__, e)
-            errors.append(f"direct vLLM: {str(e)[:160]}")
+            errors.append(f"direct vLLM: {_why(e)}")
     if not errors:
         raise BrainUnavailable("No brain connected - neither the Evolus agent nor AMD vLLM is configured",
                                not_configured=True)
