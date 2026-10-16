@@ -1,0 +1,10 @@
+# Installed INTO a ROCm PyTorch image (rocm/pytorch:...). Do NOT add torch here: pip would replace the
+# ROCm build with a CUDA/CPU wheel. Check with: python -c "import torch; print(torch.version.hip)"
+diffusers>=0.35
+transformers>=4.56
+accelerate>=1.10
+sentencepiece>=0.2
+protobuf>=5
+pillow>=11
+fastapi>=0.115
+uvicorn>=0.35
