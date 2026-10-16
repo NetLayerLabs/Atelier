@@ -154,6 +154,13 @@ async def _post_execute(client: httpx.AsyncClient, workflow_id: str, input_text:
 # undeclared parameter ("Unknown execution parameter …"), so only these go in `parameters`; the full payload is in
 # the `input` text.
 EMAIL_WORKFLOW_PARAMS = frozenset({"rfq_emails", "rfq_ref", "kind"})
+# What the workflow script reads from each drafted email (the English copy and the language stay in the app).
+EMAIL_FIELDS = ("toEmail", "subject", "body", "supplierName", "rfqRef", "kind")
+
+
+def workflow_emails(emails: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """The drafted emails as the email workflows take them: only the fields they send (keeps them small)."""
+    return [{k: e[k] for k in EMAIL_FIELDS if e.get(k) is not None} for e in emails]
 
 
 async def execute_workflow(workflow_id: str, inputs: dict[str, Any], *, input_text: Optional[str] = None,

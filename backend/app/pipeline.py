@@ -291,7 +291,7 @@ async def _step_outreach(run: PipelineRun, step: PipelineStep, design: Design, t
             # The supplier-safe view (no target costs, retail or margin) and a link only a mill can open.
             "tech_pack": supplier_view.techpack(tp),
             "image_url": supplier_view.public_link(design.image_url) or "",
-            "rfq_emails": [e.model_dump(by_alias=True) for e in run.supplier_emails or []],
+            "rfq_emails": evolus.workflow_emails([e.model_dump(by_alias=True) for e in run.supplier_emails or []]),
             "rfq_ref": ref,  # v3: replies quote it; the inbound workflow passes it back with the quote
         }, purpose="supplier_outreach", on_status=on_status,
             param_keys=evolus.EMAIL_WORKFLOW_PARAMS)
