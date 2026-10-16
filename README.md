@@ -1,8 +1,18 @@
 # Atelier
 
-An AI agent for fashion brands: it reads a trend from a mood board, generates garment concepts, lets a human creative director pick and steer one, then writes the tech pack, drafts supplier RFQs and opens a **real Shopify pre-order**. Production only unlocks once **real pre-orders** clear the threshold.
+An AI agent for fashion brands: it reads a trend from a mood board, takes the designer's own sketch (or generates garment concepts), lets a human creative director pick and steer one, then writes the tech pack, drafts supplier RFQs and opens a **real Shopify pre-order**. Production only unlocks once **real pre-orders** clear the threshold.
 
 Built for the AMD Developer Hackathon: ACT III (Evolus Business Agents track and the "Reinvent Commerce" track).
+
+**Live:** https://atelier.38-49-213-208.sslip.io (anyone can look around; changes need the admin token, because
+approving a design emails real suppliers and creates a real Shopify product). Pilot brand: **UGO SARTORIA**, Igbo
+menswear with Italian tailoring, in EUR; its mood boards are AI-generated inspiration and labelled so.
+
+**As deployed for the hackathon:** Gemma 4 (`Gemma-4-31B-IT`) on AMD GPUs through **AMD Token Factory** reads the
+mood boards and the designer's sketches and is the model behind the Evolus agent (registered in the Evolus event
+workspace as our own model). Evolus building blocks used through the API: the agent, a knowledge library holding the
+brand book, a document extractor for supplier quotes, and two email workflows (RFQs, purchase orders). The
+self-hosted path below (our own vLLM + FLUX on an MI300X) is in `deploy/`.
 
 **One open model on AMD.** By default a single model, **Gemma 4** (`google/gemma-4-26B-A4B-it`, Google, Apache-2.0),
 served by our own vLLM on an **AMD Instinct MI300X** (AMD Developer Cloud), is the agent's brain, its vision model
