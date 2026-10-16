@@ -57,7 +57,9 @@ async def _cached(key: str, ttl: float, fn: Callable[[], Awaitable[ProbeResult]]
     return res
 
 
-async def probe_openai(endpoint: str, api_key: str) -> ProbeResult:
+async def probe_openai(endpoint: str, api_key: str, want: str = "") -> ProbeResult:
+    """`want`: the configured model (AMD_VISION_MODEL / AMD_VLLM_MODEL). A hosted endpoint such as AMD Token Factory
+    serves many models, so the one we use is reported - and a configured model that isn't served is a failure."""
     s = get_settings()
 
     async def run() -> ProbeResult:
@@ -77,10 +79,16 @@ async def probe_openai(endpoint: str, api_key: str) -> ProbeResult:
             ids = [m.get("id") for m in r.json().get("data", []) if isinstance(m, dict) and m.get("id")]
         except Exception:  # noqa: BLE001
             ids = []
+        if want:
+            match = next((i for i in ids if i.lower() == want.lower()), None)
+            if match is None:
+                return ProbeResult(False, f"{host} · model '{want}' is not served here ({len(ids)} models listed)",
+                                   t.ms, host=host)
+            return ProbeResult(True, f"{host} · {match}", t.ms, model=match, host=host)
         model = ids[0] if ids else None
         return ProbeResult(True, f"{host} · {', '.join(ids[:2]) or 'reachable'}", t.ms, model=model, host=host)
 
-    return await _cached(f"openai:{endpoint}", s.atelier_health_cache_seconds, run)
+    return await _cached(f"openai:{endpoint}:{want}", s.atelier_health_cache_seconds, run)
 
 
 def diffusion_health_url(endpoint: str) -> str:

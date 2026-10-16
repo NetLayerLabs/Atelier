@@ -51,14 +51,16 @@ async def health(request: Request) -> HealthResponse:
     async def vision() -> ServiceStatus:
         if not s.vision_live:
             return _off("vision", "Not connected - mood boards can't be analysed", HINTS["vision"])
-        st = _probed("vision", await probe.probe_openai(s.amd_vision_endpoint, s.amd_vllm_api_key), HINTS["vision"])
+        st = _probed("vision", await probe.probe_openai(s.amd_vision_endpoint, s.amd_vllm_api_key,
+                                                                s.amd_vision_model), HINTS["vision"])
         st.gpu = gpu
         return st
 
     async def llm() -> ServiceStatus:
         if not s.llm_live:
             return _off("llm", "Not connected - AMD vLLM (direct brain path) is not configured", HINTS["llm"])
-        st = _probed("llm", await probe.probe_openai(s.amd_vllm_endpoint, s.amd_vllm_api_key), HINTS["llm"])
+        st = _probed("llm", await probe.probe_openai(s.amd_vllm_endpoint, s.amd_vllm_api_key,
+                                                             s.amd_vllm_model), HINTS["llm"])
         st.gpu = gpu
         return st
 

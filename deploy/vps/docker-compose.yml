@@ -1,0 +1,31 @@
+# Atelier on the shared VPS: both containers on 127.0.0.1 only (nginx in front), memory-capped so the host's
+# other services keep their headroom.
+name: atelier
+
+services:
+  backend:
+    build: ./backend
+    image: atelier-backend
+    env_file: ./backend.env
+    environment:
+      ATELIER_DATA_DIR: /data
+    volumes:
+      - atelier-data:/data
+    ports:
+      - "127.0.0.1:8870:8787"
+    mem_limit: 768m
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend-dist
+    image: atelier-frontend
+    ports:
+      - "127.0.0.1:8871:3100"
+    mem_limit: 384m
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  atelier-data:
