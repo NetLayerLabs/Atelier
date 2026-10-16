@@ -15,7 +15,8 @@ Because everything is live, the stage fallback is **a pre-recorded video of a li
 ## Before the show
 
 - [ ] Start the app: `./dev.sh` (dashboard http://localhost:3100, API :8787). For the most stable run use a
-      production build of the frontend: `cd frontend && pnpm build && pnpm start`.
+      production build of the frontend: `cd frontend && pnpm build && pnpm start`. The hosted copy
+      (`deploy/vps/deploy.sh`) needs the admin token to change anything: sign in on the dashboard first.
 - [ ] Connect everything and check it:
       - AMD: vLLM, the VLM and the diffusion server (`backend/scripts/check_amd.py`), `AMD_GPU_LABEL` set to what
         `rocm-smi` really shows.
@@ -85,15 +86,15 @@ Timings depend on the models and on the people in the room; rehearse to know you
 | # | Beat | On screen | Say |
 |---|---|---|---|
 | 1 | Opening | Landing, then the studio | "Fashion brands still take months and a dozen tools to go from a trend to a product. Most of that is paperwork. Atelier is an agent that does the paperwork so the creative director can keep the taste." |
-| 2 | Mood board | The tour picks the real preset board *Max Azria — Fall/Winter 2010 runway* (openly licensed photos, credits under the picker) and sends it to the vision model; or upload your own | "We start where a designer starts: a mood board. These are real runway photos, and the model on AMD reads them live." |
+| 2 | Mood board | The pilot brand's board *UGO SARTORIA - Ceremonia* (labelled **AI-generated inspiration**), or a real runway board (openly licensed photos, credits under the picker) | "We start where a designer starts: a mood board. This is our pilot brand's own board - AI-generated inspiration, and labelled so - and Gemma 4 on AMD reads it live." |
 | 3 | Trend read | *The signal* from the vision model | "A vision model on AMD reads it: the silhouettes, the palette, the fabrics." |
 | 4 | Customer voice | The brand's own reviews: counts, shares, quotes; *Apply to design* | "And what our customers already told us. Counted and quoted, never paraphrased — those become tech pack changes." |
-| 5 | Concepts | Four concepts from the diffusion model | "From that signal the diffusion model renders four concepts." |
+| 5 | Concepts **or your sketch** | *Start from my sketch*: drop a photo of a real hand drawing; Gemma 4 reads it (garment, silhouette, the details it can see). Or four concepts from the diffusion model, when it is connected | "Most designers already have a drawing. Gemma 4 reads what I drew - not a guess - and that reading goes into the tech pack." |
 | 6 | Pick + direct | A concept picked, an instruction typed | "Now the human comes in. I pick one and direct it the way I'd brief a studio." |
 | 7 | Atelier heard… | The brain's read-back | "The agent reads it back — what it will change, and what goes into the tech pack." |
 | 8 | Approve | Approve for production | "I approve it. From here the agents take over, inside the guardrails I set." |
 | 9 | Tech pack | The brain's tech pack | "The tech pack carries my direction and the customers' evidence." |
-| 10 | RFQs | RFQs in each mill's language, sent through Evolus | "The RFQs go out in each mill's own language, through the Evolus workflow." |
+| 10 | RFQs | RFQs in each mill's language, sent through Evolus: open the Italian one and its English copy side by side | "The RFQs go out in each mill's own language, through the Evolus workflow. Our pilot's demo suppliers are our own inbox - say so." |
 | 11 | **Pause: quotes** | The tour waits: *"Waiting for a supplier quote — upload or email one"* | Drop the mills' PDFs on the Quotes panel (or let the email arrive). "These are the mills' own documents. The Evolus extractor reads each one; what a quote doesn't say stays *not stated*." The tour continues when the quotes are in (or when you click *Stop waiting & recommend*). |
 | 12 | Recommendation | Scores, the brain's rationale | "The agent scores them — price, MOQ fit, lead time — and explains its pick." |
 | 13 | Hand-off (only if a quote breaks a guardrail) | *Your call* with the numbers | "It stops. It explains, with the numbers: approve anyway, negotiate, or switch. Nothing reaches Shopify until I decide." Negotiating drafts a counter-offer in the mill's language at a computed target price, sent through Evolus; the revised quote is another real document. |
@@ -104,6 +105,22 @@ Timings depend on the models and on the people in the room; rehearse to know you
 | 18 | Tech pack PDF | *Download PDF* | "And the factory gets the tech pack PDF. From a mood board to a purchase order, and the agent knew when to hand the call to a person." |
 
 **Close:** "The creative director keeps the taste and the agents do the rest. Thank you."
+
+## Rehearsal: the live pre-order moment
+
+The strongest beat: the room pre-orders, the gauge crosses the threshold, and the purchase order leaves through Evolus.
+
+- [ ] `DEMAND_STAGE_THRESHOLD=5` in `backend/.env` (restart the backend after changing it). Five people, one order each.
+- [ ] The Shopify store currency is EUR and the payment provider is the **Bogus** test gateway. Test card: number
+      **1**, any future expiry, any CVV, any name. Say "test payment" on stage.
+- [ ] The QR panel shows the **store password** (Shopify dev stores keep a password page). Read it out, or put it
+      on the slide behind you.
+- [ ] Rehearse with two phones: scan, enter the password, pick a size, pay with card 1. The order count on screen
+      updates within a few seconds (Shopify polling, `SHOPIFY_POLL_INTERVAL`); the size chart fills by size.
+- [ ] At five orders: *Production unlocked*, and the purchase order goes to the mill's address through the Evolus PO
+      workflow - check that it arrives in the demo inbox.
+- [ ] Phones on the venue Wi-Fi or mobile data: if the venue blocks the store, use mobile data.
+- [ ] Ask the five volunteers before the pitch starts, and have them ready with the QR code page open.
 
 ## Fallback
 
