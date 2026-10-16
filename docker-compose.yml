@@ -1,0 +1,63 @@
+# Atelier: backend (FastAPI) + dashboard (Next.js).
+#
+#   docker compose up --build        -> http://localhost:3100  (API http://localhost:8787/docs)
+#
+# Runs on a fresh clone with no .env: every service then shows "not connected" (with the variable to set)
+# until you configure it — nothing is mocked.
+# backend/.env (copied from backend/.env.example) is loaded if present.
+# Host ports can be changed with BACKEND_PORT / FRONTEND_PORT (the browser URLs follow them):
+#   BACKEND_PORT=8890 FRONTEND_PORT=3190 docker compose up --build
+#
+# Security (QA H5): both ports are published on 127.0.0.1 only, and without ATELIER_ADMIN_TOKEN the API accepts
+# changes only from this machine. To host it for others, set ATELIER_ADMIN_TOKEN in backend/.env (every change then
+# needs it — the dashboard shows a sign-in form), set PUBLIC_BASE_URL / CORS_ORIGINS to the public URLs, and publish
+# on all interfaces: BACKEND_BIND=0.0.0.0 FRONTEND_BIND=0.0.0.0 docker compose up --build
+
+name: atelier
+
+services:
+  backend:
+    build: ./backend
+    image: atelier-backend
+    env_file:
+      - path: ./backend/.env
+        required: false
+    environment:
+      # Both are as seen by the browser, which reaches the backend through the published host port.
+      # They override the same keys in backend/.env.
+      PUBLIC_BASE_URL: http://localhost:${BACKEND_PORT:-8787}
+      CORS_ORIGINS: http://localhost:${FRONTEND_PORT:-3100},http://127.0.0.1:${FRONTEND_PORT:-3100}
+      # v5: the brand's data dir — the Brand workspace (SQLite + uploaded brand files) and the per-brand PO / style
+      # number sequences — lives on the one named volume below.
+      ATELIER_DATA_DIR: /data
+      # Seen from inside the container, a browser on this machine arrives from Docker's bridge gateway, not loopback.
+      # That's safe to trust only because the port is published on 127.0.0.1 (BACKEND_BIND); with
+      # ATELIER_ADMIN_TOKEN set the token is required from everywhere and this list no longer matters.
+      ATELIER_TRUSTED_NETWORKS: ${ATELIER_TRUSTED_NETWORKS:-172.16.0.0/12,192.168.0.0/16}
+    volumes:
+      - atelier-data:/data
+    ports:
+      - "${BACKEND_BIND:-127.0.0.1}:${BACKEND_PORT:-8787}:8787"
+    extra_hosts:
+      # An SSH tunnel on the host (deploy/tunnel.sh) is reachable as host.docker.internal:18000 etc.
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        # Inlined into the browser bundle at build time: the backend URL as the browser sees it.
+        NEXT_PUBLIC_API_BASE: http://localhost:${BACKEND_PORT:-8787}
+    image: atelier-frontend
+    ports:
+      - "${FRONTEND_BIND:-127.0.0.1}:${FRONTEND_PORT:-3100}:3100"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  # v5: the brand's own data (profile, suppliers, price list, guardrails, documents, PO / style number sequences).
+  # Survives rebuilds; `docker compose down -v` deletes it.
+  atelier-data:
