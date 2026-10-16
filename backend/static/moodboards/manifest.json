@@ -1,0 +1,501 @@
+{
+  "version": 1,
+  "boards": [
+    {
+      "id": "ugo-sartoria-suits",
+      "title": "UGO SARTORIA - Sartoria: Italian-cut suits",
+      "aiGenerated": true,
+      "images": [
+        {
+          "file": "ugo-sartoria-suits/01.jpg",
+          "title": "Sartoria A1",
+          "creator": "UGO SARTORIA (AI-generated with ChatGPT)",
+          "aiGenerated": true,
+          "license": "Brand-owned, AI-generated",
+          "width": 960,
+          "height": 1200,
+          "modifications": "AI-generated inspiration image; downscaled from 1122×1402 to 960×1200 px, JPEG quality 82, metadata stripped."
+        },
+        {
+          "file": "ugo-sartoria-suits/02.jpg",
+          "title": "Sartoria A2",
+          "creator": "UGO SARTORIA (AI-generated with ChatGPT)",
+          "aiGenerated": true,
+          "license": "Brand-owned, AI-generated",
+          "width": 960,
+          "height": 1200,
+          "modifications": "AI-generated inspiration image; downscaled from 1122×1402 to 960×1200 px, JPEG quality 82, metadata stripped."
+        },
+        {
+          "file": "ugo-sartoria-suits/03.jpg",
+          "title": "Sartoria A3",
+          "creator": "UGO SARTORIA (AI-generated with ChatGPT)",
+          "aiGenerated": true,
+          "license": "Brand-owned, AI-generated",
+          "width": 960,
+          "height": 1200,
+          "modifications": "AI-generated inspiration image; downscaled from 1122×1402 to 960×1200 px, JPEG quality 82, metadata stripped."
+        },
+        {
+          "file": "ugo-sartoria-suits/04.jpg",
+          "title": "Sartoria A4",
+          "creator": "UGO SARTORIA (AI-generated with ChatGPT)",
+          "aiGenerated": true,
+          "license": "Brand-owned, AI-generated",
+          "width": 960,
+          "height": 1200,
+          "modifications": "AI-generated inspiration image; downscaled from 1122×1402 to 960×1200 px, JPEG quality 82, metadata stripped."
+        }
+      ]
+    },
+    {
+      "id": "ugo-sartoria-senator",
+      "title": "UGO SARTORIA - Senator: tailored senator wear",
+      "aiGenerated": true,
+      "images": [
+        {
+          "file": "ugo-sartoria-senator/01.jpg",
+          "title": "Senator B1",
+          "creator": "UGO SARTORIA (AI-generated with ChatGPT)",
+          "aiGenerated": true,
+          "license": "Brand-owned, AI-generated",
+          "width": 800,
+          "height": 1200,
+          "modifications": "AI-generated inspiration image; downscaled from 1024×1536 to 800×1200 px, JPEG quality 82, metadata stripped."
+        },
+        {
+          "file": "ugo-sartoria-senator/02.jpg",
+          "title": "Senator B2",
+          "creator": "UGO SARTORIA (AI-generated with ChatGPT)",
+          "aiGenerated": true,
+          "license": "Brand-owned, AI-generated",
+          "width": 800,
+          "height": 1200,
+          "modifications": "AI-generated inspiration image; downscaled from 1024×1536 to 800×1200 px, JPEG quality 82, metadata stripped."
+        },
+        {
+          "file": "ugo-sartoria-senator/03.jpg",
+          "title": "Senator B3",
+          "creator": "UGO SARTORIA (AI-generated with ChatGPT)",
+          "aiGenerated": true,
+          "license": "Brand-owned, AI-generated",
+          "width": 1200,
+          "height": 1097,
+          "modifications": "AI-generated inspiration image; downscaled from 1312×1199 to 1200×1097 px, JPEG quality 82, metadata stripped."
+        },
+        {
+          "file": "ugo-sartoria-senator/04.jpg",
+          "title": "Senator B4",
+          "creator": "UGO SARTORIA (AI-generated with ChatGPT)",
+          "aiGenerated": true,
+          "license": "Brand-owned, AI-generated",
+          "width": 800,
+          "height": 1200,
+          "modifications": "AI-generated inspiration image; downscaled from 1024×1536 to 800×1200 px, JPEG quality 82, metadata stripped."
+        }
+      ]
+    },
+    {
+      "id": "ugo-sartoria-ceremonia",
+      "title": "UGO SARTORIA - Ceremonia: Igbo traditional attire",
+      "aiGenerated": true,
+      "images": [
+        {
+          "file": "ugo-sartoria-ceremonia/01.jpg",
+          "title": "Ceremonia C1",
+          "creator": "UGO SARTORIA (AI-generated with ChatGPT)",
+          "aiGenerated": true,
+          "license": "Brand-owned, AI-generated",
+          "width": 800,
+          "height": 1200,
+          "modifications": "AI-generated inspiration image; downscaled from 1024×1536 to 800×1200 px, JPEG quality 82, metadata stripped."
+        },
+        {
+          "file": "ugo-sartoria-ceremonia/02.jpg",
+          "title": "Ceremonia C2",
+          "creator": "UGO SARTORIA (AI-generated with ChatGPT)",
+          "aiGenerated": true,
+          "license": "Brand-owned, AI-generated",
+          "width": 800,
+          "height": 1200,
+          "modifications": "AI-generated inspiration image; downscaled from 1024×1536 to 800×1200 px, JPEG quality 82, metadata stripped."
+        },
+        {
+          "file": "ugo-sartoria-ceremonia/03.jpg",
+          "title": "Ceremonia C3",
+          "creator": "UGO SARTORIA (AI-generated with ChatGPT)",
+          "aiGenerated": true,
+          "license": "Brand-owned, AI-generated",
+          "width": 800,
+          "height": 1200,
+          "modifications": "AI-generated inspiration image; downscaled from 1024×1536 to 800×1200 px, JPEG quality 82, metadata stripped."
+        },
+        {
+          "file": "ugo-sartoria-ceremonia/04.jpg",
+          "title": "Ceremonia C4",
+          "creator": "UGO SARTORIA (AI-generated with ChatGPT)",
+          "aiGenerated": true,
+          "license": "Brand-owned, AI-generated",
+          "width": 1200,
+          "height": 1097,
+          "modifications": "AI-generated inspiration image; downscaled from 1312×1199 to 1200×1097 px, JPEG quality 82, metadata stripped."
+        }
+      ]
+    },
+    {
+      "id": "ugo-sartoria-ufficio",
+      "title": "UGO SARTORIA - Ufficio: Italian corporate wear",
+      "aiGenerated": true,
+      "images": [
+        {
+          "file": "ugo-sartoria-ufficio/01.jpg",
+          "title": "Ufficio D1",
+          "creator": "UGO SARTORIA (AI-generated with ChatGPT)",
+          "aiGenerated": true,
+          "license": "Brand-owned, AI-generated",
+          "width": 800,
+          "height": 1200,
+          "modifications": "AI-generated inspiration image; downscaled from 1024×1536 to 800×1200 px, JPEG quality 82, metadata stripped."
+        },
+        {
+          "file": "ugo-sartoria-ufficio/02.jpg",
+          "title": "Ufficio D2",
+          "creator": "UGO SARTORIA (AI-generated with ChatGPT)",
+          "aiGenerated": true,
+          "license": "Brand-owned, AI-generated",
+          "width": 960,
+          "height": 1200,
+          "modifications": "AI-generated inspiration image; downscaled from 1122×1402 to 960×1200 px, JPEG quality 82, metadata stripped."
+        },
+        {
+          "file": "ugo-sartoria-ufficio/03.jpg",
+          "title": "Ufficio D3",
+          "creator": "UGO SARTORIA (AI-generated with ChatGPT)",
+          "aiGenerated": true,
+          "license": "Brand-owned, AI-generated",
+          "width": 1200,
+          "height": 1097,
+          "modifications": "AI-generated inspiration image; downscaled from 1312×1199 to 1200×1097 px, JPEG quality 82, metadata stripped."
+        },
+        {
+          "file": "ugo-sartoria-ufficio/04.jpg",
+          "title": "Ufficio D4",
+          "creator": "UGO SARTORIA (AI-generated with ChatGPT)",
+          "aiGenerated": true,
+          "license": "Brand-owned, AI-generated",
+          "width": 1200,
+          "height": 900,
+          "modifications": "AI-generated inspiration image; downscaled from 1448×1086 to 1200×900 px, JPEG quality 82, metadata stripped."
+        }
+      ]
+    },
+    {
+      "id": "michael-kors-fw2010",
+      "title": "Michael Kors - Fall/Winter 2010 runway, New York",
+      "images": [
+        {
+          "file": "michael-kors-fw2010/01.jpg",
+          "title": "Michael Kors Fall-Winter 2010 102",
+          "creator": "Masaki-H",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Michael_Kors_Fall-Winter_2010_102.jpg",
+          "originalSourceUrl": "https://www.flickr.com/photos/33530571@N02/4485740537/",
+          "date": "2010-02-18",
+          "license": "CC BY 2.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+          "licenseReviewed": true,
+          "repository": "Wikimedia Commons",
+          "width": 798,
+          "height": 1200,
+          "modifications": "Downscaled from 2832×4256 to 798×1200 px and re-encoded as JPEG (quality 80); metadata stripped. No other changes."
+        },
+        {
+          "file": "michael-kors-fw2010/02.jpg",
+          "title": "Michael Kors Fall-Winter 2010 126",
+          "creator": "Masaki-H",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Michael_Kors_Fall-Winter_2010_126.jpg",
+          "originalSourceUrl": "https://www.flickr.com/photos/33530571@N02/4486400428/",
+          "date": "2010-02-18",
+          "license": "CC BY 2.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+          "licenseReviewed": true,
+          "repository": "Wikimedia Commons",
+          "width": 798,
+          "height": 1200,
+          "modifications": "Downscaled from 2832×4256 to 798×1200 px and re-encoded as JPEG (quality 80); metadata stripped. No other changes."
+        },
+        {
+          "file": "michael-kors-fw2010/03.jpg",
+          "title": "Michael Kors Fall-Winter 2010 167",
+          "creator": "Masaki-H",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Michael_Kors_Fall-Winter_2010_167.jpg",
+          "originalSourceUrl": "https://www.flickr.com/photos/33530571@N02/4486412936/",
+          "date": "2010-02-18",
+          "license": "CC BY 2.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+          "licenseReviewed": true,
+          "repository": "Wikimedia Commons",
+          "width": 798,
+          "height": 1200,
+          "modifications": "Downscaled from 2832×4256 to 798×1200 px and re-encoded as JPEG (quality 80); metadata stripped. No other changes."
+        },
+        {
+          "file": "michael-kors-fw2010/04.jpg",
+          "title": "Michael Kors Fall-Winter 2010 192",
+          "creator": "Masaki-H",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Michael_Kors_Fall-Winter_2010_192.jpg",
+          "originalSourceUrl": "https://www.flickr.com/photos/33530571@N02/4485769261/",
+          "date": "2010-02-18",
+          "license": "CC BY 2.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+          "licenseReviewed": true,
+          "repository": "Wikimedia Commons",
+          "width": 798,
+          "height": 1200,
+          "modifications": "Downscaled from 2832×4256 to 798×1200 px and re-encoded as JPEG (quality 80); metadata stripped. No other changes."
+        }
+      ]
+    },
+    {
+      "id": "max-azria-fw2010",
+      "title": "Max Azria - Fall/Winter 2010 runway, New York",
+      "images": [
+        {
+          "file": "max-azria-fw2010/01.jpg",
+          "title": "Max Azria Fall-Winter 2010 011",
+          "creator": "Masaki-H",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Max_Azria_Fall-Winter_2010_011.jpg",
+          "originalSourceUrl": "https://www.flickr.com/photos/33530571@N02/4483787891/",
+          "date": "2010-02-17",
+          "license": "CC BY 2.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+          "licenseReviewed": true,
+          "repository": "Wikimedia Commons",
+          "width": 798,
+          "height": 1200,
+          "modifications": "Downscaled from 2832×4256 to 798×1200 px and re-encoded as JPEG (quality 80); metadata stripped. No other changes."
+        },
+        {
+          "file": "max-azria-fw2010/02.jpg",
+          "title": "Max Azria Fall-Winter 2010 084",
+          "creator": "Masaki-H",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Max_Azria_Fall-Winter_2010_084.jpg",
+          "originalSourceUrl": "https://www.flickr.com/photos/33530571@N02/4483841767/",
+          "date": "2010-02-17",
+          "license": "CC BY 2.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+          "licenseReviewed": true,
+          "repository": "Wikimedia Commons",
+          "width": 798,
+          "height": 1200,
+          "modifications": "Downscaled from 2832×4256 to 798×1200 px and re-encoded as JPEG (quality 80); metadata stripped. No other changes."
+        },
+        {
+          "file": "max-azria-fw2010/03.jpg",
+          "title": "Max Azria Fall-Winter 2010 114",
+          "creator": "Masaki-H",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Max_Azria_Fall-Winter_2010_114.jpg",
+          "originalSourceUrl": "https://www.flickr.com/photos/33530571@N02/4483864381/",
+          "date": "2010-02-17",
+          "license": "CC BY 2.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+          "licenseReviewed": true,
+          "repository": "Wikimedia Commons",
+          "width": 798,
+          "height": 1200,
+          "modifications": "Downscaled from 2832×4256 to 798×1200 px and re-encoded as JPEG (quality 80); metadata stripped. No other changes."
+        },
+        {
+          "file": "max-azria-fw2010/04.jpg",
+          "title": "Max Azria Fall-Winter 2010 153",
+          "creator": "Masaki-H",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Max_Azria_Fall-Winter_2010_153.jpg",
+          "originalSourceUrl": "https://www.flickr.com/photos/33530571@N02/4484541514/",
+          "date": "2010-02-17",
+          "license": "CC BY 2.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+          "licenseReviewed": true,
+          "repository": "Wikimedia Commons",
+          "width": 798,
+          "height": 1200,
+          "modifications": "Downscaled from 2832×4256 to 798×1200 px and re-encoded as JPEG (quality 80); metadata stripped. No other changes."
+        }
+      ]
+    },
+    {
+      "id": "lacoste-fw2010",
+      "title": "Lacoste - Fall/Winter 2010 runway, New York",
+      "images": [
+        {
+          "file": "lacoste-fw2010/01.jpg",
+          "title": "Lacoste Fall-Winter 2010 087",
+          "creator": "Masaki-H",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Lacoste_Fall-Winter_2010_087.jpg",
+          "originalSourceUrl": "https://www.flickr.com/photos/33530571@N02/4479814304/",
+          "date": "2010-02-14",
+          "license": "CC BY 2.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+          "licenseReviewed": true,
+          "repository": "Wikimedia Commons",
+          "width": 798,
+          "height": 1200,
+          "modifications": "Downscaled from 2832×4256 to 798×1200 px and re-encoded as JPEG (quality 80); metadata stripped. No other changes."
+        },
+        {
+          "file": "lacoste-fw2010/02.jpg",
+          "title": "Lacoste Fall-Winter 2010 113",
+          "creator": "Masaki-H",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Lacoste_Fall-Winter_2010_113.jpg",
+          "originalSourceUrl": "https://www.flickr.com/photos/33530571@N02/4479834142/",
+          "date": "2010-02-14",
+          "license": "CC BY 2.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+          "licenseReviewed": true,
+          "repository": "Wikimedia Commons",
+          "width": 798,
+          "height": 1200,
+          "modifications": "Downscaled from 2832×4256 to 798×1200 px and re-encoded as JPEG (quality 80); metadata stripped. No other changes."
+        },
+        {
+          "file": "lacoste-fw2010/03.jpg",
+          "title": "Lacoste Fall-Winter 2010 129",
+          "creator": "Masaki-H",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Lacoste_Fall-Winter_2010_129.jpg",
+          "originalSourceUrl": "https://www.flickr.com/photos/33530571@N02/4479218799/",
+          "date": "2010-02-14",
+          "license": "CC BY 2.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+          "licenseReviewed": true,
+          "repository": "Wikimedia Commons",
+          "width": 828,
+          "height": 1200,
+          "modifications": "Downscaled from 2661×3858 to 828×1200 px and re-encoded as JPEG (quality 80); metadata stripped. No other changes."
+        }
+      ]
+    },
+    {
+      "id": "jill-stuart-fw2010",
+      "title": "Jill Stuart - Fall/Winter 2010 runway, New York",
+      "images": [
+        {
+          "file": "jill-stuart-fw2010/01.jpg",
+          "title": "Jill Stuart Fall-Winter 2010 018",
+          "creator": "Masaki-H",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Jill_Stuart_Fall-Winter_2010_018.jpg",
+          "originalSourceUrl": "https://www.flickr.com/photos/33530571@N02/4483330440/",
+          "date": "2010-02-16",
+          "license": "CC BY 2.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+          "licenseReviewed": true,
+          "repository": "Wikimedia Commons",
+          "width": 798,
+          "height": 1200,
+          "modifications": "Downscaled from 2832×4256 to 798×1200 px and re-encoded as JPEG (quality 80); metadata stripped. No other changes."
+        },
+        {
+          "file": "jill-stuart-fw2010/02.jpg",
+          "title": "Jill Stuart Fall-Winter 2010 074",
+          "creator": "Masaki-H",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Jill_Stuart_Fall-Winter_2010_074.jpg",
+          "originalSourceUrl": "https://www.flickr.com/photos/33530571@N02/4482705329/",
+          "date": "2010-02-16",
+          "license": "CC BY 2.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+          "licenseReviewed": true,
+          "repository": "Wikimedia Commons",
+          "width": 798,
+          "height": 1200,
+          "modifications": "Downscaled from 2832×4256 to 798×1200 px and re-encoded as JPEG (quality 80); metadata stripped. No other changes."
+        },
+        {
+          "file": "jill-stuart-fw2010/03.jpg",
+          "title": "Jill Stuart Fall-Winter 2010 094",
+          "creator": "Masaki-H",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Jill_Stuart_Fall-Winter_2010_094.jpg",
+          "originalSourceUrl": "https://www.flickr.com/photos/33530571@N02/4483362656/",
+          "date": "2010-02-16",
+          "license": "CC BY 2.0",
+          "licenseUrl": "https://creativecommons.org/licenses/by/2.0",
+          "licenseReviewed": true,
+          "repository": "Wikimedia Commons",
+          "width": 798,
+          "height": 1200,
+          "modifications": "Downscaled from 2832×4256 to 798×1200 px and re-encoded as JPEG (quality 80); metadata stripped. No other changes."
+        }
+      ]
+    },
+    {
+      "id": "met-19c-outerwear",
+      "title": "19th-century coats & jackets - The Met Costume Institute",
+      "images": [
+        {
+          "file": "met-19c-outerwear/01.jpg",
+          "title": "Jacket, 1855–65",
+          "creator": "The Metropolitan Museum of Art",
+          "sourceUrl": "https://www.metmuseum.org/art/collection/search/158263",
+          "date": "1855–65",
+          "license": "CC0 1.0 (Met Open Access)",
+          "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+          "licenseReviewed": true,
+          "repository": "The Metropolitan Museum of Art Open Access",
+          "medium": "wool",
+          "creditLine": "Brooklyn Museum Costume Collection at The Metropolitan Museum of Art, Gift of the Brooklyn Museum, 2009; Gift of The Jason and Peggy Westerfield Collection, 1969",
+          "accessionNumber": "2009.300.3337",
+          "width": 1113,
+          "height": 1200,
+          "modifications": "Downscaled from 3711×4000 to 1113×1200 px and re-encoded as JPEG (quality 80); metadata stripped. No other changes."
+        },
+        {
+          "file": "met-19c-outerwear/02.jpg",
+          "title": "Jacket, 1865–70 (Dieulafait & E. Bouclier)",
+          "creator": "The Metropolitan Museum of Art",
+          "sourceUrl": "https://www.metmuseum.org/art/collection/search/158334",
+          "date": "1865–70",
+          "license": "CC0 1.0 (Met Open Access)",
+          "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+          "licenseReviewed": true,
+          "repository": "The Metropolitan Museum of Art Open Access",
+          "medium": "wool, silk",
+          "creditLine": "Brooklyn Museum Costume Collection at The Metropolitan Museum of Art, Gift of the Brooklyn Museum, 2009; Gift of Margaret D. Leverich, 1964",
+          "accessionNumber": "2009.300.340",
+          "width": 944,
+          "height": 1200,
+          "modifications": "Downscaled from 3146×4000 to 944×1200 px and re-encoded as JPEG (quality 80); metadata stripped. No other changes."
+        },
+        {
+          "file": "met-19c-outerwear/03.jpg",
+          "title": "Coat, 1895–1900",
+          "creator": "The Metropolitan Museum of Art",
+          "sourceUrl": "https://www.metmuseum.org/art/collection/search/157774",
+          "date": "1895–1900",
+          "license": "CC0 1.0 (Met Open Access)",
+          "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+          "licenseReviewed": true,
+          "repository": "The Metropolitan Museum of Art Open Access",
+          "medium": "wool, silk",
+          "creditLine": "Brooklyn Museum Costume Collection at The Metropolitan Museum of Art, Gift of the Brooklyn Museum, 2009; Gift of Nathalie Swift, 1969",
+          "accessionNumber": "2009.300.2899a, b",
+          "width": 900,
+          "height": 1200,
+          "modifications": "Downscaled from 1500×2000 to 900×1200 px and re-encoded as JPEG (quality 80); metadata stripped. No other changes."
+        },
+        {
+          "file": "met-19c-outerwear/04.jpg",
+          "title": "Coat, 1885–90",
+          "creator": "The Metropolitan Museum of Art",
+          "sourceUrl": "https://www.metmuseum.org/art/collection/search/159586",
+          "date": "1885–90",
+          "license": "CC0 1.0 (Met Open Access)",
+          "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+          "licenseReviewed": true,
+          "repository": "The Metropolitan Museum of Art Open Access",
+          "medium": "wool, linen",
+          "creditLine": "Brooklyn Museum Costume Collection at The Metropolitan Museum of Art, Gift of the Brooklyn Museum, 2009; Gift of Mrs. Louis H. Twyeffort, 1981",
+          "accessionNumber": "2009.300.994",
+          "width": 938,
+          "height": 1200,
+          "modifications": "Downscaled from 3127×4000 to 938×1200 px and re-encoded as JPEG (quality 80); metadata stripped. No other changes."
+        }
+      ]
+    }
+  ]
+}

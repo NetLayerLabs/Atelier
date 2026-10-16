@@ -1,0 +1,14 @@
+{
+  "boards": [
+    {"id": "michael-kors-fw2010", "title": "Michael Kors - Fall/Winter 2010 runway, New York",
+     "source": "commons", "files": ["Michael Kors Fall-Winter 2010 102.jpg", "Michael Kors Fall-Winter 2010 126.jpg", "Michael Kors Fall-Winter 2010 167.jpg", "Michael Kors Fall-Winter 2010 192.jpg"]},
+    {"id": "max-azria-fw2010", "title": "Max Azria - Fall/Winter 2010 runway, New York",
+     "source": "commons", "files": ["Max Azria Fall-Winter 2010 011.jpg", "Max Azria Fall-Winter 2010 084.jpg", "Max Azria Fall-Winter 2010 114.jpg", "Max Azria Fall-Winter 2010 153.jpg"]},
+    {"id": "lacoste-fw2010", "title": "Lacoste - Fall/Winter 2010 runway, New York",
+     "source": "commons", "files": ["Lacoste Fall-Winter 2010 087.jpg", "Lacoste Fall-Winter 2010 113.jpg", "Lacoste Fall-Winter 2010 129.jpg"]},
+    {"id": "jill-stuart-fw2010", "title": "Jill Stuart - Fall/Winter 2010 runway, New York",
+     "source": "commons", "files": ["Jill Stuart Fall-Winter 2010 018.jpg", "Jill Stuart Fall-Winter 2010 074.jpg", "Jill Stuart Fall-Winter 2010 094.jpg"]},
+    {"id": "met-19c-outerwear", "title": "19th-century coats & jackets - The Met Costume Institute",
+     "source": "met", "objects": [158263, 158334, 157774, 159586]}
+  ]
+}
