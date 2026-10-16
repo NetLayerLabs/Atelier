@@ -1,0 +1,26 @@
+node_modules/
+.next/
+__pycache__/
+.venv/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+*.tsbuildinfo
+.DS_Store
+.claude/
+
+# Secrets: any .env anywhere (backend/.env, deploy/.env, frontend/.env.local, ...); templates are committed.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Runtime output written by the backend (the dirs are kept via .gitkeep, see backend/.gitignore)
+backend/static/generated/*
+backend/static/uploads/*
+!backend/static/*/.gitkeep
+backend/static/quotes/
+
+# v5: the brand's data dir (Brand workspace SQLite + uploaded files + PO/style number sequences) — never committed
+backend/var/
