@@ -1,0 +1,8 @@
+.env
+static/generated/*
+static/uploads/*
+!static/*/.gitkeep
+.pytest_cache/
+.ruff_cache/
+.cache/
+var/
