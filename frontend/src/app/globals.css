@@ -1,0 +1,739 @@
+@import "tailwindcss";
+
+/*
+ * Atelier design system: "Scenar fidelity, made for fashion". The full spec is in docs/DESIGN.md.
+ *
+ * Minimal monochrome: pure white, near-black ink, Inter 300–600 (display weight 300, tracking -0.03em), pill
+ * controls, soft white cards and generous whitespace. Colour is reserved for meaning: ok / warn / bad, and the
+ * tension gradient (green → amber → red) that reads margin against the brand's floor on the instruments.
+ * The `accent` role is ink: selection, focus and the current step are shown in black, never in a hue.
+ *
+ * Themes: light is the default. Dark ("projector") is the clean inverse: near-black page, white ink. It is used
+ * when <html data-theme="dark"> is set, or when the OS prefers dark and no theme is stored. Any element can carry
+ * data-theme to scope a theme. Every pairing used for text passes WCAG AA; see docs/DESIGN.md › Colour.
+ */
+
+/* ------------------------------------------------------------------ tokens: light (default) */
+:root,
+[data-theme="light"] {
+  /* Surfaces */
+  --paper: #ffffff; /* page */
+  --paper-2: #f4f4f6; /* grey pills, tracks, wells */
+  --surface: #ffffff; /* cards, sheets, popovers */
+  --surface-muted: #f4f4f6; /* hover rows, inner panels */
+
+  /* Ink. Muted ink is the solid equivalent of ~0.62 / ~0.55 alpha so small text stays AA on white and #f4f4f6. */
+  --fg: #0a0a0a;
+  --fg-muted: #5f5f63; /* 6.4:1 on white, 5.8:1 on paper-2 */
+  --fg-faint: #6e6e73; /* 5.1:1 on white, 4.6:1 on paper-2 */
+  --fg-dim: rgba(10, 10, 10, 0.38); /* decoration only, never text */
+
+  /* Lines */
+  --line: rgba(0, 0, 0, 0.08);
+  --line-strong: rgba(0, 0, 0, 0.12);
+  --line-bold: rgba(0, 0, 0, 0.35);
+
+  /* Inverse (primary button, the director's bubbles, the "decision" card) */
+  --inverse: #0a0a0a;
+  --inverse-hover: #262626;
+  --on-inverse: #ffffff;
+  --inv-bg: #0a0a0a; /* fixed copies for .ds-inverse, which re-points --inverse inside itself */
+  --inv-fg: #ffffff;
+  --inv-scheme: dark;
+  /* State colours on the inverse surface (the dark theme's, so they keep AA on the black card). */
+  --inv-ok: #4ade80;
+  --inv-ok-soft: rgba(74, 222, 128, 0.14);
+  --inv-warn: #fbbf24;
+  --inv-warn-soft: rgba(251, 191, 36, 0.14);
+  --inv-bad: #f87171;
+  --inv-bad-soft: rgba(248, 113, 113, 0.14);
+
+  /* Accent = ink. Kept as a role so "selected / current" has one name; never a hue. */
+  --accent: #0a0a0a;
+  --accent-strong: #000000;
+  --accent-soft: rgba(10, 10, 10, 0.06);
+  --on-accent: #ffffff;
+  --accent-on-inverse: #ffffff;
+
+  /* Meaning (use sparingly) */
+  --ok: #15803d;
+  --ok-soft: rgba(21, 128, 61, 0.08);
+  --warn: #b45309;
+  --warn-soft: rgba(180, 83, 9, 0.08);
+  --bad: #c42020;
+  --bad-soft: rgba(220, 38, 38, 0.07);
+
+  /* Tension: the only gradient. Margin vs floor and guardrails, good → bad. */
+  --tension-good: #10b981;
+  --tension-mid: #f59e0b;
+  --tension-bad: #ef4444;
+  --tension-grad: linear-gradient(90deg, var(--tension-good) 0%, var(--tension-mid) 55%, var(--tension-bad) 100%);
+
+  /* Instruments: thin ticks */
+  --tick: rgba(10, 10, 10, 0.24);
+  --tick-faint: rgba(10, 10, 10, 0.12);
+  --tick-major: rgba(10, 10, 10, 0.5);
+
+  /* Depth */
+  --elev-1: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --elev-2: 0 1px 2px rgba(0, 0, 0, 0.04), 0 8px 24px -12px rgba(0, 0, 0, 0.12);
+  --elev-3: 0 2px 4px rgba(0, 0, 0, 0.04), 0 24px 60px -24px rgba(0, 0, 0, 0.25);
+  --scrim: rgba(10, 10, 10, 0.35);
+  --veil: rgba(255, 255, 255, 0.78); /* app-bar veil (plain rgba: no color-mix under backdrop-filter) */
+
+  color-scheme: light;
+}
+
+/* ------------------------------------------------------------------ tokens: dark ("projector", the clean inverse) */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0a0a0a;
+    --paper-2: #1c1c1e;
+    --surface: #121212;
+    --surface-muted: #1c1c1e;
+    --fg: #fafafa;
+    --fg-muted: #a8a8ad;
+    --fg-faint: #8e8e93;
+    --fg-dim: rgba(250, 250, 250, 0.38);
+    --line: rgba(255, 255, 255, 0.1);
+    --line-strong: rgba(255, 255, 255, 0.16);
+    --line-bold: rgba(255, 255, 255, 0.42);
+    --inverse: #fafafa;
+    --inverse-hover: #e4e4e7;
+    --on-inverse: #0a0a0a;
+    --inv-bg: #fafafa;
+    --inv-fg: #0a0a0a;
+    --inv-scheme: light;
+    --inv-ok: #15803d;
+    --inv-ok-soft: rgba(21, 128, 61, 0.08);
+    --inv-warn: #b45309;
+    --inv-warn-soft: rgba(180, 83, 9, 0.08);
+    --inv-bad: #c42020;
+    --inv-bad-soft: rgba(220, 38, 38, 0.07);
+    --accent: #fafafa;
+    --accent-strong: #ffffff;
+    --accent-soft: rgba(255, 255, 255, 0.08);
+    --on-accent: #0a0a0a;
+    --accent-on-inverse: #0a0a0a;
+    --ok: #4ade80;
+    --ok-soft: rgba(74, 222, 128, 0.12);
+    --warn: #fbbf24;
+    --warn-soft: rgba(251, 191, 36, 0.12);
+    --bad: #f87171;
+    --bad-soft: rgba(248, 113, 113, 0.12);
+    --tick: rgba(250, 250, 250, 0.28);
+    --tick-faint: rgba(250, 250, 250, 0.14);
+    --tick-major: rgba(250, 250, 250, 0.6);
+    --elev-1: 0 1px 2px rgba(0, 0, 0, 0.5);
+    --elev-2: 0 1px 2px rgba(0, 0, 0, 0.5), 0 12px 32px -14px rgba(0, 0, 0, 0.8);
+    --elev-3: 0 2px 4px rgba(0, 0, 0, 0.5), 0 28px 70px -24px rgba(0, 0, 0, 0.9);
+    --scrim: rgba(0, 0, 0, 0.6);
+    --veil: rgba(10, 10, 10, 0.78);
+    color-scheme: dark;
+  }
+}
+
+[data-theme="dark"] {
+  --paper: #0a0a0a;
+  --paper-2: #1c1c1e;
+  --surface: #121212;
+  --surface-muted: #1c1c1e;
+  --fg: #fafafa;
+  --fg-muted: #a8a8ad;
+  --fg-faint: #8e8e93;
+  --fg-dim: rgba(250, 250, 250, 0.38);
+  --line: rgba(255, 255, 255, 0.1);
+  --line-strong: rgba(255, 255, 255, 0.16);
+  --line-bold: rgba(255, 255, 255, 0.42);
+  --inverse: #fafafa;
+  --inverse-hover: #e4e4e7;
+  --on-inverse: #0a0a0a;
+  --inv-bg: #fafafa;
+  --inv-fg: #0a0a0a;
+  --inv-scheme: light;
+  --inv-ok: #15803d;
+  --inv-ok-soft: rgba(21, 128, 61, 0.08);
+  --inv-warn: #b45309;
+  --inv-warn-soft: rgba(180, 83, 9, 0.08);
+  --inv-bad: #c42020;
+  --inv-bad-soft: rgba(220, 38, 38, 0.07);
+  --accent: #fafafa;
+  --accent-strong: #ffffff;
+  --accent-soft: rgba(255, 255, 255, 0.08);
+  --on-accent: #0a0a0a;
+  --accent-on-inverse: #0a0a0a;
+  --ok: #4ade80;
+  --ok-soft: rgba(74, 222, 128, 0.12);
+  --warn: #fbbf24;
+  --warn-soft: rgba(251, 191, 36, 0.12);
+  --bad: #f87171;
+  --bad-soft: rgba(248, 113, 113, 0.12);
+  --tick: rgba(250, 250, 250, 0.28);
+  --tick-faint: rgba(250, 250, 250, 0.14);
+  --tick-major: rgba(250, 250, 250, 0.6);
+  --elev-1: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --elev-2: 0 1px 2px rgba(0, 0, 0, 0.5), 0 12px 32px -14px rgba(0, 0, 0, 0.8);
+  --elev-3: 0 2px 4px rgba(0, 0, 0, 0.5), 0 28px 70px -24px rgba(0, 0, 0, 0.9);
+  --scrim: rgba(0, 0, 0, 0.6);
+  --veil: rgba(10, 10, 10, 0.78);
+  color-scheme: dark;
+}
+
+/* `dark:` utilities follow the resolved theme (the inline script in layout.tsx always sets data-theme). */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* ------------------------------------------------------------------ Tailwind mapping */
+@theme inline {
+  /* New names: use these in new code. */
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-fg-faint: var(--fg-faint);
+  --color-fg-dim: var(--fg-dim);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-line-bold: var(--line-bold);
+  --color-inverse: var(--inverse);
+  --color-on-inverse: var(--on-inverse);
+  --color-inverse-hover: var(--inverse-hover);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-soft: var(--accent-soft);
+  --color-on-accent: var(--on-accent);
+  --color-ok: var(--ok);
+  --color-ok-soft: var(--ok-soft);
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
+  --color-bad: var(--bad);
+  --color-bad-soft: var(--bad-soft);
+  --color-tension-good: var(--tension-good);
+  --color-tension-mid: var(--tension-mid);
+  --color-tension-bad: var(--tension-bad);
+
+
+  /* Inter for everything; Geist Mono for measured values. There is no serif in the system any more:
+     the legacy `font-serif` / `font-display` utilities resolve to Inter (and are de-italicised below). */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-serif: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  /* Type scale (rem; the root is 17px, 18px from 1280px, for projector legibility). */
+  --text-display-xl: clamp(2.5rem, 5.6vw, 4.75rem);
+  --text-display-xl--line-height: 1;
+  --text-display-xl--letter-spacing: -0.03em;
+  --text-display-xl--font-weight: 300;
+  --text-display-l: clamp(2rem, 4vw, 3.4rem);
+  --text-display-l--line-height: 1.04;
+  --text-display-l--letter-spacing: -0.03em;
+  --text-display-l--font-weight: 300;
+  --text-display-m: clamp(1.6rem, 2.6vw, 2.35rem);
+  --text-display-m--line-height: 1.1;
+  --text-display-m--letter-spacing: -0.03em;
+  --text-display-m--font-weight: 300;
+  --text-title: 1.15rem;
+  --text-title--line-height: 1.3;
+  --text-title--letter-spacing: -0.015em;
+  --text-title--font-weight: 500;
+  --text-body-l: 1.06rem;
+  --text-body-l--line-height: 1.6;
+  --text-body: 0.94rem;
+  --text-body--line-height: 1.6;
+  --text-small: 0.82rem;
+  --text-small--line-height: 1.5;
+  --text-micro: 0.7rem;
+  --text-micro--line-height: 1.4;
+  --text-micro--letter-spacing: 0.01em;
+  --text-label: 0.64rem;
+  --text-label--line-height: 1.3;
+  --text-label--letter-spacing: 0.08em;
+  --text-label--font-weight: 500;
+
+  --radius-chip: 8px;
+  --radius-field: 12px;
+  --radius-panel: 20px;
+  --radius-card: 24px;
+  --radius-sheet: 28px;
+
+  --shadow-e1: var(--elev-1);
+  --shadow-e2: var(--elev-2);
+  --shadow-e3: var(--elev-3);
+
+  /* Scenar's two curves: a long soft settle, and a small spring for needles. */
+  --ease-thread: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-settle: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ------------------------------------------------------------------ base */
+html {
+  font-size: 17px;
+  background: var(--paper);
+  -webkit-text-size-adjust: 100%;
+}
+
+@media (min-width: 1280px) {
+  html {
+    font-size: 18px;
+  }
+}
+
+body {
+  background: var(--paper);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  overflow-x: clip;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: -0.005em;
+}
+
+/* Legacy serif utilities (still used by a few older components) render as upright Inter. Unlayered so it wins
+   over Tailwind's `italic` utility. */
+.font-serif,
+.font-display {
+  font-style: normal;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+@layer components {
+  /* ---------------------------------------------------------------- design-system helpers (prefix ds-) */
+
+  /* Inverse surface (the black "decision" card in light, white in dark): re-points the ink, line, surface and state
+     tokens so any primitive placed inside stays legible (state colours become the opposite theme's). A primary
+     Button inside it becomes the white pill (Scenar's approve). */
+  .ds-inverse {
+    background: var(--inv-bg);
+    color: var(--inv-fg);
+    --fg: var(--inv-fg);
+    --fg-muted: color-mix(in oklab, var(--inv-fg) 72%, var(--inv-bg));
+    --fg-faint: color-mix(in oklab, var(--inv-fg) 62%, var(--inv-bg));
+    --fg-dim: color-mix(in oklab, var(--inv-fg) 38%, transparent);
+    --line: color-mix(in oklab, var(--inv-fg) 14%, transparent);
+    --line-strong: color-mix(in oklab, var(--inv-fg) 22%, transparent);
+    --line-bold: color-mix(in oklab, var(--inv-fg) 50%, transparent);
+    --tick: color-mix(in oklab, var(--inv-fg) 40%, transparent);
+    --tick-faint: color-mix(in oklab, var(--inv-fg) 20%, transparent);
+    --tick-major: color-mix(in oklab, var(--inv-fg) 70%, transparent);
+    --paper: var(--inv-bg);
+    --paper-2: color-mix(in oklab, var(--inv-fg) 10%, var(--inv-bg));
+    --surface: color-mix(in oklab, var(--inv-fg) 6%, var(--inv-bg));
+    --surface-muted: color-mix(in oklab, var(--inv-fg) 10%, var(--inv-bg));
+    --inverse: var(--inv-fg);
+    --inverse-hover: color-mix(in oklab, var(--inv-fg) 86%, var(--inv-bg));
+    --on-inverse: var(--inv-bg);
+    --accent: var(--inv-fg);
+    --on-accent: var(--inv-bg);
+    --accent-soft: color-mix(in oklab, var(--inv-fg) 12%, transparent);
+    --accent-strong: var(--inv-fg);
+    --accent-on-inverse: var(--inv-bg);
+    /* State colours: the opposite theme's, so ok / warn / bad keep AA contrast on the inverse surface. */
+    --ok: var(--inv-ok);
+    --ok-soft: var(--inv-ok-soft);
+    --warn: var(--inv-warn);
+    --warn-soft: var(--inv-warn-soft);
+    --bad: var(--inv-bad);
+    --bad-soft: var(--inv-bad-soft);
+    --veil: color-mix(in oklab, var(--inv-bg) 78%, transparent);
+    color-scheme: var(--inv-scheme);
+  }
+
+
+  /* Stitch line: a dashed seam (6px stitch, 5px gap). Horizontal by default; add .ds-stitch-v for vertical. */
+  .ds-stitch {
+    height: 1px;
+    /* Scenar rhythm: a plain hairline. The stitch survives only as a 1px dashed seam at 35% (a whisper). */
+    background-image: linear-gradient(90deg, var(--line-bold) 0 4px, transparent 4px 8px);
+    background-size: 8px 1px;
+    background-repeat: repeat-x;
+    opacity: 0.35;
+  }
+  .ds-stitch-v {
+    width: 1px;
+    height: auto;
+    background-image: linear-gradient(180deg, var(--line-bold) 0 6px, transparent 6px 11px);
+    background-size: 1px 11px;
+    background-repeat: repeat-y;
+  }
+
+  /* Garment tag: angled shoulder on the left with a punched eyelet. Border drawn by the outer layer. */
+  .ds-tag {
+    --tag-notch: 9px;
+    position: relative;
+    display: inline-flex;
+    padding: 1px;
+    background: var(--line-bold);
+    clip-path: polygon(var(--tag-notch) 0, 100% 0, 100% 100%, var(--tag-notch) 100%, 0 50%);
+    border-radius: 0 6px 6px 0;
+  }
+  .ds-tag > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    background: var(--surface);
+    clip-path: polygon(calc(var(--tag-notch) - 0.4px) 0, 100% 0, 100% 100%, calc(var(--tag-notch) - 0.4px) 100%, 0 50%);
+    border-radius: 0 5px 5px 0;
+    padding-left: calc(var(--tag-notch) + 10px);
+  }
+  .ds-tag > span::before {
+    content: "";
+    position: absolute;
+    left: calc(var(--tag-notch) - 1px);
+    top: 50%;
+    width: 5px;
+    height: 5px;
+    margin-top: -2.5px;
+    border-radius: 50%;
+    background: var(--paper);
+    box-shadow: inset 0 0 0 1px var(--line-bold);
+  }
+  .ds-tag[data-tone="ink"] {
+    background: var(--inverse);
+  }
+  .ds-tag[data-tone="ink"] > span {
+    background: var(--inverse);
+    color: var(--on-inverse);
+  }
+  .ds-tag[data-tone="accent"] {
+    background: var(--accent);
+  }
+  .ds-tag[data-tone="accent"] > span {
+    background: linear-gradient(var(--accent-soft), var(--accent-soft)), var(--surface);
+    color: var(--accent);
+  }
+
+  /* Pinked edge (pinking shears) for fabric swatches: zig-zag bottom edge. */
+  .ds-pinked {
+    --pink: 7px;
+    mask:
+      conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / var(--pink) 100%;
+  }
+
+  /* Skeleton: a slow, low-contrast sweep. */
+  .ds-skeleton {
+    position: relative;
+    overflow: hidden;
+    background: var(--paper-2);
+  }
+  .ds-skeleton::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(100deg, transparent 20%, color-mix(in oklab, var(--surface) 70%, transparent) 50%, transparent 80%);
+    animation: shimmer 1.8s ease-in-out infinite;
+  }
+
+  /* Live dot: a soft breathing pulse for "connected and working". */
+  .ds-live {
+    animation: pulse-dot 1.8s ease-in-out infinite;
+  }
+
+  /* Hide scrollbars on horizontally scrolling tab rows. */
+  .ds-noscrollbar {
+    scrollbar-width: none;
+  }
+  .ds-noscrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* ---------------------------------------------------------------- motion helpers (analysing scan, live dots, typing caret) */
+
+
+
+  /* The scanning hairline used in the "analysing" state. */
+  .scanline {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    box-shadow: 0 0 18px 2px var(--accent-soft);
+    animation: scan 2.6s ease-in-out infinite alternate;
+  }
+
+  .pulse-dot {
+    animation: pulse-dot 1.6s ease-in-out infinite;
+  }
+
+  .caret::after {
+    content: "";
+    display: inline-block;
+    width: 0.5ch;
+    height: 1em;
+    margin-left: 2px;
+    vertical-align: -0.15em;
+    background: var(--accent);
+    animation: pulse-dot 1s steps(2) infinite;
+  }
+
+}
+
+@keyframes shimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
+@keyframes scan {
+  from {
+    top: 4%;
+  }
+  to {
+    top: 96%;
+  }
+}
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+section[data-chapter] {
+  scroll-margin-top: 7rem;
+}
+
+section[data-landing] {
+  scroll-margin-top: 4.5rem;
+}
+
+/*
+ * Landing reveals. Content is visible by default (SSR, no JS, full-page screenshots); only elements that start
+ * below the fold are "armed" after hydration, and they settle in once they scroll into view.
+ */
+.reveal {
+  transition:
+    opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal[data-reveal="armed"] {
+  opacity: 0;
+  transform: translateY(18px);
+}
+
+/* Hero entrance: pure CSS so it also plays (and ends visible) without JS. */
+.rise {
+  animation: rise 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .scanline {
+    top: 50%;
+  }
+}
+
+/* ------------------------------------------------------------------ landing hero gauge (components/landing/HeroGauge) */
+.hero-gauge-stage {
+  position: absolute;
+  left: 50%;
+  top: 30svh;
+  width: 86%;
+  transform: translateX(-50%);
+}
+@media (min-width: 768px) {
+  .hero-gauge-stage {
+    top: auto;
+    bottom: 3svh;
+    width: min(100%, calc((100svh - 96px) * 1.923));
+  }
+}
+.hero-gauge path,
+.hero-gauge line,
+.hero-gauge circle {
+  vector-effect: non-scaling-stroke;
+}
+.hg-guide {
+  stroke: var(--tick-faint);
+  stroke-width: 1;
+  opacity: 0.5;
+}
+.hg-seam {
+  stroke: var(--tick-faint);
+  stroke-width: 1;
+  stroke-dasharray: 5 6;
+}
+.hg-tick {
+  stroke: var(--tick-faint);
+  stroke-width: 1;
+}
+.hg-tick-mid {
+  stroke: var(--tick);
+  stroke-width: 1;
+}
+.hg-tick-major {
+  stroke: var(--tick-major);
+  stroke-width: 1;
+}
+.hg-num {
+  display: none;
+  fill: var(--fg-dim);
+  font-size: 9px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+@media (min-width: 768px) {
+  .hg-num {
+    display: inline;
+  }
+}
+.hg-track {
+  stroke: var(--tick);
+  stroke-width: 1;
+}
+.hg-fill {
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+@media (min-width: 768px) {
+  .hg-fill {
+    stroke-width: 3;
+  }
+}
+.hg-needle {
+  stroke-width: 1.25;
+  stroke-linecap: round;
+}
+.hg-ink {
+  fill: var(--fg);
+}
+.hg-hub-ring {
+  stroke: var(--tick);
+  stroke-width: 1;
+}
+
+/* Conversation fragments: the director in black, a mill in grey (Scenar's chat bubbles, surfacing and fading). */
+.hg-frag {
+  position: absolute;
+  padding: 7px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  line-height: 1.3;
+  white-space: nowrap;
+  color: var(--fg);
+  background: var(--paper-2);
+  opacity: 0;
+  animation: hg-frag 18s cubic-bezier(0.16, 1, 0.3, 1) infinite both;
+  animation-delay: calc(var(--i) * 3s + 0.6s);
+  --o: 0.7;
+}
+.hg-director {
+  color: var(--on-inverse);
+  background: var(--inverse);
+  --o: 0.5;
+}
+@keyframes hg-frag {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  8% {
+    opacity: var(--o);
+    transform: translateY(0);
+  }
+  38% {
+    opacity: var(--o);
+    transform: translateY(-6px);
+  }
+  48%,
+  100% {
+    opacity: 0;
+    transform: translateY(-14px);
+  }
+}
+/* Mobile positions (three fragments show) */
+.hg-frag:nth-child(1) {
+  left: 16px;
+  top: 15svh;
+}
+.hg-frag:nth-child(2) {
+  right: 16px;
+  top: 22svh;
+}
+.hg-frag:nth-child(4) {
+  left: 16px;
+  top: 50svh;
+}
+.hg-desktop {
+  display: none;
+}
+@media (min-width: 768px) {
+  .hg-desktop {
+    display: inline-block;
+  }
+  .hg-frag:nth-child(1) {
+    left: 7%;
+    top: 28%;
+    right: auto;
+  }
+  .hg-frag:nth-child(2) {
+    right: 8%;
+    left: auto;
+    top: 20%;
+  }
+  .hg-frag:nth-child(3) {
+    left: 15%;
+    top: 50%;
+  }
+  .hg-frag:nth-child(4) {
+    right: 14%;
+    left: auto;
+    top: 44%;
+  }
+  .hg-frag:nth-child(5) {
+    left: 30%;
+    top: 15%;
+  }
+  .hg-frag:nth-child(6) {
+    right: 27%;
+    top: 33%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hg-frag {
+    animation: none;
+    opacity: 0;
+  }
+  .hg-frag:nth-child(1),
+  .hg-frag:nth-child(2) {
+    opacity: var(--o);
+  }
+}
+
+/* The copy at the foot of the first screen sits on a white fade so the gauge runs behind it. */
+.hero-foot {
+  background: linear-gradient(to top, var(--paper) 0%, color-mix(in oklab, var(--paper) 80%, transparent) 50%, transparent 100%);
+}
