@@ -142,6 +142,11 @@ class Settings(BaseSettings):
     # Optional bearer key for deploy/diffusion_server.py (its DIFFUSION_API_KEY); not needed over an SSH tunnel.
     amd_diffusion_api_key: str = ""
     atelier_vision_timeout: float = 45.0
+    # Tail-latency hedging (services/hedge.py): with no answer after this many seconds, send the same request again
+    # and use whichever answers first. Hosted queues (AMD Token Factory) have long, random waits. 0 turns it off.
+    # Vision answers are short; brain answers (tech packs, RFQs in two languages) legitimately take longer.
+    atelier_hedge_vision_after: float = 20.0
+    atelier_hedge_brain_after: float = 45.0
     # Images per vision prompt; keep it <= the server's --limit-mm-per-prompt image budget (deploy/: 4).
     atelier_vision_max_images: int = 4
     atelier_extractor_timeout: float = 60.0  # the Evolus document extractor (one synchronous ask-file call)

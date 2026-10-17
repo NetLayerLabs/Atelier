@@ -12,6 +12,7 @@ from openai import AsyncOpenAI
 
 from ..config import get_settings
 from . import telemetry
+from .hedge import hedged
 from .http import async_client
 
 log = logging.getLogger("atelier.openai")
@@ -242,11 +243,14 @@ async def chat_json(
         timer = telemetry.Timer()
         usage: dict | None = None
         try:
-            content, usage = await _complete(
-                client, model, messages_for_attempt(attempt), max_tokens=max_tokens,
-                temperature=temperature if first else 0.1,
-                json_mode=s.atelier_llm_json_mode and first, stream=s.atelier_llm_stream and first,
-                timer=timer)
+            msgs = messages_for_attempt(attempt)
+            content, usage = await hedged(
+                lambda: _complete(client, model, msgs, max_tokens=max_tokens,
+                                  temperature=temperature if first else 0.1,
+                                  json_mode=s.atelier_llm_json_mode and first, stream=s.atelier_llm_stream and first,
+                                  timer=timer),
+                after=s.atelier_hedge_vision_after if service == "vision" else s.atelier_hedge_brain_after,
+                label=f"{service}/{purpose}")
             result = validate(extract_json(content))
         except Exception as e:  # noqa: BLE001 - a bad answer is retried; see no_retry() for what isn't
             last = e

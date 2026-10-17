@@ -47,6 +47,7 @@ import httpx
 from ..config import get_settings, host_of
 from ..models import InferenceCall
 from . import telemetry
+from .hedge import hedged
 from .http import async_client
 
 log = logging.getLogger("atelier.evolus")
@@ -405,18 +406,24 @@ async def agent_chat_json(*, messages_for_attempt: Callable[[int], list[dict]], 
             try:
                 msgs = messages_for_attempt(attempt)
                 if rest:
-                    r = await client.post(_url(s.evolus_ask_path.format(agent_id=agent_id())), headers=headers(),
-                                          json={"content": _flatten_messages(msgs), "skipChatHistory": True})
+                    url = _url(s.evolus_ask_path.format(agent_id=agent_id()))
+                    req = {"headers": headers(), "json": {"content": _flatten_messages(msgs), "skipChatHistory": True}}
                 else:
                     # Message content must be text; temperature etc. are not applied by Evolus (sent anyway:
                     # harmless, and correct if that changes).
-                    r = await client.post(f"{s.chat_base}{s.evolus_chat_path}", headers=_chat_headers(),
-                                          json={"model": model, "messages": [
-                                              {"role": m.get("role", "user"), "content": m.get("content") if isinstance(
-                                                  m.get("content"), str) else _flatten_messages([m])} for m in msgs],
-                                              "max_tokens": max_tokens, "temperature": temperature, "stream": False})
-                if r.status_code >= 400:
-                    raise EvolusError(_explain(r))
+                    url = f"{s.chat_base}{s.evolus_chat_path}"
+                    req = {"headers": _chat_headers(), "json": {"model": model, "messages": [
+                        {"role": m.get("role", "user"), "content": m.get("content") if isinstance(
+                            m.get("content"), str) else _flatten_messages([m])} for m in msgs],
+                        "max_tokens": max_tokens, "temperature": temperature, "stream": False}}
+
+                async def send(url: str = url, req: dict = req) -> httpx.Response:
+                    r = await client.post(url, **req)
+                    if r.status_code >= 400:  # inside the hedge: an error reply must not beat a request still running
+                        raise EvolusError(_explain(r))
+                    return r
+
+                r = await hedged(send, after=s.atelier_hedge_brain_after, label=f"evolus-agent/{purpose}")
                 data = _json(r)
                 conv = r.headers.get("X-Conversation-Id") or data.get("conversationId")
                 if rest:
