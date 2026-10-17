@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { API_BASE } from "@/lib/api";
+import { apiBaseLabel } from "@/lib/api";
 import { useHealth } from "@/lib/health";
 import { useAtelier } from "@/lib/store";
 import { Badge, IconAlert, Spinner } from "./ds";
@@ -47,7 +47,7 @@ export function BackendBanner() {
                 </span>
                 <span className="font-medium text-bad">Backend unreachable</span>
                 <span>at</span>
-                <span className="font-mono text-micro break-all text-fg">{API_BASE}</span>
+                <span className="font-mono text-micro break-all text-fg">{apiBaseLabel()}</span>
                 <span className="inline-flex items-center gap-1.5">
                   <Spinner size={11} /> retrying automatically
                 </span>

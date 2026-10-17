@@ -15,9 +15,11 @@ REMOTE=/opt/atelier
 WORK="$(mktemp -d)"
 trap 'rm -rf "$WORK"' EXIT
 
-echo "1/4 building the dashboard for https://$HOST"
+echo "1/4 building the dashboard (API: ${API_BASE:-same-origin})"
 rsync -a --exclude node_modules --exclude .next "$ROOT/frontend/" "$WORK/frontend/"
-(cd "$WORK/frontend" && pnpm install --frozen-lockfile >/dev/null && NEXT_PUBLIC_API_BASE="https://$HOST" pnpm build >/dev/null)
+# same-origin: nginx serves /api and /static on the dashboard's own host, so the build works under every domain
+# pointed at the server (e.g. a custom domain and the sslip.io fallback).
+(cd "$WORK/frontend" && pnpm install --frozen-lockfile >/dev/null && NEXT_PUBLIC_API_BASE="${API_BASE:-same-origin}" pnpm build >/dev/null)
 mkdir -p "$WORK/frontend-dist"
 cp "$ROOT/deploy/vps/frontend-dist/Dockerfile" "$WORK/frontend-dist/"
 cp -R "$WORK/frontend/.next/standalone" "$WORK/frontend-dist/standalone"

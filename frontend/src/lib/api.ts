@@ -30,9 +30,17 @@ import type {
 
 export * from "./types";
 
-export const API_BASE = (
-  process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8787"
-).replace(/\/+$/, "");
+/**
+ * The backend's URL as the browser sees it. "same-origin" (the hosted deploy, where nginx serves /api and /static on
+ * the dashboard's own host) gives relative URLs, so one build works under every domain pointed at the server.
+ */
+const RAW_API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8787";
+export const API_BASE = RAW_API_BASE === "same-origin" ? "" : RAW_API_BASE.replace(/\/+$/, "");
+
+/** For messages: where the backend is ("" means this site). */
+export function apiBaseLabel(): string {
+  return API_BASE || (typeof window !== "undefined" ? window.location.origin : "this site");
+}
 
 export class ApiError extends Error {
   /** HTTP status, or 0 when the backend could not be reached at all. */
@@ -121,7 +129,7 @@ async function request<T>(
         408,
       );
     }
-    throw new ApiError(`Can't reach the Atelier backend at ${API_BASE}.`, 0);
+    throw new ApiError(`Can't reach the Atelier backend at ${apiBaseLabel()}.`, 0);
   }
   clearTimeout(timer);
 

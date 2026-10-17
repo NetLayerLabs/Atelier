@@ -1,5 +1,5 @@
 // v5: the Brand workspace - types and API client (CONTRACT.md "v5").
-import { API_BASE, ApiError, notifyAuthRequired, type Guardrails } from "./api";
+import { API_BASE, ApiError, apiBaseLabel, notifyAuthRequired, type Guardrails } from "./api";
 
 export interface Provenance {
   source: "csv" | "xlsx" | "form" | "upload";
@@ -204,7 +204,7 @@ async function call<T>(path: string, init: RequestInit = {}, timeoutMs = 30_000)
       headers: { Accept: "application/json", ...(init.headers || {}) },
     });
   } catch {
-    throw new ApiError(`Can't reach the Atelier backend at ${API_BASE}.`, 0);
+    throw new ApiError(`Can't reach the Atelier backend at ${apiBaseLabel()}.`, 0);
   } finally {
     clearTimeout(timer);
   }
