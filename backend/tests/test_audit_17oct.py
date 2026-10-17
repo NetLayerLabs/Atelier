@@ -191,3 +191,32 @@ def test_diffusion_is_optional_while_the_sketch_path_works():
     no_vision = [svc("vision", "not_configured"), svc("diffusion", "not_configured")]
     _mark_optional(no_vision)
     assert no_vision[1].optional is False  # without the vision model there is no sketch path either
+
+
+# 9. The real workflow wording for a send is "handed to the Evolus mailer": that is sent, not a failure.
+def test_handed_to_the_mailer_counts_as_sent(client, s, monkeypatch):
+    go_live(monkeypatch, s, shopify_store_domain="")
+    evo = create_evolus_app()
+    route(evolus_app=evo)
+    orig = evo.state.executions
+
+    class Handed(httpx.AsyncBaseTransport):
+        def __init__(self, inner):
+            self.inner = inner
+
+        async def handle_async_request(self, request):
+            resp = await self.inner.handle_async_request(request)
+            if "/executions/" in request.url.path and resp.status_code == 200:
+                body = json.loads(await resp.aread())
+                if body.get("status") == "Completed" and "emailStatus" in (body.get("output") or ""):
+                    emails = json.loads(orig[body["executionId"]]["parameters"]["rfq_emails"])
+                    body["output"] = json.dumps({"emailStatus": "sent", "sentCount": len(emails), "emails": [
+                        {"toEmail": e["toEmail"], "result": "handed to the Evolus mailer", "error": None} for e in emails]})
+                    return httpx.Response(200, json=body, request=request)
+            return resp
+
+    http.set_transport(Handed(http._transport))
+    run_id = _approve(client)
+    run = wait(client, run_id, awaiting)
+    assert run["steps"][1]["status"] == "done"
+    assert all(e["status"] != "drafted" for e in run["supplierEmails"])

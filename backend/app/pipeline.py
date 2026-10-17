@@ -310,7 +310,9 @@ async def _step_outreach(run: PipelineRun, step: PipelineStep, design: Design, t
     not_sent = []
     for e in run.supplier_emails or []:
         res = per.get(e.to_email.lower())
-        if res and res[0].lower() not in ("", "sent", "delivered", "ok"):
+        # The workflow reports a send as "handed to the Evolus mailer"; only "failed" / "not sent" (with the reason in
+        # `error`) mean this email never left (scripts/provision_evolus_workflows.py SUMMARY).
+        if res and (res[0].strip().lower() in ("failed", "not sent") or res[1]):
             e.status = "drafted"  # this one never left: it is not "queued"
             not_sent.append(f"{e.supplier_name} ({e.to_email}): {res[1] or res[0]}")
         else:
