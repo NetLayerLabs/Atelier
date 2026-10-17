@@ -73,8 +73,13 @@ export function Header({ onStartOver }: { onStartOver: () => void }) {
             className="group/brand flex h-10 items-center gap-2 rounded-full pr-1 text-fg"
             aria-label="Atelier - back to start"
           >
-            <AtelierMark size={30} className="md:hidden" />
-            <AtelierLockup height={26} className="hidden md:inline-block" />
+            {/* The wrappers own the breakpoint display: the logo's own `inline-block` beat `hidden` on phones. */}
+            <span className="inline-flex md:hidden">
+              <AtelierMark size={30} />
+            </span>
+            <span className="hidden md:inline-flex">
+              <AtelierLockup height={26} />
+            </span>
           </button>
           <MenuButton onStartOver={onStartOver} hasProgress={hasProgress} onRefreshHealth={check} />
         </div>

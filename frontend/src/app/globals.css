@@ -542,14 +542,66 @@ section[data-landing] {
   }
 }
 
+/*
+ * Headline masks: a line sits in an `overflow: clip` mask and is set into it from below, e.g.
+ * `animation: set-line 0.9s var(--ease-thread) both`. Reduced motion makes it instant (block below).
+ */
+@keyframes set-line {
+  from {
+    transform: translateY(110%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/*
+ * A measured underline: a 1px currentColor line drawn left to right on hover (pointer devices only) or keyboard
+ * focus, retracting to the right. It is a background, so it follows wrapped lines (one per line), and it never
+ * touches the focus outline. It transitions its own colour: don't add transition-* utilities to the same element.
+ */
+.link-measure {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 100% 100%;
+  background-size: 0% 1px;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  transition:
+    background-size 0.45s var(--ease-thread),
+    color 0.16s var(--ease-thread);
+}
+.link-measure:focus-visible {
+  background-position: 0 100%;
+  background-size: 100% 1px;
+}
+@media (hover: hover) {
+  .link-measure:hover {
+    background-position: 0 100%;
+    background-size: 100% 1px;
+  }
+}
+
+/* useInViewPause (components/landing/motion.tsx): CSS loops hold still while their block is off-screen or the
+   tab is hidden. */
+[data-paused],
+[data-paused] * {
+  animation-play-state: paused !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
+    animation-delay: 0s !important;
     transition-duration: 0.001ms !important;
+    transition-delay: 0s !important;
     scroll-behavior: auto !important;
+  }
+  .link-measure {
+    transition: none;
   }
   .scanline {
     top: 50%;
@@ -575,6 +627,34 @@ section[data-landing] {
 .hero-gauge line,
 .hero-gauge circle {
   vector-effect: non-scaling-stroke;
+}
+/* Without JS nothing fades the gauge in: show it resting on the mark (the server HTML's needle). */
+@media (scripting: none) {
+  .hero-gauge {
+    opacity: 1 !important;
+  }
+}
+/* Recede: the layer sinks from its base as the hero scrolls away (HeroGauge binds it to the scroll). Phones and
+   reduced motion keep it still. */
+.hg-recede {
+  transform-origin: 50% 100%;
+}
+@media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+  .hg-recede {
+    will-change: transform, opacity;
+  }
+}
+@media (max-width: 767.98px), (prefers-reduced-motion: reduce) {
+  /* framer writes the recede as an inline transform + opacity */
+  .hg-recede {
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}
+/* The 12 o'clock tick clicks outwards from its arc end when the ignition's needle lands. */
+.hg-top {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
 }
 .hg-guide {
   stroke: var(--tick-faint);
@@ -604,6 +684,11 @@ section[data-landing] {
   font-size: 9px;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.02em;
+  /* a paper halo, so the needle passes behind the number it points at */
+  stroke: var(--paper);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+  paint-order: stroke;
 }
 @media (min-width: 768px) {
   .hg-num {
@@ -647,7 +732,8 @@ section[data-landing] {
   background: var(--paper-2);
   opacity: 0;
   animation: hg-frag 18s cubic-bezier(0.16, 1, 0.3, 1) infinite both;
-  animation-delay: calc(var(--i) * 3s + 0.6s);
+  /* the first one surfaces once the ignition's needle has settled */
+  animation-delay: calc(var(--i) * 3s + 2.6s);
   --o: 0.7;
 }
 .hg-director {
@@ -736,4 +822,24 @@ section[data-landing] {
 /* The copy at the foot of the first screen sits on a white fade so the gauge runs behind it. */
 .hero-foot {
   background: linear-gradient(to top, var(--paper) 0%, color-mix(in oklab, var(--paper) 80%, transparent) 50%, transparent 100%);
+}
+/*
+ * The first screen's entrance (Hero.tsx): pure CSS, so it plays and ends visible without JS. Each part sets its beat
+ * in --hero-at; the headline's lines rise out of their own masks (set-line). Reduced motion: instant (block above).
+ */
+.hero-in {
+  animation: hero-in 0.8s var(--ease-thread) var(--hero-at, 0s) both;
+}
+.hero-line {
+  animation: set-line 0.9s var(--ease-thread) var(--hero-at, 0s) both;
+}
+@keyframes hero-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+/* StatusStrip (Hero.tsx): when the first real GET /api/health answer lands, its rows cascade in, 40 ms apart. */
+.hero-arrive {
+  animation: hero-in 0.6s var(--ease-thread) calc(var(--i, 0) * 40ms) backwards;
 }
