@@ -147,6 +147,12 @@ class Settings(BaseSettings):
     # Vision answers are short; brain answers (tech packs, RFQs in two languages) legitimately take longer.
     atelier_hedge_vision_after: float = 20.0
     atelier_hedge_brain_after: float = 45.0
+    # Hosted demo (only when ATELIER_ADMIN_TOKEN is set): visitors without the token may run the steps with no
+    # outside effect (security.PUBLIC_POSTS), within these limits per 10 minutes. 0 = no limit.
+    atelier_public_demo: bool = True
+    atelier_public_rate_per_visitor: int = 15
+    atelier_public_rate_total: int = 120
+    atelier_public_uploads_max_mb: int = 1024  # visitors' uploads pause once static/uploads holds this much
     # Images per vision prompt; keep it <= the server's --limit-mm-per-prompt image budget (deploy/: 4).
     atelier_vision_max_images: int = 4
     atelier_extractor_timeout: float = 60.0  # the Evolus document extractor (one synchronous ask-file call)

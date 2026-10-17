@@ -255,7 +255,7 @@ function MenuPanel({
             disabled={auth.signedIn}
             lead={<IconKey size={15} />}
             label={auth.signedIn ? "Signed in" : "Sign in"}
-            hint="This backend requires its admin token for changes"
+            hint="Approve needs the admin token; every step before it is open to try"
           />
         )}
         {hasProgress && (

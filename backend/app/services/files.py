@@ -4,6 +4,8 @@ uploaded, and they are stored under a name and extension we choose."""
 
 from __future__ import annotations
 
+import io
+
 from typing import NamedTuple, Optional
 
 
@@ -20,6 +22,30 @@ WEBP = Sniffed("webp", "image/webp")
 DOCUMENT_KINDS = (PDF, PNG, JPEG, WEBP)
 IMAGE_KINDS = (PNG, JPEG, WEBP)
 ALLOWED_LABEL = "PDF, PNG, JPEG or WebP"
+
+
+MAX_IMAGE_PIXELS = 40_000_000  # 40 megapixels: far above any photo or sketch, far below a decompression bomb
+
+
+def image_pixels(data: bytes) -> Optional[int]:
+    """Width x height from the image header only (nothing is decoded); None when Pillow can't read it."""
+    try:
+        from PIL import Image
+    except ImportError:
+        return None
+    try:
+        with Image.open(io.BytesIO(data)) as im:
+            w, h = im.size
+        return int(w) * int(h)
+    except Image.DecompressionBombError:  # Pillow itself refuses to open it: certainly too large
+        return MAX_IMAGE_PIXELS * 10
+    except Exception:  # noqa: BLE001
+        return None
+
+
+def too_many_pixels(data: bytes) -> bool:
+    px = image_pixels(data)
+    return px is not None and px > MAX_IMAGE_PIXELS
 
 
 def sniff(data: bytes, allowed: tuple[Sniffed, ...] = DOCUMENT_KINDS) -> Optional[Sniffed]:

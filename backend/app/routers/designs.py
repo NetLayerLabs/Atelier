@@ -75,6 +75,8 @@ async def upload_design(file: UploadFile = File(...), trend_id: str = Form(..., 
     kind = filetypes.sniff(data, filetypes.IMAGE_KINDS)  # by content, not by name
     if kind is None:
         raise HTTPException(415, f"'{file.filename}' is not a PNG, JPEG or WebP image")
+    if filetypes.too_many_pixels(data):  # decoding it could exhaust memory (decompression bomb)
+        raise HTTPException(413, f"sketch is larger than {filetypes.MAX_IMAGE_PIXELS // 1_000_000} megapixels")
     reading = await vision.read_sketch(vision.ImageInput(public_url="", data=data, content_type=kind.content_type))
     name = f"sketch_{secrets.token_hex(6)}.{kind.ext}"
     (UPLOADS_DIR / name).write_bytes(data)

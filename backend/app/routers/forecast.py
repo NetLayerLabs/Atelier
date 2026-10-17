@@ -10,8 +10,9 @@ from ..store import store
 router = APIRouter(prefix="/api", tags=["forecast"])
 
 
+# Plain `def`: FastAPI runs these in its thread pool, so the maths never blocks the event loop (review, 17 Oct).
 @router.post("/forecast", response_model=Forecast, response_model_exclude_none=True)
-async def post_forecast(req: ForecastRequest) -> Forecast:
+def post_forecast(req: ForecastRequest) -> Forecast:
     """Stateless: orders + economics + window (+ optional assumptions) -> Forecast."""
     try:
         return forecast(req)
@@ -20,7 +21,7 @@ async def post_forecast(req: ForecastRequest) -> Forecast:
 
 
 @router.get("/runs/{run_id}/forecast", response_model=Forecast, response_model_exclude_none=True)
-async def run_forecast(run_id: str) -> Forecast:
+def run_forecast(run_id: str) -> Forecast:
     """Forecast for a pipeline run: selected quote (cost, MOQ, sample cost), retail price and the run's orders."""
     run = store.runs.get(run_id)
     if run is None:
@@ -29,4 +30,7 @@ async def run_forecast(run_id: str) -> Forecast:
         req = request_for_run(run)
     except ValueError as e:
         raise HTTPException(409, str(e)) from e
-    return forecast(req)
+    try:
+        return forecast(req)
+    except ValueError as e:  # e.g. demand beyond the exact table (NegBinom.MAX_TABLE)
+        raise HTTPException(422, str(e)) from e

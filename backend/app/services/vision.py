@@ -16,6 +16,7 @@ from typing import Any
 from ..config import get_settings, host_of
 from ..models import TrendAnalysis
 from ..store import new_id
+from . import files
 from .colors import normalize_hex
 from .errors import NotConfigured, ServiceError
 from .openai_compat import chat_json, make_client, resolve_model
@@ -49,6 +50,8 @@ def _fit_for_model(data: bytes, content_type: str) -> tuple[bytes, str]:
         from PIL import Image
 
         im = Image.open(io.BytesIO(data))
+        if im.size[0] * im.size[1] > files.MAX_IMAGE_PIXELS:  # never decode a decompression bomb
+            return data, content_type
         if max(im.size) <= edge and len(data) <= 600_000:
             return data, content_type
         im = im.convert("RGB")

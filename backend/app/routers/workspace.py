@@ -181,6 +181,9 @@ async def upload_certificate(supplier_id: str, file: UploadFile = File(...),
 
 def _check_emails(body: SupplierInput) -> None:
     for e in [*body.emails, *([body.rfq_email_override] if body.rfq_email_override else [])]:
+        if "\u2022" in e:  # security.mask_emails: the page was loaded signed out, so it only had the masked address
+            raise HTTPException(422, "this email address is masked because the page was loaded before signing in - "
+                                     "reload the page, then save again")
         if not imp.EMAIL.match(e.strip()):
             raise HTTPException(422, f"not an email address: {e}")
 

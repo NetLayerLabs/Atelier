@@ -98,6 +98,9 @@ async def analyze(request: Request) -> TrendAnalysis:
             kind = filetypes.sniff(data, filetypes.IMAGE_KINDS)  # QA M5: by content, not by name / declared type
             if kind is None:
                 raise HTTPException(415, f"'{f.filename}' is not a PNG, JPEG or WebP image")
+            if filetypes.too_many_pixels(data):  # decoding it could exhaust memory (decompression bomb)
+                raise HTTPException(413, f"'{f.filename}' is larger than {filetypes.MAX_IMAGE_PIXELS // 1_000_000} "
+                                         "megapixels")
             images.append(ImageInput(public_url="", data=data, content_type=kind.content_type))
         trend = await _analyze_live(images)
         # Stored only after a successful analysis, under our own name and the real extension (served as an image).
@@ -145,6 +148,9 @@ async def analyze(request: Request) -> TrendAnalysis:
             data, kind = await safe_fetch.fetch_image(u, max_bytes=MAX_IMAGE_BYTES)
         except safe_fetch.FetchError as e:
             raise HTTPException(422, f"image URL rejected: {e}") from e
+        if filetypes.too_many_pixels(data):
+            raise HTTPException(413, f"image URL rejected: larger than {filetypes.MAX_IMAGE_PIXELS // 1_000_000} "
+                                     "megapixels")
         images.append(ImageInput(public_url=u, data=data, content_type=kind.content_type))
     trend = await _analyze_live(images)
     store.trends[trend.id] = trend

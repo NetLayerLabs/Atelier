@@ -82,6 +82,8 @@ export function errorHint(err: unknown): string | undefined {
 
 /** QA H5: fired when the backend answers 401 "admin token required" - the sign-in form (AdminLogin) opens. */
 export const AUTH_REQUIRED_EVENT = "atelier:auth-required";
+/** Fired after signing in or out, so anything showing the sign-in state re-reads it. */
+export const AUTH_CHANGED_EVENT = "atelier:auth-changed";
 
 export function notifyAuthRequired(status: number, body: unknown): void {
   if (status !== 401 || typeof window === "undefined") return;

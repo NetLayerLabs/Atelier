@@ -13,6 +13,13 @@ webhooks (/api/webhooks/*, authenticated by Shopify's HMAC / the Evolus shared s
    ATELIER_TRUSTED_NETWORKS (docker-compose adds Docker's bridge range because its published ports are bound to
    127.0.0.1). Anyone else gets 403 with the hint to set ATELIER_ADMIN_TOKEN.
 
+Hosted demo (ATELIER_ADMIN_TOKEN set, ATELIER_PUBLIC_DEMO on): visitors WITHOUT the token may still run the steps
+that have no outside effect - reading a mood board or a sketch, customer voice on the sample datasets, concepts,
+creative direction (PUBLIC_POSTS). They call the models and create in-memory results only: no email is sent, nothing is created
+in Shopify and no saved brand data changes. Model-calling steps are rate-limited per visitor and in total (protects
+the hosted model's quota), and email addresses in JSON responses are masked for visitors (the supplier directory
+holds real inboxes). Everything else keeps the rules above.
+
 Private files (supplier quote documents, Brand workspace uploads) use the same rule for reads: `require_private`.
 Every response also carries `X-Content-Type-Options: nosniff`.
 """
@@ -23,6 +30,11 @@ import hashlib
 import hmac
 import ipaddress
 import json
+import os
+import re
+import threading
+import time
+from collections import deque
 from typing import Optional
 from urllib.parse import urlparse
 
@@ -35,6 +47,26 @@ MUTATING = frozenset({"POST", "PUT", "PATCH", "DELETE"})
 SESSION_COOKIE = "atelier_session"
 EXEMPT_PREFIXES = ("/api/webhooks/",)
 LOGIN_PATHS = frozenset({"/api/auth/login", "/api/auth/logout"})
+# Hosted demo: POSTs a visitor without the token may make (exact paths; ids are [A-Za-z0-9_-]). Nothing here emails a
+# supplier, writes to Shopify or changes saved brand data. `True` = calls a model (rate-limited), `False` = local maths.
+_ID = r"[A-Za-z0-9_-]{1,64}"
+PUBLIC_POSTS: tuple[tuple[re.Pattern[str], bool], ...] = (
+    (re.compile(r"^/api/trends/analyze$"), True),  # read a mood board (vision)
+    (re.compile(r"^/api/designs/generate$"), True),  # concepts (diffusion)
+    (re.compile(r"^/api/designs/upload$"), True),  # read the designer's sketch (vision)
+    (re.compile(rf"^/api/designs/{_ID}/refine$"), True),  # vibe refinement (diffusion)
+    (re.compile(rf"^/api/designs/{_ID}/direct$"), True),  # creative direction (brain)
+    (re.compile(r"^/api/collections/generate$"), True),  # a collection (brain + diffusion)
+    (re.compile(r"^/api/voice/sample$"), True),  # customer voice on the built-in review datasets (brain phrasing)
+)
+# Not public (review 17 Oct): /api/voice/{id}/apply changes a design an admin may approve, /api/forecast takes up to
+# 50,000 orders of maths with no model call to rate-limit; visitors never reach either before Approve anyway.
+RATE_WINDOW = 600.0  # seconds
+# Public steps that store the visitor's upload on disk (multipart only): paused when the uploads folder is full, so
+# visitors can't fill a disk the host shares with other services.
+_UPLOAD_POSTS = (re.compile(r"^/api/trends/analyze$"), re.compile(r"^/api/designs/upload$"))
+_uploads_size: dict[str, float] = {}  # {"bytes": n, "at": monotonic} - measured at most every 30 s
+
 TOKEN_HINT = ("Set ATELIER_ADMIN_TOKEN in backend/.env to allow access from other machines (then sign in with it "
               "in the dashboard, or send `Authorization: Bearer <token>`).")
 
@@ -84,6 +116,106 @@ def client_is_local(host: Optional[str]) -> bool:
     if ip.is_loopback or (getattr(ip, "ipv4_mapped", None) is not None and ip.ipv4_mapped.is_loopback):
         return True
     return any(ip in n for n in _networks())
+
+
+def public_post(method: str, path: str) -> Optional[bool]:
+    """None: not a public step. Otherwise whether it calls a model (and so counts towards the rate limit)."""
+    if method != "POST":
+        return None
+    return next((model for pat, model in PUBLIC_POSTS if pat.match(path)), None)
+
+
+# Where a reverse proxy in front of us can sit (RFC 1918 / unique-local, e.g. Docker's bridge) - an explicit list:
+# Python's `is_private` also covers documentation and other special ranges a visitor could come from.
+_PROXY_NETS = tuple(ipaddress.ip_network(n) for n in ("10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16", "fc00::/7"))
+
+
+def uploads_bytes() -> int:
+    """Total size of the uploads folder (cached for 30 s)."""
+    from .config import UPLOADS_DIR
+
+    now = time.monotonic()
+    if _uploads_size and now - _uploads_size["at"] < 30:
+        return int(_uploads_size["bytes"])
+    total = 0
+    try:
+        for entry in os.scandir(UPLOADS_DIR):
+            if entry.is_file(follow_symlinks=False):
+                total += entry.stat(follow_symlinks=False).st_size
+    except FileNotFoundError:
+        pass
+    _uploads_size.update(bytes=total, at=now)
+    return total
+
+
+def visitor_ip(scope: Scope, headers: dict[str, str]) -> str:
+    """The visitor's address. Behind a local reverse proxy (nginx on the host, or Docker's bridge in front of the
+    container) the peer is the proxy, so X-Real-IP (set by the proxy from the TCP peer, not by the client) or the
+    LAST X-Forwarded-For hop is used. From any other peer the headers are ignored (they could be forged)."""
+    client = scope.get("client")
+    peer = client[0] if client else ""
+    try:
+        ip = ipaddress.ip_address(peer.split("%", 1)[0])
+        via_proxy = ip.is_loopback or any(ip in n for n in _PROXY_NETS) or any(ip in n for n in _networks())
+    except (ValueError, TypeError):
+        via_proxy = False
+    if via_proxy:
+        real = headers.get("x-real-ip", "").strip()
+        if real:
+            return real
+        fwd = [h.strip() for h in headers.get("x-forwarded-for", "").split(",") if h.strip()]
+        if fwd:
+            return fwd[-1]
+    return peer or "unknown"
+
+
+class RateLimiter:
+    """Sliding-window limits for the hosted demo: per visitor and in total."""
+
+    def __init__(self) -> None:
+        self._lock = threading.Lock()
+        self._per: dict[str, deque[float]] = {}
+        self._all: deque[float] = deque()
+
+    def reset(self) -> None:
+        with self._lock:
+            self._per.clear()
+            self._all.clear()
+
+    def hit(self, who: str, per_visitor: int, total: int, now: Optional[float] = None) -> Optional[str]:
+        """Count one call; None when allowed, else why not (the call is then not counted)."""
+        now = time.monotonic() if now is None else now
+        cutoff = now - RATE_WINDOW
+        with self._lock:
+            while self._all and self._all[0] <= cutoff:
+                self._all.popleft()
+            mine = self._per.setdefault(who, deque())
+            while mine and mine[0] <= cutoff:
+                mine.popleft()
+            if len(self._per) > 5000:  # forget visitors with no call in the window
+                for k in [k for k, v in self._per.items() if not v and k != who]:
+                    del self._per[k]
+            if per_visitor > 0 and len(mine) >= per_visitor:
+                wait = int(mine[0] + RATE_WINDOW - now) // 60 + 1
+                return (f"Demo limit: {per_visitor} model calls per visitor every {int(RATE_WINDOW // 60)} minutes. "
+                        f"Try again in about {wait} min.")
+            if total > 0 and len(self._all) >= total:
+                wait = int(self._all[0] + RATE_WINDOW - now) // 60 + 1
+                return ("The demo is busy right now (shared model quota). Try again in about "
+                        f"{wait} min.")
+            mine.append(now)
+            self._all.append(now)
+            return None
+
+
+limiter = RateLimiter()
+
+_EMAIL = re.compile(rb"([A-Za-z0-9])[A-Za-z0-9._%+-]*@([A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,})")
+
+
+def mask_emails(body: bytes) -> bytes:
+    """jane.doe@gmail.com -> j•••@gmail.com (the domain stays: it says which provider a supplier uses)."""
+    return _EMAIL.sub(lambda m: m.group(1) + "•••".encode() + b"@" + m.group(2), body)
 
 
 def session_value(token: str) -> str:
@@ -155,13 +287,18 @@ class SecurityMiddleware:
             return
         path: str = scope.get("path", "")
         method: str = scope.get("method", "GET").upper()
+        headers = {k.decode("latin-1").lower(): v.decode("latin-1") for k, v in scope.get("headers", [])}
         if method in MUTATING and path.startswith("/api/") and not path.startswith(EXEMPT_PREFIXES):
-            headers = {k.decode("latin-1").lower(): v.decode("latin-1") for k, v in scope.get("headers", [])}
-            rejection = self._check(scope, path, headers)
+            rejection = self._check(scope, method, path, headers)
             if rejection is not None:
                 status, detail = rejection
                 await self._reject(send, status, detail)
                 return
+        # Hosted demo: a visitor without the token never sees a real inbox address in our JSON.
+        mask = (path.startswith("/api/") and not path.startswith(EXEMPT_PREFIXES) and token_required()
+                and not _authenticated(headers, _parse_cookies(headers.get("cookie", ""))))
+        held: dict = {}
+        chunks: list[bytes] = []
 
         async def send_nosniff(message: Message) -> None:
             if message["type"] == "http.response.start":
@@ -169,12 +306,27 @@ class SecurityMiddleware:
                 if not any(k.lower() == b"x-content-type-options" for k, _ in hdrs):
                     hdrs.append((b"x-content-type-options", b"nosniff"))
                 message["headers"] = hdrs
+                ctype = next((v for k, v in hdrs if k.lower() == b"content-type"), b"")
+                if mask and ctype.lower().startswith(b"application/json"):
+                    held["start"] = message  # sent with the rewritten body
+                    return
+            elif message["type"] == "http.response.body" and "start" in held:
+                chunks.append(message.get("body", b""))
+                if message.get("more_body"):
+                    return
+                body = mask_emails(b"".join(chunks))
+                start = held.pop("start")
+                start["headers"] = [(k, v) for k, v in start["headers"] if k.lower() != b"content-length"] + [
+                    (b"content-length", str(len(body)).encode())]
+                await send(start)
+                await send({"type": "http.response.body", "body": body})
+                return
             await send(message)
 
         await self.app(scope, receive, send_nosniff)
 
     @staticmethod
-    def _check(scope: Scope, path: str, headers: dict[str, str]) -> Optional[tuple[int, str]]:
+    def _check(scope: Scope, method: str, path: str, headers: dict[str, str]) -> Optional[tuple[int, str]]:
         origin = _origin(headers.get("origin")) or (None if headers.get("origin") else _origin(headers.get("referer")))
         if headers.get("origin") and origin is None:
             origin = "null"
@@ -186,7 +338,23 @@ class SecurityMiddleware:
         if token_required():
             if _authenticated(headers, _parse_cookies(headers.get("cookie", ""))):
                 return None
-            return 401, "admin token required - sign in on the dashboard or send Authorization: Bearer <token>"
+            s = get_settings()
+            model = public_post(method, path) if s.atelier_public_demo else None
+            if model is not None:  # hosted demo: a step with no outside effect
+                if (headers.get("content-type", "").lower().startswith("multipart/")
+                        and any(p.match(path) for p in _UPLOAD_POSTS)
+                        and uploads_bytes() >= s.atelier_public_uploads_max_mb * 1024 * 1024):
+                    return 503, ("Uploads are paused on the public demo (its storage limit is reached). The preset "
+                                 "mood boards still work; sign in to upload.")
+                if model:
+                    why = limiter.hit(visitor_ip(scope, headers), s.atelier_public_rate_per_visitor,
+                                      s.atelier_public_rate_total)
+                    if why:
+                        return 429, why
+                return None
+            return 401, ("admin token required - sign in on the dashboard or send Authorization: Bearer <token>. "
+                         "Visitors can try every step up to Approve; approving emails real suppliers and opens a "
+                         "real Shopify pre-order")
         client = scope.get("client")
         if client_is_local(client[0] if client else None):
             return None
@@ -194,7 +362,8 @@ class SecurityMiddleware:
 
     @staticmethod
     async def _reject(send: Send, status: int, detail: str) -> None:
-        body = json.dumps({"detail": detail, "auth": "required" if status == 401 else "forbidden"}).encode()
+        auth = {401: "required", 429: "rate_limited", 503: "paused"}.get(status, "forbidden")
+        body = json.dumps({"detail": detail, "auth": auth}).encode()
         await send({"type": "http.response.start", "status": status,
                     "headers": [(b"content-type", b"application/json"), (b"content-length", str(len(body)).encode()),
                                 (b"x-content-type-options", b"nosniff")]})

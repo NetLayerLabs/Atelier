@@ -268,6 +268,12 @@ def launch_share(hour: float, window_hours: float, p: float, q: float) -> float:
     return bass_cdf(h / 24.0, p, q) / bass_cdf(window_hours / 24.0, p, q)
 
 
+# The exact pmf table grows with the demand it describes. Review finding (17 Oct): a prior mean of 250,000 used 1.5 GB
+# in one request. 300,000 entries (~30 MB, well under a second) covers demand far beyond a small brand's runs; past it
+# the forecast is refused before anything is allocated.
+MAX_TABLE = 300_000
+
+
 class NegBinom:
     """Negative binomial NB(r, p) on k = 0, 1, …: pmf(k) = Γ(k+r)/(k! Γ(r)) p^r (1-p)^k. Exact pmf table."""
 
@@ -279,6 +285,9 @@ class NegBinom:
             mean = r * (1 - p) / p
             sd = math.sqrt(r * (1 - p)) / p
             kmax = int(mean + 14 * sd + 30)
+            if kmax > MAX_TABLE:
+                raise ValueError(f"demand this large ({mean:,.0f} units expected) is outside what the forecast "
+                                 "computes exactly - lower the prior mean, its uncertainty or the season multiplier")
             logp, log1p = r * math.log(p), math.log1p(-p)
             pmf, lp = [], logp
             for k in range(kmax + 1):

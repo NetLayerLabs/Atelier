@@ -23,7 +23,7 @@ import {
   Stepper,
   type StepperStep,
 } from "@/components/ds";
-import { errorMessage } from "@/lib/api";
+import { AUTH_CHANGED_EVENT, errorMessage } from "@/lib/api";
 import { getWorkspace, type SectionKey, type SectionStatus, type Workspace } from "@/lib/workspace";
 import { Header } from "../Header";
 import { BrandBookStep, GuardrailsStep, PricesStep, ProfileStep, SalesStep, SuppliersStep } from "./steps";
@@ -64,7 +64,12 @@ export function BrandWorkspace() {
     const sync = () => setStep(stepFromHash());
     sync();
     window.addEventListener("hashchange", sync);
-    return () => window.removeEventListener("hashchange", sync);
+    // Signed out, the API masks supplier emails; signing in re-reads the workspace so edits start from the real ones.
+    window.addEventListener(AUTH_CHANGED_EVENT, reload);
+    return () => {
+      window.removeEventListener("hashchange", sync);
+      window.removeEventListener(AUTH_CHANGED_EVENT, reload);
+    };
   }, [reload]);
 
   const go = (k: SectionKey) => {

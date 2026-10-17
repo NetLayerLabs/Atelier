@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { Fragment, useState } from "react";
+import { AUTH_REQUIRED_EVENT } from "@/lib/api";
 import { useAtelier } from "@/lib/store";
 import { DesignCard, SkeletonGrid } from "./Designs";
 import { AtelierThinking, AtelierTurn, DirectInput, DirectorBubble, HeardCard } from "./Direction";
@@ -26,6 +27,7 @@ import {
 import { EASE } from "./ds/tokens";
 import { ErrorNotice, scrollToId, SmartImage } from "./ui";
 import { useWorkspaceStatus } from "./workspace/WorkspaceGate";
+import { useAdminAuth } from "./AdminLogin";
 
 export function VibeStage() {
   const selectedId = useAtelier((s) => s.selectedId);
@@ -42,6 +44,7 @@ export function VibeStage() {
   const runRefine = useAtelier((s) => s.runRefine);
   const runDirect = useAtelier((s) => s.runDirect);
   const runApprove = useAtelier((s) => s.runApprove);
+  const auth = useAdminAuth(); // hosted demo: visitors can try everything up to here
 
   const [qty, setQty] = useState("300");
   const workspace = useWorkspaceStatus(); // v5: approve needs the brand's own data first
@@ -315,6 +318,18 @@ export function VibeStage() {
               >
                 {locked && approve.status !== "loading" ? "Approved" : "Approve for production"}
               </Button>
+              {auth?.required && !auth.signedIn && !locked && (
+                <p className="text-micro text-fg-muted">
+                  Approving emails real suppliers and opens a real Shopify pre-order, so it needs the admin token.{" "}
+                  <button
+                    type="button"
+                    className="underline underline-offset-2 hover:text-fg"
+                    onClick={() => window.dispatchEvent(new Event(AUTH_REQUIRED_EVENT))}
+                  >
+                    Sign in
+                  </button>
+                </p>
+              )}
             </div>
           </div>
         </Card>
