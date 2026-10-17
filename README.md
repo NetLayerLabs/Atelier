@@ -4,8 +4,9 @@ An AI agent for fashion brands: it reads a trend from a mood board, takes the de
 
 Built for the AMD Developer Hackathon: ACT III (Evolus Business Agents track and the "Reinvent Commerce" track).
 
-**Live:** https://atelier.38-49-213-208.sslip.io (anyone can look around; changes need the admin token, because
-approving a design emails real suppliers and creates a real Shopify product). Pilot brand: **UGO SARTORIA**, Igbo
+**Live:** https://atelier.netlayerlabs.com. Visitors can try every step up to Approve (read a mood board or a sketch
+with Gemma 4, customer voice, creative direction); approving a design emails real suppliers and creates a real
+Shopify product, so that and everything after it need the admin token. Pilot brand: **UGO SARTORIA**, Igbo
 menswear with Italian tailoring, in EUR; its mood boards are AI-generated inspiration and labelled so.
 
 **As deployed for the hackathon:** Gemma 4 (`Gemma-4-31B-IT`) on AMD GPUs through **AMD Token Factory** reads the
