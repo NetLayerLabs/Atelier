@@ -38,8 +38,8 @@ MessagesFn = Callable[[int, str], list[dict]]
 class BrainUnavailable(ServiceError):
     """No live path produced a valid answer (or none is configured)."""
 
-    def __init__(self, message: str, *, not_configured: bool = False):
-        super().__init__("brain", message, not_configured=not_configured)
+    def __init__(self, message: str, *, not_configured: bool = False, hint: Optional[str] = None):
+        super().__init__("brain", message, not_configured=not_configured, hint=hint)
 
 
 @dataclass
@@ -155,4 +155,7 @@ async def think_json(purpose: str, messages: MessagesFn, validate: Callable[[Any
     if not errors:
         raise BrainUnavailable("No brain connected - neither the Evolus agent nor AMD vLLM is configured",
                                not_configured=True)
-    raise BrainUnavailable("The brain failed: " + "; ".join(errors))
+    slow = all("timed out" in e for e in errors)  # configured and reachable, just slow: no setup hint
+    raise BrainUnavailable("The brain failed: " + "; ".join(errors),
+                           hint=("The model is slow right now (AMD Token Factory under load). Press Retry: the run "
+                                 "continues from this step.") if slow else None)
