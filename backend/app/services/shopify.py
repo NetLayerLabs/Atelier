@@ -570,6 +570,8 @@ class Order:
         return [x for x in self.lines if x.product_id == n and x.quantity > 0]
 
 
+# No `customer { … }`: that needs the read_customers scope (Shopify: "Access denied for customer field"); the buyer's
+# first name and city come from the shipping / billing address (protected customer data: Name, Address).
 ORDERS_QUERY = """
 query AtelierOrders($query: String!, $after: String) {
   orders(first: 100, after: $after, query: $query, sortKey: CREATED_AT) {
@@ -577,7 +579,6 @@ query AtelierOrders($query: String!, $after: String) {
     nodes {
       id name createdAt test cancelledAt
       currencyCode
-      customer { firstName }
       shippingAddress { firstName city }
       billingAddress { firstName city }
       lineItems(first: 50) {
