@@ -272,6 +272,9 @@ def launch_share(hour: float, window_hours: float, p: float, q: float) -> float:
 # in one request. 300,000 entries (~30 MB, well under a second) covers demand far beyond a small brand's runs; past it
 # the forecast is refused before anything is allocated.
 MAX_TABLE = 300_000
+# Observed pre-order units the forecast will take. Anything beyond it is not a small brand's pre-order window, and the
+# posterior tables it implies would exhaust memory (audit, 17 Oct: 20,000 orders x 10,000 units froze the server).
+MAX_OBSERVED_UNITS = 1_000_000
 
 
 class NegBinom:
@@ -437,6 +440,9 @@ def forecast(req: ForecastRequest, *, now: Optional[datetime] = None) -> Forecas
     )
     events = [(h, o) for h, o in events if h <= elapsed + 1e-9]
     U = sum(o.quantity for _, o in events)
+    if U > MAX_OBSERVED_UNITS:
+        raise ValueError(f"{U:,} pre-order units is outside what the forecast computes exactly (at most "
+                         f"{MAX_OBSERVED_UNITS:,}) - check the orders list")
     priced = [(o.unit_price, o.quantity) for _, o in events if o.unit_price is not None]
     avg_price = (sum(p * n for p, n in priced) / sum(n for _, n in priced)) if priced else None
 

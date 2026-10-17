@@ -219,3 +219,17 @@ def test_an_image_pillow_refuses_to_open_counts_as_too_large(hosted):
     with TestClient(app, client=VISITOR) as c:
         r = c.post("/api/trends/analyze", files=[("images", ("huge.png", buf.getvalue(), "image/png"))])
         assert r.status_code == 413
+
+
+def test_a_huge_orders_list_is_refused_before_it_allocates(s):
+    """Audit (17 Oct): 20,000 orders x 10,000 units each froze the local server (2 GB, swapping)."""
+    import time
+
+    orders = [{"timestamp": "2026-10-17T10:30:00Z", "quantity": 10_000} for _ in range(20_000)]
+    body = {"launchAt": "2026-10-17T10:00:00Z", "asOf": "2026-10-17T12:00:00Z", "orders": orders,
+            "economics": {"unitCost": 20, "retailPrice": 60}}
+    with TestClient(app, client=("127.0.0.1", 4000)) as local:
+        t = time.perf_counter()
+        r = local.post("/api/forecast", json=body)
+        assert r.status_code == 422 and "pre-order units" in r.json()["detail"]
+        assert time.perf_counter() - t < 5.0

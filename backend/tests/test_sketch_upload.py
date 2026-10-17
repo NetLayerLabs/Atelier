@@ -56,3 +56,28 @@ def test_sketch_reading_is_validated_not_invented():
     assert ok["garmentType"] == "jacket" and ok["details"] == ["notch lapel"] and ok["colors"] == ["#1F2A44"]
     with pytest.raises(ValueError):
         vision._validate_sketch({"garmentType": "hat", "description": ""})
+
+
+def test_direction_on_a_sketch_needs_no_diffusion(live, trend, reads_sketch, monkeypatch):
+    """Creative direction on the designer's own sketch: the brain interprets it and one directed child keeps the
+    sketch image (there is nothing to re-render), so the tech pack gets the direction."""
+    from app import config
+
+    monkeypatch.setattr(config.get_settings(), "amd_diffusion_endpoint", "")  # no diffusion server
+    r = live.post("/api/designs/upload", data={"trendId": trend["id"]},
+                  files={"file": ("sketch.png", tiny_png(), "image/png")})
+    sketch = r.json()["designs"][0]
+    d = live.post(f"/api/designs/{sketch['id']}/direct", json={"instruction": "three-quarter sleeves"})
+    assert d.status_code == 200, d.text
+    body = d.json()
+    assert body["direction"]["instruction"] == "three-quarter sleeves" and body["direction"]["interpretation"]
+    (child,) = body["designs"]
+    assert child["parentDesignId"] == sketch["id"] and child["imageUrl"] == sketch["imageUrl"]
+    assert child["source"] == "designer_upload" and child["sketchReading"] == sketch["sketchReading"]
+    assert child["directionId"] == body["direction"]["id"] and "three-quarter sleeves" in child["prompt"]
+    # the direction reaches the tech-pack brief
+    from app.services import direction as direction_svc
+    from app.store import store
+
+    brief = direction_svc.techpack_brief(store.designs[child["id"]])
+    assert brief and brief["directions"] == ["three-quarter sleeves"]

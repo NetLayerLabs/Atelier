@@ -7,6 +7,7 @@ import zlib
 
 from fastapi import APIRouter, HTTPException
 
+from ..config import get_settings
 from ..models import (Collection, CollectionLook, CollectionRequest, CreativeDirection, Design, DirectRequest,
                       DirectResponse)
 from ..services import collection as collection_svc
@@ -39,6 +40,16 @@ async def direct(design_id: str, req: DirectRequest) -> DirectResponse:
     eff = trend.model_copy(update={"color_palette": st.palette or trend.color_palette,
                                    "key_fabrics": st.fabrics or trend.key_fabrics})
     prompt = direction_svc.build_directed_prompt(eff, parent.garment_type, st)
+    if parent.source == "designer_upload" or not get_settings().diffusion_live:
+        # The designer's own sketch (or no diffusion server): nothing to re-render. The direction is applied to one
+        # child that keeps the sketch image, so the brain's interpretation reaches the tech pack (techpack_brief).
+        store.directions[d.id] = d
+        child = Design(id=new_id("dsn"), trend_id=trend.id, parent_design_id=parent.id, image_url=parent.image_url,
+                       prompt=f"{parent.prompt} Direction: {instruction}", garment_type=parent.garment_type,
+                       vibe=instruction, seed=parent.seed, direction_id=d.id, collection_id=parent.collection_id,
+                       source=parent.source, sketch_reading=parent.sketch_reading)
+        direction_svc.remember(child, base_seed, vibes, st)
+        return DirectResponse(direction=d, designs=[child])
     vh = zlib.crc32(instruction.lower().encode())
     seeds = [(parent.seed * 31 + vh + i * 7919) % 999_000 + 1000 for i in range(req.count)]
     ids = [new_id("dsn") for _ in range(req.count)]
