@@ -38,6 +38,7 @@ log = logging.getLogger("atelier.quotes")
 ENGINE_LABELS = {
     "evolus-extractor": "Evolus document extractor",
     "amd-llm": "AMD LLM (vLLM) over PDF text",
+    "evolus-agent": "Evolus agent (Gemma 4 on AMD) over PDF text",
     "amd-vlm": "AMD VLM (vLLM) over the image",
     "pdf-text-rules": "Local PDF text parser",
 }
@@ -440,11 +441,10 @@ def _supplier_in_text(text: str) -> Optional[dict]:
 
 
 async def _llm_extract(text: str) -> dict[str, Any]:
+    """The quote's fields read from its text by the AMD model: our own vLLM when connected, else the Evolus agent."""
     from .openai_compat import chat_json, make_client, resolve_model
 
     s = get_settings()
-    client = make_client(s.amd_vllm_endpoint, s.amd_vllm_api_key, min(s.atelier_llm_timeout, 60.0))
-    model = await resolve_model(client, s.amd_vllm_model)
     keys = ", ".join(ALIASES)
 
     def messages(attempt: int) -> list[dict]:
@@ -467,6 +467,14 @@ async def _llm_extract(text: str) -> dict[str, Any]:
             raise ValueError("expected an object")
         return fields
 
+    if not s.llm_live:  # the Evolus agent on the AMD model (no knowledge search: the document is the source)
+        from . import brain
+
+        thought = await brain.think_json("quote_extraction", lambda attempt, _context: messages(attempt), validate,
+                                         max_tokens=700, temperature=0.0)
+        return thought.value
+    client = make_client(s.amd_vllm_endpoint, s.amd_vllm_api_key, min(s.atelier_llm_timeout, 60.0))
+    model = await resolve_model(client, s.amd_vllm_model)
     return await chat_json(client, model, messages, validate, max_tokens=700, temperature=0.0,
                            purpose="quote_extraction", route="amd-llm")
 
@@ -671,18 +679,22 @@ async def extract(data: bytes, filename: str, content_type: str) -> dict[str, An
         raise text_error
     if is_pdf and not text:
         errors.append("the PDF has no text layer (scanned?)")
-    if text and s.llm_live:
+    if text and (s.llm_live or s.evolus_agent_live):
+        # The model reads the PDF's text: our own AMD vLLM when connected, else the Evolus agent on the same AMD
+        # model (the hackathon setup). The numbers are still checked against the text layer (QA M10).
+        engine = "amd-llm" if s.llm_live else "evolus-agent"
         try:
             values, confs = map_fields(await _llm_extract(text))
             if values.get("unitPrice") is not None:
                 rules = rules_extract(text)  # fill gaps the model left with what is literally in the text
                 for k, v in rules.items():
                     values.setdefault(k, v)
-                return {"values": values, "confs": confs, "engine": "amd-llm", "overall": None,
+                return {"values": values, "confs": confs, "engine": engine, "overall": None,
                         "errors": errors, "text": text}
+            errors.append(f"{ENGINE_LABELS[engine]} found no unit price")
         except Exception as e:  # noqa: BLE001
-            log.warning("FALLBACK quote extraction: AMD LLM failed: %s", e)
-            errors.append(f"AMD LLM: {e}"[:200])
+            log.warning("FALLBACK quote extraction: %s failed: %s", engine, e)
+            errors.append(f"{ENGINE_LABELS[engine]}: {e}"[:200])
     if not is_pdf and content_type.startswith("image/") and s.vision_live:
         try:
             values, confs = map_fields(await _vlm_extract(data, content_type))
