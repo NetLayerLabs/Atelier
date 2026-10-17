@@ -44,9 +44,13 @@ export function Architecture() {
 
           <div className="flex flex-col gap-3">
             <Group title="AMD models" sub={<GpuLabel />}>
-              <LlmBackup />
+              <IfConnected name="llm">
+                <Service name="llm" fallback="LLM" role="Direct backup for the agent: tech pack, direction, RFQs" />
+              </IfConnected>
               <Service name="vision" fallback="Vision-language model" role="Reads the trend from the mood board" />
-              <Service name="diffusion" fallback="Diffusion model" role="Concept and variation renders" />
+              <IfConnected name="diffusion">
+                <Service name="diffusion" fallback="Diffusion model" role="Concept and variation renders" />
+              </IfConnected>
             </Group>
             <Group title="Evolus" sub="Driven through the Evolus API">
               <Service name="evolus_agent" title="Agent · the brain" role="Runs on the AMD model, grounded in a knowledge library (brand book, supplier catalogue)" />
@@ -130,12 +134,11 @@ function Group({ title, sub, children }: { title: string; sub: ReactNode; childr
   );
 }
 
-/** The direct vLLM path is a backup for the Evolus agent: shown only while it is actually connected. */
-function LlmBackup() {
+/** Optional parts (the direct vLLM backup, the diffusion server) are listed only while they are connected. */
+function IfConnected({ name, children }: { name: string; children: ReactNode }) {
   const health = useHealth((s) => s.health);
-  const svc = health.kind === "ok" ? health.data.services.find((s) => s.name === "llm") : undefined;
-  if (svc?.status !== "connected") return null;
-  return <Service name="llm" fallback="LLM" role="Direct backup for the agent: tech pack, direction, RFQs" />;
+  const svc = health.kind === "ok" ? health.data.services.find((s) => s.name === name) : undefined;
+  return svc?.status === "connected" ? <>{children}</> : null;
 }
 
 function Service({ name, title, fallback, role }: { name: string; title?: string; fallback?: string; role: string }) {

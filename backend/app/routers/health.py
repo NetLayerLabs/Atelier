@@ -130,6 +130,10 @@ def _mark_optional(services: list[ServiceStatus]) -> None:
             x.optional = True
             x.detail = ("Optional - the brain already runs through the Evolus agent. This direct path is a backup "
                         "for our own AMD vLLM droplet.")
+        elif x.name == "diffusion" and "vision" in up:
+            x.optional = True
+            x.detail = ("Optional - designs start from the designer's own sketch, read by the vision model. An image "
+                        "model on an AMD GPU droplet would add four AI concept renders per trend.")
         elif x.name == "evolus_shopify" and "shopify" in up:
             x.optional = True
             x.detail = "Optional - Atelier already publishes pre-orders through the Shopify Admin API directly."

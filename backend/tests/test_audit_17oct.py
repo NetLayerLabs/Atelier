@@ -174,3 +174,20 @@ def test_rejected_input_does_not_use_a_model_call():
         assert lim.hit("203.0.113.9", 15, 120) is None
         lim.refund("203.0.113.9")
     assert lim.hit("203.0.113.9", 15, 120) is None  # 15 refunded rejections later, still within the limit
+
+
+# 8. Without a diffusion server the design starts from the sketch: diffusion is optional, not "missing".
+#    (_mark_optional only trusts REAL connected services, so this builds the statuses directly.)
+def test_diffusion_is_optional_while_the_sketch_path_works():
+    from app.models import ServiceStatus
+    from app.routers.health import _mark_optional
+
+    def svc(name, status):
+        return ServiceStatus(name=name, status=status, healthy=status == "connected")
+
+    services = [svc("vision", "connected"), svc("diffusion", "not_configured")]
+    _mark_optional(services)
+    assert services[1].optional is True and "sketch" in services[1].detail
+    no_vision = [svc("vision", "not_configured"), svc("diffusion", "not_configured")]
+    _mark_optional(no_vision)
+    assert no_vision[1].optional is False  # without the vision model there is no sketch path either
