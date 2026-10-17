@@ -111,7 +111,8 @@ export function DesignCard({
         )}
         {parentLabel && (
           <span className="truncate text-micro text-fg-faint">
-            {design.directionId ? "Directed" : "Refined"} from Look {parentLabel}
+            {design.directionId ? "Directed" : "Refined"} from {design.source === "designer_upload" ? "Sketch" : "Look"}{" "}
+            {parentLabel}
           </span>
         )}
       </div>
@@ -145,16 +146,20 @@ export function SkeletonGrid({ count = 4, label }: { count?: number; label: stri
 /** Chapter II: a toggle between four concepts of one garment and a whole collection (v2). */
 export function IdeationStage() {
   const mode = useAtelier((s) => s.ideationMode);
+  // Concepts vs collection only matters with a diffusion server; on the sketch path the toggle would mislead.
+  const sketchLeads = useAtelier((s) => s.sketchOpen && s.generate.status === "idle" && s.collectionGen.status === "idle");
   return (
     <div>
-      <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <IdeationToggle />
-        <p className="text-small text-fg-muted">
-          {mode === "concepts"
-            ? "Four variations of one garment."
-            : "Different pieces sharing one palette, fabric story and name."}
-        </p>
-      </div>
+      {!sketchLeads && (
+        <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <IdeationToggle />
+          <p className="text-small text-fg-muted">
+            {mode === "concepts"
+              ? "Four variations of one garment."
+              : "Different pieces sharing one palette, fabric story and name."}
+          </p>
+        </div>
+      )}
       {mode === "concepts" ? <ConceptsStage /> : <CollectionStage />}
     </div>
   );

@@ -84,7 +84,9 @@ export function VibeStage() {
               <GarmentTag tone="ink" code={design.garmentType}>
                 Look {label}
               </GarmentTag>
-              <span className="font-mono text-micro text-fg-faint tabular">seed {design.seed}</span>
+              <span className="font-mono text-micro text-fg-faint tabular">
+                {design.source === "designer_upload" ? "your sketch" : `seed ${design.seed}`}
+              </span>
             </div>
             {collection && (
               <p className="mt-3 text-small text-fg-muted">
@@ -113,7 +115,7 @@ export function VibeStage() {
             <Disclosure
               variant="row"
               className="mt-3 border-b-0 border-t border-line"
-              title={<span className="text-small">Diffusion prompt</span>}
+              title={<span className="text-small">{design.source === "designer_upload" ? "What the model read" : "Diffusion prompt"}</span>}
             >
               <p className="font-mono text-micro leading-relaxed break-words text-fg-muted">{design.prompt}</p>
             </Disclosure>
@@ -158,7 +160,8 @@ export function VibeStage() {
                         <HeardCard direction={d} parentLabel={from} />
                       ) : (
                         <div className="rounded-[24px] rounded-bl-lg bg-paper-2 px-4 py-3 text-body text-fg">
-                          Refined Look {from ?? "-"} into {r.designIds.length} variations.
+                          Refined Look {from ?? "-"} into {r.designIds.length}{" "}
+                          {r.designIds.length === 1 ? "variation" : "variations"}.
                         </div>
                       )}
                       <button
@@ -167,7 +170,7 @@ export function VibeStage() {
                         className="mt-2 inline-flex items-center gap-1.5 rounded-full px-2 py-1 text-micro text-fg-muted hover:bg-paper-2 hover:text-fg"
                       >
                         <IconArrowDown size={12} />
-                        {r.designIds.length} variations below
+                        {r.designIds.length === 1 ? "The directed design below" : `${r.designIds.length} variations below`}
                       </button>
                     </div>
                   </AtelierTurn>

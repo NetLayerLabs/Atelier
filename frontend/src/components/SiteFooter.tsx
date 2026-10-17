@@ -24,7 +24,7 @@ const COLUMNS: { title: string; links: FooterLink[] }[] = [
   {
     title: "Powered by",
     links: [
-      { label: "AMD Developer Cloud", href: "https://www.amd.com/en/developer/resources/cloud-access/amd-developer-cloud.html" },
+      { label: "AMD GPUs (AMD AI Developer Program)", href: "https://www.amd.com/en/developer.html" },
       { label: "Gemma 4 by Google", href: "https://deepmind.google/models/gemma/" },
       { label: "Evolus", href: "https://evolus.ai" },
       { label: "Shopify", href: "https://www.shopify.com" },

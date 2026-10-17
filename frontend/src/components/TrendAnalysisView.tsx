@@ -68,8 +68,9 @@ export function TrendAnalysisView({ trend }: { trend: TrendAnalysis }) {
 
           {trend.sourceImageUrls.length > 0 && (
             <div className="relative mt-10">
-              <div className="mb-3 flex items-baseline justify-between gap-3">
+              <div className="mb-3 flex flex-wrap items-baseline justify-between gap-3">
                 <Label>What the model read · {trend.sourceImageUrls.length} references</Label>
+                {trend.sourceImages?.some((im) => im.aiGenerated) && <Chip>AI-generated inspiration</Chip>}
               </div>
               <ul className="grid grid-cols-3 gap-2 sm:grid-cols-6">
                 {trend.sourceImageUrls.slice(0, 6).map((u, i) => (

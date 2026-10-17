@@ -32,8 +32,11 @@ async def login(req: LoginRequest, request: Request, response: Response) -> Secu
     if not hmac.compare_digest(req.token.strip().encode(), token.encode()):
         await asyncio.sleep(0.4)  # slows down guessing
         raise HTTPException(401, "wrong admin token")
+    # Behind nginx the backend sees plain http; the public URL (PUBLIC_BASE_URL) or X-Forwarded-Proto says https.
+    https = (request.url.scheme == "https" or request.headers.get("x-forwarded-proto", "").lower() == "https"
+             or get_settings().public_base_url.lower().startswith("https://"))
     response.set_cookie(security.SESSION_COOKIE, security.session_value(token), max_age=12 * 3600, httponly=True,
-                        samesite="lax", secure=request.url.scheme == "https", path="/")
+                        samesite="lax", secure=https, path="/")
     out = SecuritySummary.model_validate(security.summary(request))
     out.authenticated = True
     return out

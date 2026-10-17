@@ -15,12 +15,12 @@ export const CHAPTERS = [
   },
   {
     numeral: "II",
-    title: "Four concepts",
-    short: "Concepts",
+    title: "The design",
+    short: "Design",
     kicker: "Generative ideation",
-    human: "Asks for four concepts, or a small capsule collection.",
-    agent: "Writes the image prompts from the trend and renders the garments on the diffusion server.",
-    artifact: "Four seeded concept renders",
+    human: "Uploads their own sketch or photo - or asks for four concepts when a diffusion server is connected.",
+    agent: "Reads the sketch with Gemma 4 on AMD (collar, closure, details) into the tech-pack brief; renders concepts on the diffusion server when one is connected.",
+    artifact: "The designer's sketch, read into a brief - or four seeded concept renders",
   },
   {
     numeral: "III",
@@ -62,7 +62,7 @@ export const AGENTS: AgentInfo[] = [
     input: "The approved design, its trend read and the creative direction",
     output:
       "Bill of materials, measurements, construction notes, colourway, costing and retail price, validated against a schema",
-    engine: "An Evolus agent on the AMD vLLM model, grounded in the brand book - or AMD vLLM directly",
+    engine: "An Evolus agent on the AMD-hosted open model (Gemma 4), grounded in the brand book - or our own vLLM directly",
     services: ["evolus_agent", "llm"],
   },
   {

@@ -10,7 +10,7 @@ from .models import Collection, CreativeDirection, Design, PipelineRun, TrendAna
 
 
 def new_id(prefix: str) -> str:
-    return f"{prefix}_{secrets.token_hex(3)}"
+    return f"{prefix}_{secrets.token_hex(6)}"  # 48 bits: an id is also the capability to read a run
 
 
 @dataclass

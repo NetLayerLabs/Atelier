@@ -9,16 +9,17 @@ with Gemma 4, customer voice, creative direction); approving a design emails rea
 Shopify product, so that and everything after it need the admin token. Pilot brand: **UGO SARTORIA**, Igbo
 menswear with Italian tailoring, in EUR; its mood boards are AI-generated inspiration and labelled so.
 
-**As deployed for the hackathon:** Gemma 4 (`Gemma-4-31B-IT`) on AMD GPUs through **AMD Token Factory** reads the
-mood boards and the designer's sketches and is the model behind the Evolus agent (registered in the Evolus event
-workspace as our own model). Evolus building blocks used through the API: the agent, a knowledge library holding the
-brand book, a document extractor for supplier quotes, and two email workflows (RFQs, purchase orders). The
-self-hosted path below (our own vLLM + FLUX on an MI300X) is in `deploy/`.
+**As deployed for the hackathon:** one open model, **Gemma 4** (`Gemma-4-31B-IT`, Google), on AMD GPUs through
+**AMD Token Factory**. It reads the mood boards and the designer's sketches (vision) and is the model behind the
+Evolus agent (registered in the Evolus event workspace as our own model). Evolus building blocks used through the
+API: the agent, a knowledge library holding the brand book, a document extractor for supplier quotes, and two email
+workflows (RFQs, purchase orders). The UI only names the model and GPU a connected endpoint actually reports in
+`/api/health` — it never claims hardware it can't verify.
 
-**One open model on AMD.** By default a single model, **Gemma 4** (`google/gemma-4-26B-A4B-it`, Google, Apache-2.0),
-served by our own vLLM on an **AMD Instinct MI300X** (AMD Developer Cloud), is the agent's brain, its vision model
-and the Evolus workspace model. FLUX.1-schnell on the same GPU renders the concepts. The UI only names the model a
-connected endpoint actually reports in `/api/health` — it never claims Gemma when another model is served.
+**Diffusion concepts are optional.** Concept renders need a diffusion server on our own AMD GPU (`deploy/`: vLLM
+for Gemma 4 and FLUX.1-schnell on an AMD Instinct MI300X, AMD Developer Cloud). Without one, the "Generate four
+concepts" and "Compose a collection" buttons are not offered: the designer uploads their own sketch or photo, Gemma 4
+reads it (collar, closure, pockets, details), and that reading goes into the tech pack.
 
 **It runs on a real brand's data.** Nothing brand-specific is built in: the brand profile, brand book, supplier
 directory, material price list, guardrails and (optionally) past sales are imported in the **Brand workspace**
@@ -38,8 +39,9 @@ brand sets for a pilot). What to ask a pilot brand for: [docs/PILOT_DATA.md](doc
 Opens the dashboard at http://localhost:3100 and the API at http://localhost:8787 (docs at `/docs`).
 Requires `uv` and `pnpm`. Ports can be changed with `BACKEND_PORT` / `FRONTEND_PORT`.
 
-**Nothing is mocked.** Every concept, tech pack, RFQ, quote, order and purchase order comes from a real service:
-the AMD-hosted models (vision, diffusion, the LLM), the Evolus agent and workflows, and a Shopify store. A service
+**Nothing is mocked.** Every trend read, sketch reading, concept, tech pack, RFQ, quote, order and purchase order
+comes from a real service: the AMD-hosted model (and a diffusion server when one is connected), the Evolus agent
+and workflows, and a Shopify store. A service
 that isn't configured shows **not connected** in the header with the variable to set; the features that need it show
 an honest error with a retry, never made-up output. With no `.env` at all the app runs and tells you what to connect.
 **Inference** in the header opens per-call stats (model, GPU, tokens/sec, latency) once real calls have happened.
@@ -81,10 +83,11 @@ newsvendor, no language model). Its assumptions are labelled model parameters yo
 past launches.
 
 To go live:
-- [docs/AMD_SETUP.md](docs/AMD_SETUP.md): Gemma 4 on vLLM (text + vision, one server) and FLUX diffusion on AMD
+- [docs/AMD_SETUP.md](docs/AMD_SETUP.md): AMD Token Factory (the hackathon setup: `AMD_VISION_ENDPOINT` +
+  `AMD_TOKEN_FACTORY_KEY`), or your own vLLM for Gemma 4 (text + vision, one server) plus FLUX diffusion on AMD
   Developer Cloud. The scripts are in [deploy/](deploy/).
 - [docs/EVOLUS_SETUP.md](docs/EVOLUS_SETUP.md): the Evolus workspace.
-  - **The brain** is an Evolus agent running on our AMD vLLM model (Gemma 4, connected as the workspace model), grounded in a knowledge library: the brand book
+  - **The brain** is an Evolus agent running on our AMD-hosted model (Gemma 4, connected as the workspace model), grounded in a knowledge library: the brand book
     the brand uploads in the Brand workspace, plus a supplier catalogue and brand profile generated from it.
   - **Quotes** are read by a document extractor.
   - **Workflows** handle outreach, inbound email and (optionally) the Shopify listing.
@@ -145,7 +148,7 @@ arg (`http://localhost:$BACKEND_PORT`). The backend URL is fixed per build: chan
 
 ## Layout
 
-- [backend/](backend/) — FastAPI orchestrator: vision, diffusion, LLM, Evolus and Shopify adapters (real services only)
+- [backend/](backend/) — FastAPI orchestrator: vision, LLM, diffusion, Evolus and Shopify adapters (real services only)
 - [frontend/](frontend/) — Next.js Creative Director Dashboard
 - [CONTRACT.md](CONTRACT.md) — the API contract between them
 - [PROJECT_SPEC.md](PROJECT_SPEC.md), [ARCHITECTURE.md](ARCHITECTURE.md) — original plan
@@ -153,6 +156,6 @@ arg (`http://localhost:$BACKEND_PORT`). The backend URL is fixed per build: chan
 ## Tests
 
 ```bash
-cd backend && uv run pytest -q
-cd frontend && pnpm lint && pnpm build
+(cd backend && uv run pytest -q)
+(cd frontend && pnpm lint && pnpm build)
 ```

@@ -18,8 +18,10 @@ Because everything is live, the stage fallback is **a pre-recorded video of a li
       production build of the frontend: `cd frontend && pnpm build && pnpm start`. The hosted copy
       (`deploy/vps/deploy.sh`) needs the admin token to change anything: sign in on the dashboard first.
 - [ ] Connect everything and check it:
-      - AMD: vLLM, the VLM and the diffusion server (`backend/scripts/check_amd.py`), `AMD_GPU_LABEL` set to what
-        `rocm-smi` really shows.
+      - AMD: Token Factory (vision + the Evolus agent's model) with `backend/scripts/check_amd.py --only vision`;
+        `AMD_GPU_LABEL` set to what is really behind it ("AMD GPUs (AMD Token Factory)", or the droplet's
+        `rocm-smi` output when our own vLLM / diffusion server runs). Without a diffusion server the studio offers
+        "Start from my sketch" instead of concepts - have a photo of a real hand drawing ready.
       - Evolus: agent (brain), extractor, outreach workflow, the PO workflow (`EVOLUS_PO_WORKFLOW_ID`, or the
         outreach one), and the inbound-email workflow if quotes will arrive by email (`check_evolus.py --quote-pdf
         <a real quote>`).
@@ -101,7 +103,7 @@ Timings depend on the models and on the people in the room; rehearse to know you
 | 14 | **Pause: pre-orders** | The QR code; the tour waits: *"Waiting for a real pre-order — scan the QR code"* | "This is a real Shopify pre-order. Scan the code, pay with the test card. For the stage, the PO unlocks at five pre-orders; the production plan is on screen." |
 | 15 | Purchase order | *Production unlocked*, PO-000NN sent via the Evolus workflow | "Demand is validated, and the purchase order — numbered from our own sequence — goes to the mill through Evolus." |
 | 16 | Forecast | How many to make, with the maths and its assumptions | "And how many to make: the maths is shown, and the assumptions are labelled and editable — fitted to our own past launches." |
-| 17 | Inference | The Inference panel | "Every model call is measured: model, GPU, tokens per second." |
+| 17 | Inference | The Inference panel | "Every model call is measured: model, host, GPU and latency." (Token Factory does not stream, so there is no tokens-per-second figure for it; say "latency".) |
 | 18 | Tech pack PDF | *Download PDF* | "And the factory gets the tech pack PDF. From a mood board to a purchase order, and the agent knew when to hand the call to a person." |
 
 **Close:** "The creative director keeps the taste and the agents do the rest. Thank you."

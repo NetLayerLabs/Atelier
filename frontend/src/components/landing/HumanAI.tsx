@@ -63,8 +63,9 @@ export function HumanAI() {
             ))}
           </dl>
           <p className="mt-8 text-micro text-pretty text-fg-faint">
-            The brain (an Evolus agent or AMD vLLM) interprets the instruction; the diffusion model renders four
-            directed variations. If either is not connected, chapter III says so instead of showing a result.
+            The brain (an Evolus agent on the AMD model) interprets the instruction and carries it into the tech
+            pack. With a diffusion server connected it also renders four directed variations; without one, your own
+            sketch stays the design. If the brain is not connected, chapter III says so instead of showing a result.
           </p>
         </Reveal>
 

@@ -18,6 +18,7 @@
 import { useEffect, useRef } from "react";
 import { create } from "zustand";
 import { errorHint, errorMessage, getPresets, getRfqRecipients, negotiateDecision, type PipelineRun } from "./api";
+import { useHealth } from "./health";
 import { useAtelier, type AsyncState } from "./store";
 import { useVoice } from "./voice";
 import { getWorkspaceStatus, type WorkspaceStatus } from "./workspace";
@@ -29,8 +30,16 @@ import { getWorkspaceStatus, type WorkspaceStatus } from "./workspace";
  * sets the run size and presses Approve. Everything after approval comes from the real services and from real people
  * (mills, shoppers); the tour waits for them.
  */
-export const DEMO_PRESET = "max-azria-fw2010";
-export const DEMO_DIRECTION = "make it darker, cropped, more Margiela";
+export const DEMO_PRESET = "ugo-sartoria-senator";
+export const DEMO_DIRECTION = "three-quarter sleeves, and gold thread on the collar";
+/** A drawn senator-tunic sketch (frontend/public/demo): the designer's own design when no diffusion server renders. */
+const DEMO_SKETCH = { url: "/demo/senator-tunic-sketch.jpg", name: "senator-tunic-sketch.jpg", note: "keep the half placket" };
+
+/** Is the diffusion server connected right now (concepts) - else the tour goes in through the designer's sketch. */
+function diffusionLive(): boolean {
+  const h = useHealth.getState().health;
+  return h.kind === "ok" && h.data.services.some((s) => s.name === "diffusion" && s.status === "connected" && !s.fake);
+}
 const DEMO_VOICE_SAMPLE = "knits";
 
 const TICK_MS = 100;
@@ -288,7 +297,7 @@ export class DemoEngine {
   }
 
   openInference() {
-    const b = el<HTMLButtonElement>('button[title="Inference stats"]');
+    const b = el<HTMLButtonElement>('button[title^="Inference stats"]');
     if (!b) return;
     b.click();
     this.openedInference = true;
@@ -513,6 +522,11 @@ const BEATS: Beat[] = [
         return a.status === "done" && a.trendId === trendId;
       };
       if (!applied() && useVoice.getState().selected.length > 0) {
+        const applyBtn = el<HTMLButtonElement>('[data-demo="voice-apply"]');
+        if (applyBtn?.disabled) {
+          d.spotlight(undefined);
+          return; // hosted visitor: applying needs the admin token; the tour shows the evidence and moves on
+        }
         d.spotlight('[data-demo="voice-apply"]');
         await d.hold(1_200, { skippable: false });
         await d.click('[data-demo="voice-apply"]', () => useVoice.getState().applyTo(trendId));
@@ -524,30 +538,50 @@ const BEATS: Beat[] = [
   },
   {
     id: "concepts",
-    label: "Concepts",
-    caption: "Four garment concepts, rendered from the trend on the diffusion model.",
+    label: "The design",
+    caption: "The designer's own sketch, read by Gemma 4 on AMD - or four concepts from the diffusion model when one is connected.",
     run: async (d) => {
       const a = atelier();
-      if (a.generate.status !== "done" && a.generate.status !== "loading") {
-        await d.click('[data-demo="generate"]', () => atelier().runGenerate());
+      if (diffusionLive()) {
+        if (a.generate.status !== "done" && a.generate.status !== "loading") {
+          await d.click('[data-demo="generate"]', () => atelier().runGenerate());
+        }
+        await d.waitFor(() => atelier().generate.status === "done", {
+          timeout: 180_000,
+          fail: () => failed(atelier().generate),
+          what: "the concepts",
+        });
+      } else {
+        if (a.upload.status !== "done" && a.upload.status !== "loading") {
+          // No diffusion server: start from the designer's sketch (a drawn demo sketch, uploaded like a photo).
+          await d.click('[data-demo="sketch"]', () => atelier().openSketch());
+          await d.waitFor(() => el('[data-demo="sketch-upload"]'), { what: "the sketch upload" });
+          await d.scrollTo('[data-demo="sketch-upload"]', { block: "center" });
+          d.spotlight('[data-demo="sketch-upload"]');
+          await d.hold(1_500);
+          const blob = await (await fetch(DEMO_SKETCH.url)).blob();
+          const file = new File([blob], DEMO_SKETCH.name, { type: blob.type || "image/jpeg" });
+          d.spotlight(undefined);
+          void atelier().runUpload(file, DEMO_SKETCH.note);
+        }
+        await d.waitFor(() => atelier().upload.status === "done", {
+          timeout: 180_000,
+          fail: () => failed(atelier().upload),
+          what: "the sketch reading",
+        });
       }
-      await d.waitFor(() => atelier().generate.status === "done", {
-        timeout: 180_000,
-        fail: () => failed(atelier().generate),
-        what: "the concepts",
-      });
       await d.scrollTo("#chapter-ideation");
       await d.hold(5_000);
     },
   },
   {
     id: "pick",
-    label: "Pick a concept",
-    caption: "The human keeps the taste: pick the concept that speaks to you.",
+    label: "Pick a design",
+    caption: "The human keeps the taste: pick the design that speaks to you.",
     run: async (d) => {
-      const round = atelier().rounds.filter((r) => r.kind === "generate").at(-1);
+      const round = atelier().rounds.filter((r) => r.kind === (diffusionLive() ? "generate" : "upload")).at(-1);
       const id = round?.designIds[0];
-      if (!id) throw new Error("No concepts to pick from.");
+      if (!id) throw new Error("No designs to pick from.");
       const sel = `button[aria-label="Select concept No. ${atelier().labels[id]}"]`;
       d.spotlight(sel);
       await d.hold(1_600);
@@ -595,11 +629,11 @@ const BEATS: Beat[] = [
   {
     id: "variation",
     label: "Pick a variation",
-    caption: "Four directed variations. Choose the strongest one.",
+    caption: "The directed design (four rendered variations when a diffusion server is connected). Choose the strongest.",
     run: async (d) => {
       const round = atelier().rounds.filter((r) => r.kind === "direct").at(-1);
       const id = round?.designIds[0];
-      if (!id) throw new Error("No variations to pick from.");
+      if (!id) throw new Error("No directed design to pick.");
       const sel = `button[aria-label="Select concept No. ${atelier().labels[id]}"]`;
       await d.scrollTo(sel, { block: "center" });
       d.spotlight(sel);

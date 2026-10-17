@@ -60,6 +60,8 @@ interface AtelierState {
 
   analyzeInput?: AnalyzeInput;
   analyzePreviews: string[];
+  /** The picked board is the brand's own AI-generated inspiration (labelled while it is analysed). */
+  analyzeAiGenerated: boolean;
   analyze: AsyncState;
   trend?: TrendAnalysis;
 
@@ -84,7 +86,7 @@ interface AtelierState {
   poll: AsyncState;
 
   setBackendDown: (down: boolean) => void;
-  runAnalyze: (input: AnalyzeInput, previews?: string[]) => Promise<void>;
+  runAnalyze: (input: AnalyzeInput, previews?: string[], aiGenerated?: boolean) => Promise<void>;
   retryAnalyze: () => Promise<void>;
   runGenerate: () => Promise<void>;
   /** The designer's own sketch as a concept (read by the vision model). */
@@ -112,6 +114,7 @@ const initial = {
   backendDown: false,
   analyzeInput: undefined,
   analyzePreviews: [] as string[],
+  analyzeAiGenerated: false,
   analyze: { status: "idle" as Status },
   trend: undefined,
   generate: { status: "idle" as Status },
@@ -218,10 +221,11 @@ export const useAtelier = create<AtelierState>((set, get) => {
 
     setBackendDown: (down) => set({ backendDown: down }),
 
-    runAnalyze: async (input, previews = []) => {
+    runAnalyze: async (input, previews = [], aiGenerated = false) => {
       clearTimeout(pollTimer);
       set((s) => ({
         ...initial,
+        analyzeAiGenerated: aiGenerated,
         backendDown: s.backendDown,
         session: s.session + 1,
         analyzeInput: input,

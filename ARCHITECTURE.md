@@ -1,3 +1,5 @@
+> **Historical document (12 Oct 2026).** The original architecture plan (Llama-3 / LLaVA on vLLM). The shipped stack: Gemma 4 on AMD Token Factory for vision and as the Evolus agent's model; see README.md and CONTRACT.md for what runs.
+
 # Atelier: Technical Architecture & Build Guide
 
 This document contains the deeply technical, granular details required to build the Atelier application. Pass this context directly into Claude Code to accelerate the implementation.

@@ -164,7 +164,7 @@ export function StatusStrip({ className }: { className?: string }) {
 
   let summary: string;
   if (health.kind === "checking") summary = "Checking services…";
-  else if (health.kind === "down") summary = "Backend offline - start it with ./dev.sh";
+  else if (health.kind === "down") summary = "Backend offline - reconnecting";
   else if (health.kind === "error") summary = "Health check failed";
   else summary = `${connected}/${counted.length} connected`;
 

@@ -2,6 +2,7 @@
 
 import { MotionConfig } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
+import { useHealth } from "@/lib/health";
 import { useAtelier } from "@/lib/store";
 import { BackendBanner } from "./BackendBanner";
 import { CustomerVoice } from "./CustomerVoice";
@@ -34,6 +35,7 @@ export function Dashboard() {
   const analyze = useAtelier((s) => s.analyze);
   const analyzeInput = useAtelier((s) => s.analyzeInput);
   const analyzePreviews = useAtelier((s) => s.analyzePreviews);
+  const analyzeAiGenerated = useAtelier((s) => s.analyzeAiGenerated);
   const trend = useAtelier((s) => s.trend);
   const generate = useAtelier((s) => s.generate);
   const selectedId = useAtelier((s) => s.selectedId);
@@ -49,6 +51,10 @@ export function Dashboard() {
   const [chooseAnother, setChooseAnother] = useState(false);
 
   const sketchOpen = useAtelier((s) => s.sketchOpen);
+  // Concepts and collections need the diffusion server; without one the designer's sketch is the way in.
+  const diffusionLive = useHealth((s) =>
+    s.health.kind === "ok" && s.health.data.services.some((x) => x.name === "diffusion" && x.status === "connected" && !x.fake),
+  );
   const openSketch = useAtelier((s) => s.openSketch);
   const showIdeation = generate.status !== "idle" || collectionGen.status !== "idle" || sketchOpen;
   const showVibe = !!selectedId;
@@ -77,28 +83,42 @@ export function Dashboard() {
 
         <Chapter id="chapter-trend" numeral="I" kicker="Trend ingestion" title="The signal">
           {analyze.status === "loading" ? (
-            <Analysing input={analyzeInput} previewUrls={analyzePreviews} />
+            <Analysing input={analyzeInput} previewUrls={analyzePreviews} aiGenerated={analyzeAiGenerated} />
           ) : analyze.status === "done" && trend && !chooseAnother ? (
             <div>
               <TrendAnalysisView trend={trend} />
               <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
                 {!showIdeation && (
                   <>
-                    <Button
-                      onClick={runGenerate}
-                      size="lg"
-                      data-demo="generate"
-                      trailing={<IconArrowRight size={16} />}
-                      trailingBadge
-                    >
-                      Generate four concepts
-                    </Button>
-                    <Button variant="secondary" size="lg" onClick={openSketch} data-demo="sketch">
-                      Start from my sketch
-                    </Button>
-                    <Button variant="ghost" size="lg" onClick={() => runCollection(4)}>
-                      Compose a collection
-                    </Button>
+                    {diffusionLive ? (
+                      <>
+                        <Button
+                          onClick={runGenerate}
+                          size="lg"
+                          data-demo="generate"
+                          trailing={<IconArrowRight size={16} />}
+                          trailingBadge
+                        >
+                          Generate four concepts
+                        </Button>
+                        <Button variant="secondary" size="lg" onClick={openSketch} data-demo="sketch">
+                          Start from my sketch
+                        </Button>
+                        <Button variant="ghost" size="lg" onClick={() => runCollection(4)}>
+                          Compose a collection
+                        </Button>
+                      </>
+                    ) : (
+                      <Button
+                        onClick={openSketch}
+                        size="lg"
+                        data-demo="sketch"
+                        trailing={<IconArrowRight size={16} />}
+                        trailingBadge
+                      >
+                        Start from my sketch
+                      </Button>
+                    )}
                   </>
                 )}
                 <Button variant="ghost" icon={<IconRefresh size={15} />} onClick={() => setChooseAnother(true)}>

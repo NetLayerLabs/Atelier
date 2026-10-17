@@ -39,6 +39,7 @@ import {
 import { cx, DUR, EASE } from "./ds/tokens";
 import { RouteTag } from "./Inference";
 import { ErrorNotice } from "./ui";
+import { useAdminAuth } from "./AdminLogin";
 
 const ACCEPT = ".csv,.tsv,.txt,.pdf,text/csv,text/tab-separated-values,application/pdf";
 const MAX_MB = 10;
@@ -694,6 +695,8 @@ function ApplyBar() {
   const selected = useVoice((s) => s.selected);
   const apply = useVoice((s) => s.apply);
   const applyTo = useVoice((s) => s.applyTo);
+  const auth = useAdminAuth();
+  const visitor = !!auth?.required && !auth.signedIn; // hosted demo: applying changes the design an admin approves
 
   // Pending or already-applied selections follow the trend: a newly read trend gets them too.
   const trendId = trend?.id;
@@ -733,11 +736,12 @@ function ApplyBar() {
         variant="accent"
         onClick={() => applyTo(trendId)}
         loading={apply.status === "loading"}
-        disabled={done || (n === 0 && !(apply.status === "done" || apply.trendId))}
+        disabled={visitor || done || (n === 0 && !(apply.status === "done" || apply.trendId))}
+        title={visitor ? "Applying changes the design that gets approved, so it needs the admin token" : undefined}
         className="shrink-0"
         data-demo="voice-apply"
       >
-        {done ? `${apply.applied.length} applied` : n === 0 ? "Clear from design" : `Apply ${n} to design`}
+        {visitor ? "Apply (admin)" : done ? `${apply.applied.length} applied` : n === 0 ? "Clear from design" : `Apply ${n} to design`}
       </Button>
     </div>
   );

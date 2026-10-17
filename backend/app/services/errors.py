@@ -30,7 +30,9 @@ class ServiceError(RuntimeError):
         self.service = service
         self.message = message
         self.not_configured = not_configured
-        self.hint = hint if hint is not None else HINTS.get(service)
+        # A setup hint ("set AMD_VISION_ENDPOINT…") only when the service is NOT configured; a configured service
+        # that fails (timeout, upstream error) must not tell the presenter to set variables that are already set.
+        self.hint = hint if hint is not None else (HINTS.get(service) if not_configured else None)
 
     @property
     def status(self) -> str:

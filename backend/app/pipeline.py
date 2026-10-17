@@ -24,7 +24,7 @@ from .models import (DemandPoint, Design, PipelineRun, PipelineStep, PreorderDem
                      TrendAnalysis, now_iso)
 from .services import (brain, decisions, direction, evolus, llm, preorders, product_image, purchase_orders, quotes,
                        sequences, shopify, sizes, sourcing, telemetry, voice)
-from .services import fx, money, supplier_view
+from .services import fx, money, supplier_view, workspace
 from .services.errors import NotConfigured, ServiceError
 from .store import new_id, store
 
@@ -306,11 +306,24 @@ async def _step_outreach(run: PipelineRun, step: PipelineStep, design: Design, t
         log.warning("supplier_outreach: Evolus failed (%s: %s)", e.__class__.__name__, e)
         raise ServiceError("evolus_outreach", f"Evolus outreach failed - RFQs not sent: {str(e)[:400]}") from e
     status = evolus.outreach_status(resp)
+    per = evolus.outreach_results(resp)  # per address, when the workflow reports it
+    not_sent = []
     for e in run.supplier_emails or []:
-        e.status = status  # type: ignore[assignment]
+        res = per.get(e.to_email.lower())
+        if res and res[0].lower() not in ("", "sent", "delivered", "ok"):
+            e.status = "drafted"  # this one never left: it is not "queued"
+            not_sent.append(f"{e.supplier_name} ({e.to_email}): {res[1] or res[0]}")
+        else:
+            e.status = status  # type: ignore[assignment]
     tail = " - still running in Evolus" if resp.get("timedOut") else ""
+    sent_n = sum(1 for e in run.supplier_emails or [] if e.status != "drafted")
     await _say(step, f"Evolus execution {resp.get('executionId') or '(no id returned)'} · "
-                     f"{resp.get('status')} · {len(run.supplier_emails or [])} RFQs {status}{tail}")
+                     f"{resp.get('status')} · {sent_n} of {len(run.supplier_emails or [])} RFQs {status}{tail}")
+    for line in not_sent:
+        await _say(step, f"⚠ Not sent - {line}. Add the address to the email workflow (re-run "
+                         "scripts/provision_evolus_workflows.py), then retry this step; the drafted RFQ is kept")
+    if not_sent and sent_n == 0:
+        raise ServiceError("evolus_outreach", "Evolus sent none of the RFQs: " + "; ".join(not_sent))
     _finish(step)
 
 
@@ -459,7 +472,8 @@ async def _product_direct(run: PipelineRun, step: PipelineStep, tp: TechPack, de
         title=title,
         description_html=shopify.preorder_description_html(
             tp.description, lead_weeks=q.lead_time_weeks if q else None,
-            materials=[b.material for b in tp.bill_of_materials[:3]]),
+            materials=[b.material for b in tp.bill_of_materials[:3]],
+            delivery_promise_weeks=workspace.delivery_promise_weeks()),
         price=lst["price"], image_png=png, image_alt=f"{tp.garment_name} - Atelier design render",
         tags=["pre-order", "atelier"], product_type=design.garment_type.title(), sizes=size_list,
         existing_product_id=_meta(run).get("shopify_product_id"),  # QA M1: a retry repairs, never duplicates
@@ -778,6 +792,8 @@ async def _demand_real(run: PipelineRun, step: PipelineStep, design: Design) -> 
         tests = f", incl. {d.test_orders} test order{'s' if d.test_orders != 1 else ''}" if d.test_orders else ""
         await _say(step, f"{what.capitalize()} crossed: {d.units:,} pre-ordered units "
                          f"({d.orders:,} orders{tests} · {d.revenue:,.2f} {d.currency}) - production unlocked ✓")
+        prod, basis = _threshold(run)  # the plan as it stands NOW (tech pack edits / supplier switch during the window)
+        d.production_threshold, d.production_threshold_basis = prod, basis  # type: ignore[assignment]
         await _place_po(run, step, prod)
     else:
         d.status = "expired"

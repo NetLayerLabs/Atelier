@@ -55,7 +55,7 @@ export function TrendInput() {
           value: "presets",
           label: "Mood boards",
           content: (
-            <PresetPicker disabled={busy} onPick={(p) => runAnalyze({ kind: "preset", preset: p.id }, boardUrls(p))} />
+            <PresetPicker disabled={busy} onPick={(p) => runAnalyze({ kind: "preset", preset: p.id }, boardUrls(p), !!p.aiGenerated)} />
           ),
         },
         {
@@ -382,7 +382,15 @@ function UrlPicker({ onSubmit, disabled }: { onSubmit: (urls: string[]) => void;
 
 const NO_PREVIEWS: string[] = [];
 
-export function Analysing({ input, previewUrls = NO_PREVIEWS }: { input?: AnalyzeInput; previewUrls?: string[] }) {
+export function Analysing({
+  input,
+  previewUrls = NO_PREVIEWS,
+  aiGenerated = false,
+}: {
+  input?: AnalyzeInput;
+  previewUrls?: string[];
+  aiGenerated?: boolean;
+}) {
   const [elapsed, setElapsed] = useState(0);
   useEffect(() => {
     const started = Date.now();
@@ -418,9 +426,12 @@ export function Analysing({ input, previewUrls = NO_PREVIEWS }: { input?: Analyz
           <div className="scanline" />
         </div>
         <div className="px-2 pb-4 md:py-6 md:pr-8">
-          <Eyebrow tone="accent" live>
-            Analysing · live
-          </Eyebrow>
+          <div className="flex flex-wrap items-center gap-2">
+            <Eyebrow tone="accent" live>
+              Analysing · live
+            </Eyebrow>
+            {aiGenerated && <Chip>AI-generated inspiration</Chip>}
+          </div>
           <p className="mt-4 text-display-m text-balance text-fg">The vision model is reading {what}…</p>
           <ProgressBar value={null} tone="accent" className="mt-8 max-w-md" />
           <p className="mt-6 max-w-md text-body text-fg-muted">

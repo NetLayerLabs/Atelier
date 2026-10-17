@@ -545,6 +545,8 @@ def documents(kind: Optional[str] = None) -> list[BrandDocument]:
     with _db() as con:
         rows = con.execute("SELECT data FROM documents").fetchall()
     docs = [BrandDocument.model_validate(json.loads(r[0])) for r in rows]
+    for d in docs:  # the URL follows this server's PUBLIC_BASE_URL (a database copied from a laptop said localhost)
+        d.url = get_settings().public_url(f"/api/workspace/documents/{d.id}/file")
     docs.sort(key=lambda d: d.uploaded_at)
     return [d for d in docs if kind is None or d.kind == kind]
 

@@ -2,6 +2,16 @@
 
 This guide makes Evolus the agent's brain and the way real supplier quotes come in.
 
+> **As deployed for the hackathon (17 Oct 2026).** The agent's model is **Gemma-4-31B-IT on AMD GPUs through AMD
+> Token Factory**, registered under "Your models" in the Evolus event workspace (the organisers confirmed this
+> counts as our own model on AMD). No self-hosted vLLM is connected, so the brain chain is `evolus-agent → AMD
+> Token Factory` only; the route labels below that say `AMD vLLM` describe the self-hosted setup. Building blocks
+> live in the workspace: the agent, a knowledge library (brand book, brand profile, supplier catalogue), the
+> "Supplier quote" extractor, and the two email workflows built by `scripts/provision_evolus_workflows.py`
+> (RFQs + counter-offers; purchase orders). Quotes are uploaded on the Quotes panel; the inbound-email workflow
+> and the AI Tool are optional and not set up. Quotes in another currency are converted with the ECB reference
+> rates when they load; otherwise the quote stays in its own currency and says so.
+
 **What you set up.** The tech pack, RFQs, creative direction and supplier rationale are all written by an
 **Evolus agent whose model is our AMD vLLM endpoint**, grounded in a **knowledge library**. RFQs go out through an
 **Evolus workflow**. Mills reply with **PDF quotes**, which an **Evolus document extractor** reads. Each quote

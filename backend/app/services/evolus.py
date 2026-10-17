@@ -192,6 +192,9 @@ async def execute_workflow(workflow_id: str, inputs: dict[str, Any], *, input_te
     return result
 
 
+POLL_RETRIES = 4  # consecutive failed status polls before an execution's outcome counts as unknown
+
+
 async def _execute(workflow_id: str, inputs: dict[str, Any], input_text: str,
                    on_status: Optional[StatusCallback], wait: bool) -> dict[str, Any]:
     s = get_settings()
@@ -223,20 +226,30 @@ async def _execute(workflow_id: str, inputs: dict[str, Any], input_text: str,
         status_url = _url(s.evolus_status_path.format(workflow_id=workflow_id, execution_id=exec_id))
         deadline = time.monotonic() + max(0.0, s.evolus_poll_timeout)
         last = ""
+        failed_polls = 0  # audit 17 Oct: one blip must not become "status unknown" (whose only way out re-sends)
         while True:
             await asyncio.sleep(max(0.05, s.evolus_poll_interval))
             try:
                 pr = await client.get(status_url, headers=headers())
-            except httpx.HTTPError as e:  # QA M3: started, outcome unknown
-                raise EvolusStatusUnknown(str(exec_id), f"Evolus execution {exec_id} started, but its status could "
-                                                        f"not be read ({e.__class__.__name__})") from e
+            except httpx.HTTPError as e:  # QA M3: started, outcome unknown - after POLL_RETRIES failures in a row
+                failed_polls += 1
+                if failed_polls >= POLL_RETRIES:
+                    raise EvolusStatusUnknown(str(exec_id), f"Evolus execution {exec_id} started, but its status "
+                                                            f"could not be read ({e.__class__.__name__}, "
+                                                            f"{failed_polls} polls)") from e
+                await asyncio.sleep(max(1.0, s.evolus_poll_interval * 2))
+                continue
             result["polls"] += 1
             if pr.status_code == 429:  # back off politely, keep polling
                 await asyncio.sleep(max(1.0, s.evolus_poll_interval * 2))
             elif pr.status_code >= 400:
-                raise EvolusStatusUnknown(str(exec_id), f"Evolus execution {exec_id} started, but its status could "
-                                                        f"not be read: {_explain(pr)}")
+                failed_polls += 1
+                if failed_polls >= POLL_RETRIES:
+                    raise EvolusStatusUnknown(str(exec_id), f"Evolus execution {exec_id} started, but its status "
+                                                            f"could not be read: {_explain(pr)}")
+                await asyncio.sleep(max(1.0, s.evolus_poll_interval * 2))
             else:
+                failed_polls = 0
                 body = _json(pr)
                 result["execution"] = body
                 status = str(body.get("status") or find_key(body, "status", "state") or "Running")
@@ -613,6 +626,26 @@ def outreach_status(resp: dict) -> str:
     if any(v is True for v in _find_all(_expand(resp), "sent", "emailsSent", "delivered")):
         return "sent"
     return "queued"
+
+
+def outreach_results(resp: dict) -> dict[str, tuple[str, Optional[str]]]:
+    """Per-address outcome from the email workflow's output ({emails: [{toEmail, result, error}]}, see
+    scripts/provision_evolus_workflows.py): {address: (result, error)}. Empty when the output has no such list."""
+    out: dict[str, tuple[str, Optional[str]]] = {}
+    stack: list[Any] = [_expand(resp)]
+    while stack:  # _find_all only collects strings / booleans; here we want the `emails` list itself
+        cur = stack.pop()
+        if isinstance(cur, dict):
+            lst = cur.get("emails")
+            if isinstance(lst, list):
+                for e in lst:
+                    if isinstance(e, dict) and e.get("toEmail"):
+                        out[str(e["toEmail"]).lower()] = (str(e.get("result") or ""),
+                                                          str(e["error"]) if e.get("error") else None)
+            stack.extend(cur.values())
+        elif isinstance(cur, list):
+            stack.extend(cur)
+    return out
 
 
 def s_backend() -> str:

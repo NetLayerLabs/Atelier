@@ -52,7 +52,7 @@ const STEP_PLACEHOLDERS: Pick<PipelineStep, "key" | "label">[] = [
 
 const STEP_BLURB: Record<string, string> = {
   techpack:
-    "The connected brain (Evolus agent or AMD vLLM) drafts the BOM, measurements & construction from the brand book",
+    "The connected brain (an Evolus agent on the AMD model) drafts the BOM, measurements & construction from the brand book",
   supplier_outreach: "RFQs are drafted per mill and sent through the Evolus outreach workflow",
   supplier_quotes: "Mills reply with quote documents; each is extracted, checked against the guardrails and scored",
   shopify_preorder: "Opens a real Shopify pre-order (Evolus workflow or Admin API)",
@@ -60,8 +60,8 @@ const STEP_BLURB: Record<string, string> = {
 };
 
 const SERVICE_NAME: Record<string, string> = {
-  brain: "the brain (Evolus agent / AMD vLLM)",
-  llm: "AMD vLLM",
+  brain: "the brain (the Evolus agent on the AMD model)",
+  llm: "the AMD model",
   vision: "the vision model",
   diffusion: "the diffusion model",
   evolus_agent: "the Evolus agent",

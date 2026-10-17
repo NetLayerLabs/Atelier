@@ -1,3 +1,5 @@
+> **Historical document (12 Oct 2026).** The original plan. The shipped stack differs: Gemma 4 on AMD Token Factory (not Llama-3 on our own vLLM), diffusion optional, Evolus as the business-agent layer. See README.md for what runs.
+
 # Atelier: The Autonomous Fashion & Merchandising Agent
 
 **Target Event**: AMD Developer Hackathon: ACT III
@@ -9,7 +11,7 @@
 ## 2. Hackathon Alignment (Why this wins)
 * **Evolus Business Agents Track**: It runs a complex, real-world business process end-to-end: Trend Identification -> Product Design -> Manufacturing Spec Generation -> Supplier Procurement -> eCommerce Launch.
 * **Vibe Generation ("Best Solution" Criteria)**: This is the perfect embodiment of the "Human + AI creative workflow." The AI handles the brutal data crunching and supply-chain logistics, which elevates the human to the role of pure Creative Director. 
-* **Hybrid (Commercial Value)**: Atelier reduces the trend-to-market timeline from 6 months to 24 hours and eliminates inventory risk by launching products as pre-orders. 
+* **Hybrid (Commercial Value)**: Atelier launches products as pre-orders and only sends the purchase order once real orders clear the threshold, so unsold inventory risk is removed by design. (Original pitch wording claimed "6 months to 24 hours"; that is not defensible and is not used: see docs/BUSINESS_VALUE.md. Measured figures are in docs/SUBMISSION.md.)
 
 ## 3. The Architecture (Powered by AMD)
 To prove absolute technical mastery and win the hardware category, Atelier runs a massive multimodal trifecta on **AMD Developer Cloud** (using ROCm):

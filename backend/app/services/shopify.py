@@ -352,11 +352,19 @@ def variant_sizes(nodes: Any) -> dict[str, str]:
 
 
 def preorder_description_html(description: str, *, lead_weeks: Optional[int] = None,
-                              materials: Optional[list[str]] = None) -> str:
+                              materials: Optional[list[str]] = None,
+                              delivery_promise_weeks: Optional[int] = None) -> str:
+    """`delivery_promise_weeks`: the brand's own promise (Brand workspace profile) - what it tells its customers.
+    Without one, the quoted production lead time is stated as such. Nothing is padded or invented."""
     parts = [f"<p>{html.escape(description)}</p>"]
     if materials:
         parts.append("<ul>" + "".join(f"<li>{html.escape(m)}</li>" for m in materials[:6]) + "</ul>")
-    ship = f" Ships about {lead_weeks + 2} weeks after the pre-order window closes." if lead_weeks else ""
+    if delivery_promise_weeks:
+        ship = f" Delivery: about {delivery_promise_weeks} weeks after the pre-order window closes."
+    elif lead_weeks:
+        ship = f" The supplier's quoted production lead time is {lead_weeks} weeks after the pre-order window closes."
+    else:
+        ship = ""
     parts.append("<p><strong>Pre-order.</strong> This piece goes into production only once enough pre-orders "
                  f"are in.{ship} Designed with Atelier.</p>")
     return "".join(parts)

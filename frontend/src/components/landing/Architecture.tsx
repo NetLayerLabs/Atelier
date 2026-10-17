@@ -18,7 +18,7 @@ export function Architecture() {
             Open models, an orchestrator <Em>and Evolus building blocks.</Em>
           </>
         }
-        lede="Open models served with vLLM and a diffusion server on AMD hardware; a FastAPI orchestrator that owns the business loop; Evolus for the brain and the outside world; a real Shopify store. Model names and the GPU below are what this instance reports right now."
+        lede="Open models on AMD GPUs (Gemma 4, through AMD Token Factory or our own vLLM server); a FastAPI orchestrator that owns the business loop; Evolus for the brain and the outside world; a real Shopify store. Model names and the GPU below are what this instance reports right now."
       />
 
       <Reveal>
@@ -107,14 +107,15 @@ function Node({
   );
 }
 
-/** The GPU as reported by /api/health (AMD_GPU_LABEL or the diffusion server's device) - never assumed. */
+/** The GPU as reported by /api/health (AMD_GPU_LABEL or the diffusion server's device) - never assumed, never
+ * embellished: the serving stack is whatever the label says. */
 function GpuLabel() {
   const health = useHealth((s) => s.health);
   const gpu =
     health.kind === "ok"
       ? health.data.services.find((s) => s.gpu && s.status === "connected" && !s.fake)?.gpu
       : undefined;
-  return <>{gpu ? `${gpu} · vLLM` : "GPU: not reported"}</>;
+  return <>{gpu ?? "GPU: not reported"}</>;
 }
 
 function Group({ title, sub, children }: { title: string; sub: ReactNode; children: ReactNode }) {

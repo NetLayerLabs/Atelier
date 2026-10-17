@@ -63,6 +63,7 @@ const PURPOSE_NAME: Record<string, string> = {
 
 const ROUTE_LABEL: Record<string, string> = {
   "evolus-agent → AMD vLLM": "Evolus agent → AMD vLLM",
+  "evolus-agent → AMD Token Factory": "Evolus agent → AMD Token Factory",
   "direct vLLM": "Direct vLLM",
   "evolus-extractor": "Evolus extractor",
   "evolus-ai-tool": "Evolus AI Tool",

@@ -520,7 +520,7 @@ DOC_NAME = re.compile(r"^[0-9a-f]{8,32}\.(pdf|png|jpg|webp)$")
 
 def store_document(run_id: str, data: bytes, kind: files.Sniffed) -> tuple[str, Path]:
     """Store a checked document under a name we choose (never the uploader's name or extension)."""
-    if not re.fullmatch(r"run_[0-9a-f]{6}", run_id):
+    if not re.fullmatch(r"run_[0-9a-f]{6,12}", run_id):
         raise QuoteError("invalid run id")
     d = quotes_dir() / run_id
     d.mkdir(parents=True, exist_ok=True)
@@ -530,7 +530,7 @@ def store_document(run_id: str, data: bytes, kind: files.Sniffed) -> tuple[str, 
 
 
 def document_path(run_id: str, name: str) -> Optional[Path]:
-    if not re.fullmatch(r"run_[0-9a-f]{6}", run_id) or not DOC_NAME.match(name):
+    if not re.fullmatch(r"run_[0-9a-f]{6,12}", run_id) or not DOC_NAME.match(name):
         return None
     p = quotes_dir() / run_id / name
     return p if p.is_file() else None
@@ -731,7 +731,10 @@ def rfq_ref(run_id: str) -> str:
 
 
 def open_round(run: PipelineRun) -> QuoteRound:
-    names = [e.supplier_name for e in run.supplier_emails or []]
+    # Only suppliers whose RFQ went out (a "partial" workflow result leaves the rest as drafts): a mill that was
+    # never emailed is not awaited.
+    names = [e.supplier_name for e in run.supplier_emails or [] if e.status != "drafted"] or \
+            [e.supplier_name for e in run.supplier_emails or []]
     run.quote_round = QuoteRound(rfq_ref=rfq_ref(run.id), expected=len(names), awaiting=names)
     run.quotes = run.quotes or []
     return run.quote_round
@@ -810,7 +813,27 @@ def add_quote(run: PipelineRun, quote: SupplierQuote) -> SupplierQuote:
             rnd.status = "complete"
             rnd.closed_at = now_iso()
     if run.recommendation is not None:  # late quote after the recommendation: refresh it, keep an override
-        run.recommendation = sourcing.recommend(run.quotes, qty, previous=run.recommendation)
+        from . import decisions, guardrails
+
+        before = run.recommendation
+        gate_passed = (run.guardrail_report is not None and run.guardrail_report.selected_ok is True
+                       and not decisions.is_open(run))
+        run.recommendation = sourcing.recommend(run.quotes, qty, previous=before)
+        if gate_passed and run.recommendation.selected_supplier_name != before.selected_supplier_name:
+            # The gate already passed for `before`. A newcomer that scores higher but breaks a guardrail must not
+            # take over silently (audit 17 Oct): keep the pick, record why; a person can still switch.
+            rep = guardrails.report(run)
+            ev = next((e for e in rep.evaluations if e.supplier_name == run.recommendation.selected_supplier_name),
+                      None) if rep else None
+            if ev is not None and not ev.ok:
+                run.recommendation.selected_supplier_name = before.selected_supplier_name
+                run.recommendation.overridden = True  # the agent's own pick is overridden - by the guardrails
+                decisions.audit(run, "agent", "late_quote_held",
+                                f"{quote.supplier_name}'s quote scores higher but breaks "
+                                f"{', '.join(c.label.lower() for c in ev.breaches)}; "
+                                f"{before.selected_supplier_name} stays selected (switch supplier to override)",
+                                supplier_name=quote.supplier_name,
+                                guardrail=",".join(c.rule for c in ev.breaches) or None)
     step = next((s for s in run.steps if s.key == "supplier_quotes"), None)
     if step is not None:
         src = quote.source
@@ -1003,7 +1026,7 @@ def find_run_for(payload: dict[str, Any], runs: dict[str, PipelineRun]) -> Optio
     if isinstance(rid, str) and rid in runs:
         return runs[rid]
     blob = json.dumps(payload, ensure_ascii=False)
-    m = re.search(r"ATL-(run_[0-9a-f]{6})", blob)
+    m = re.search(r"ATL-(run_[0-9a-f]{6,12})", blob)
     if m and m.group(1) in runs:
         return runs[m.group(1)]
     open_runs = _open_runs(runs)

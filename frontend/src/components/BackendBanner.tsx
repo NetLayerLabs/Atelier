@@ -52,12 +52,16 @@ export function BackendBanner() {
                   <Spinner size={11} /> retrying automatically
                 </span>
               </p>
-              <p className="text-micro text-fg-muted">
-                Start it with{" "}
-                <code className="rounded-md border border-line bg-surface px-2 py-1 font-mono text-micro break-all text-fg">
-                  cd backend &amp;&amp; uv run uvicorn app.main:app --port 8787
-                </code>
-              </p>
+              {typeof window !== "undefined" && /^(localhost|127\.0\.0\.1)$/.test(window.location.hostname) ? (
+                <p className="text-micro text-fg-muted">
+                  Start it with{" "}
+                  <code className="rounded-md border border-line bg-surface px-2 py-1 font-mono text-micro break-all text-fg">
+                    cd backend &amp;&amp; uv run uvicorn app.main:app --port 8787
+                  </code>
+                </p>
+              ) : (
+                <p className="text-micro text-fg-muted">Check your connection; this page reconnects by itself.</p>
+              )}
             </div>
           </div>
         </motion.div>

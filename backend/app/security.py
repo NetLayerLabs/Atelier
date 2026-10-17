@@ -182,6 +182,15 @@ class RateLimiter:
             self._per.clear()
             self._all.clear()
 
+    def refund(self, who: str) -> None:
+        """The request never reached a model (rejected first): give the visitor that call back."""
+        with self._lock:
+            mine = self._per.get(who)
+            if mine:
+                mine.pop()
+            if self._all:
+                self._all.pop()
+
     def hit(self, who: str, per_visitor: int, total: int, now: Optional[float] = None) -> Optional[str]:
         """Count one call; None when allowed, else why not (the call is then not counted)."""
         now = time.monotonic() if now is None else now
@@ -299,9 +308,12 @@ class SecurityMiddleware:
                 and not _authenticated(headers, _parse_cookies(headers.get("cookie", ""))))
         held: dict = {}
         chunks: list[bytes] = []
+        counted = scope.pop("atelier.rate_counted", None)  # (visitor, ) when this request used a model-call slot
 
         async def send_nosniff(message: Message) -> None:
             if message["type"] == "http.response.start":
+                if counted and 400 <= message.get("status", 200) < 500:  # rejected before the model ran: not a call
+                    limiter.refund(counted)
                 hdrs = list(message.get("headers", []))
                 if not any(k.lower() == b"x-content-type-options" for k, _ in hdrs):
                     hdrs.append((b"x-content-type-options", b"nosniff"))
@@ -347,10 +359,11 @@ class SecurityMiddleware:
                     return 503, ("Uploads are paused on the public demo (its storage limit is reached). The preset "
                                  "mood boards still work; sign in to upload.")
                 if model:
-                    why = limiter.hit(visitor_ip(scope, headers), s.atelier_public_rate_per_visitor,
-                                      s.atelier_public_rate_total)
+                    who = visitor_ip(scope, headers)
+                    why = limiter.hit(who, s.atelier_public_rate_per_visitor, s.atelier_public_rate_total)
                     if why:
                         return 429, why
+                    scope["atelier.rate_counted"] = who
                 return None
             return 401, ("admin token required - sign in on the dashboard or send Authorization: Bearer <token>. "
                          "Visitors can try every step up to Approve; approving emails real suppliers and opens a "

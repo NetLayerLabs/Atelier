@@ -1,4 +1,14 @@
-# AMD Developer Cloud setup
+# AMD setup
+
+> **As deployed for the hackathon (17 Oct 2026): AMD Token Factory.** Atelier runs on AMD's hosted OpenAI-compatible
+> API (`AMD_VISION_ENDPOINT=https://developer.amd.com.cn/radeon/api/v1`, `AMD_TOKEN_FACTORY_KEY=rc-…`,
+> `AMD_VISION_MODEL=Gemma-4-31B-IT`, `AMD_GPU_LABEL="AMD GPUs (AMD Token Factory)"`). The same model is registered
+> in the Evolus workspace as our own model. Limits we measured: 5 MB per request (images are downscaled first),
+> 30 requests per minute per key, and a shared queue whose wait varies from 2 s to 90 s (the app sends a second,
+> identical request when the first is slow). No droplet has been run yet; the rest of this guide is the self-hosted
+> path for when one is available (it adds diffusion concepts and a direct vLLM backup).
+
+## AMD Developer Cloud (self-hosted path)
 
 This guide takes a fresh AMD Developer Cloud GPU droplet (1× AMD Instinct MI300X) to the servers Atelier uses live.
 **The default plan is one open model, Gemma 4, served by our own vLLM**: it is the text brain, the vision model and
