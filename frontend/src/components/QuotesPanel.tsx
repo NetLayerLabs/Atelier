@@ -14,6 +14,7 @@ import {
   FileDrop,
   Eyebrow,
   GarmentTag,
+  GlyphText,
   IconArrowUpRight,
   IconDocument,
   IconMail,
@@ -670,7 +671,11 @@ function QuoteRow({
               ))}
             </ul>
           )}
-          {src.warnings.length > 0 && <p className="text-micro text-warn">{src.warnings.join(" · ")}</p>}
+          {src.warnings.length > 0 && (
+            <p className="text-micro text-warn">
+              <GlyphText text={src.warnings.join(" · ")} />
+            </p>
+          )}
           {unverified.length > 0 && (
             <InlineAlert
               tone="warn"

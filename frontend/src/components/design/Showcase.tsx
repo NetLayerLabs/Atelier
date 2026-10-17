@@ -24,6 +24,14 @@ import {
   Field,
   FileDrop,
   GarmentTag,
+  GlyphCheck,
+  GlyphCross,
+  GlyphHand,
+  GlyphPin,
+  GlyphRating,
+  GlyphRetry,
+  GlyphStar,
+  GlyphText,
   IconArrowRight,
   IconArrowUpRight,
   IconButton,
@@ -124,6 +132,7 @@ function Band({ theme }: { theme: "light" | "dark" }) {
         </div>
         <Foundations />
         <Brand />
+        <Glyphs />
         <Controls />
         <Forms />
         <Navigation />
@@ -254,6 +263,103 @@ function Brand() {
             ))}
           </div>
         </Specimen>
+      </div>
+    </Group>
+  );
+}
+
+// ------------------------------------------------------------------------------------------------ glyphs
+
+const GLYPHS: { name: string; chars: string; meaning: string; reads: string; glyph: ReactNode }[] = [
+  { name: "GlyphCheck", chars: "✓ ✔", meaning: "A tick sewn in two stitches: done, stitched in.", reads: "“Done” · ok", glyph: <GlyphCheck decorative /> },
+  { name: "GlyphCross", chars: "✗ ✘ ✕", meaning: "One cross-stitch, the top thread over the bottom one: failed.", reads: "“Failed” · bad", glyph: <GlyphCross decorative /> },
+  { name: "GlyphPin", chars: "⚠", meaning: "A dressmaker’s pin: pinned for your attention.", reads: "“Warning” · warn", glyph: <GlyphPin decorative /> },
+  { name: "GlyphHand", chars: "✋", meaning: "An open hand: from here a person decides.", reads: "“Hand-off to a person” · accent", glyph: <GlyphHand decorative /> },
+  { name: "GlyphRetry", chars: "↻", meaning: "A loop of thread, its needle running ahead clockwise: trying again.", reads: "“Retrying” · muted", glyph: <GlyphRetry decorative /> },
+  {
+    name: "GlyphStar",
+    chars: "★ ☆",
+    meaning: "A rating star, filled when rated, a faint outline when not.",
+    reads: "“stars” / “empty star” · text colour",
+    glyph: (
+      <>
+        <GlyphStar decorative />
+        <GlyphStar filled={false} decorative />
+      </>
+    ),
+  },
+];
+
+/** Backend log lines, verbatim from backend/app; "…" stands for what the backend fills in at run time. */
+const LOG_LINES = [
+  "✋ Hand-off: …",
+  "Guardrails ✓ … is inside every limit (… of … quotes pass)",
+  "⚠ Counter-offer to …: send status unknown - Evolus execution … started; check Evolus before sending again",
+  "✗ PO-00001 not sent - Evolus workflow failed: …",
+  "↻ Retrying…",
+];
+
+/** Set like the pipeline's StepLog, so the glyphs are judged where they are read. */
+function LogLines() {
+  return (
+    <ul className="flex flex-col gap-1.5 font-mono text-[0.74rem] leading-relaxed">
+      {LOG_LINES.map((line) => (
+        <li key={line} className="flex gap-2 break-words text-fg-muted">
+          <span aria-hidden className="text-fg-faint">
+            ›
+          </span>
+          <GlyphText text={line} className="min-w-0" />
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function Glyphs() {
+  return (
+    <Group title="Glyphs · documentation" note="Drawn like the icons, set like type">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {GLYPHS.map((g) => (
+          <Specimen key={g.name} label={`${g.name} · replaces ${g.chars}`}>
+            <div className="flex flex-wrap items-baseline gap-x-6 gap-y-2 text-fg">
+              {[12, 14, 16, 24].map((px) => (
+                <span key={px} style={{ fontSize: px }}>
+                  {g.glyph} <span className="text-fg-faint tabular">{px}</span>
+                </span>
+              ))}
+            </div>
+            <p className="mt-5 text-small text-fg-muted">{g.meaning}</p>
+            <p className="mt-1 text-micro text-fg-faint">Reads {g.reads}</p>
+          </Specimen>
+        ))}
+      </div>
+      <div className="grid gap-4 lg:grid-cols-2">
+        <Specimen label="GlyphText · backend log lines, verbatim (… is filled in at run time)">
+          <div className="rounded-panel bg-paper-2/70 px-4 py-3">
+            <LogLines />
+          </div>
+          <p className="mt-4 text-micro text-fg-faint">
+            Each glyph is announced by its label; the hand and the loop stay silent here because the next word (Hand-off, Retrying) already says it.
+          </p>
+        </Specimen>
+        <Specimen label="GlyphText · customer voice · GlyphRating">
+          <p className="text-body-l text-fg-muted">
+            <GlyphText text="they average 4.2★ vs 3.9★" />
+          </p>
+          <StatGroup className="mt-6">
+            <Stat label="average rating" value="4.2" unit={<GlyphStar />} size="sm" />
+          </StatGroup>
+          <p className="mt-6 flex flex-wrap items-center gap-x-2 font-mono text-micro text-fg-faint">
+            <GlyphRating value={4} className="text-fg-muted" />
+            <span aria-hidden>read as “4 out of 5 stars”</span>
+          </p>
+        </Specimen>
+        <Card variant="inverse" className="lg:col-span-2">
+          <Eyebrow>Inside .ds-inverse · the hand-off card</Eyebrow>
+          <div className="mt-5">
+            <LogLines />
+          </div>
+        </Card>
       </div>
     </Group>
   );

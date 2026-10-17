@@ -13,6 +13,7 @@ import {
   Eyebrow,
   Field,
   GarmentTag,
+  GlyphText,
   IconArrowRight,
   IconRefresh,
   InlineAlert,
@@ -492,7 +493,7 @@ function CounterOfferView({ co, runId, readOnly }: { co: CounterOffer; runId: st
               {co.math.map((m, i) => (
                 <li key={i} className="flex gap-3 border-t border-line py-2 first:border-t-0">
                   <span className="w-4 shrink-0 text-fg-faint">{i + 1}</span>
-                  <span className="min-w-0 break-words">{m}</span>
+                  <GlyphText text={m} className="min-w-0 break-words" />
                 </li>
               ))}
             </ol>

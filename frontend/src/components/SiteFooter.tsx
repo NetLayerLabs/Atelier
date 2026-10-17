@@ -5,6 +5,7 @@ import { useHealth } from "@/lib/health";
 import { AtelierLockup, cx, Label } from "./ds";
 import { PoweredBy } from "./Header";
 import { REVEAL_RISE, STAGGER, useArm } from "./landing/primitives";
+import { PartnerStrip } from "./PartnerLogos";
 
 const REPO = "https://github.com/NetLayerLabs/Atelier";
 const X_URL = "https://x.com/NetLayerLabs";
@@ -48,10 +49,11 @@ const external = (href: string) => /^https?:\/\//.test(href);
  * Entrance, once, as the footer scrolls in. The footer also renders on /workspace (outside MotionConfig), so it is
  * CSS only: <footer> carries a stage reveal's data-reveal (useArm) and each block hides only while that says "armed",
  * so the server HTML, no-JS and reduced motion show the footer exactly as it is. The tape edge draws first, then the
- * lockup, blurb and social links rise, then the three columns (label first, then its links), then the legal line.
- * Beats are ms after the footer is shown; the last block settles by about 1.35 s.
+ * lockup, blurb and social links rise, then the three columns (label first, then its links), then the "Built with"
+ * strip (its logos one by one) and the legal line. Beats are ms after the footer is shown; the last block settles by
+ * about 1.35 s.
  */
-const BEAT = { lockup: 150, columns: 300, legal: 640 } as const;
+const BEAT = { lockup: 150, columns: 300, partners: 520, legal: 640 } as const;
 
 /** When column `c` starts: 80 ms between columns. Its links follow its label 40 ms apart. */
 const columnAt = (c: number) => BEAT.columns + c * STAGGER.sibling;
@@ -70,7 +72,8 @@ const at = (ms: number) => ({ "--fd": `${ms}ms` }) as CSSProperties;
 const LINK = "link-measure hover:text-fg focus-visible:text-fg";
 
 /**
- * Site footer: the lockup, what Atelier does, X and GitHub, then Product / Powered by / Resources. Same type as the
+ * Site footer: the lockup, what Atelier does, X and GitHub, then Product / Powered by / Resources, a "Built with"
+ * strip of the partner logos (AMD | Gemma 4 | evolus) and the legal line with the live credit and trademark notice. Same type as the
  * rest of the app (Inter: body text, and the small section labels the menu uses). Its top edge is ruled like a
  * tailor's tape; links lift to ink with a measured underline.
  */
@@ -123,9 +126,24 @@ export function SiteFooter() {
             </nav>
           ))}
         </div>
+        {/* What Atelier runs on, as an event's partner strip: the logos in ink with a thin rule between them. */}
+        <nav
+          aria-label="Built with"
+          className={cx("mt-14 flex flex-col gap-3 border-t border-line pt-7 pb-1 sm:flex-row sm:items-center sm:gap-12", FADE)}
+          style={at(BEAT.partners)}
+        >
+          <Label as="p" className={RISE}>
+            Built with
+          </Label>
+          <PartnerStrip
+            amd={health.kind === "ok" && health.data.poweredBy.amd}
+            itemClassName={RISE}
+            itemStyle={(i) => at(BEAT.partners + (i + 1) * STAGGER.chip)}
+          />
+        </nav>
         <div
           className={cx(
-            "mt-14 flex flex-col gap-3 border-t border-line pt-6 text-micro text-fg-faint sm:flex-row sm:items-center sm:justify-between",
+            "mt-7 flex flex-col gap-3 border-t border-line pt-6 text-micro text-fg-faint sm:flex-row sm:items-center sm:justify-between",
             FADE,
           )}
           style={at(BEAT.legal)}
@@ -144,6 +162,10 @@ export function SiteFooter() {
             >
               AMD Developer Hackathon ACT III
             </a>
+            <span className="mt-1 block">
+              AMD and the AMD Arrow logo are trademarks of Advanced Micro Devices, Inc. Gemma is a trademark of Google
+              LLC. Evolus is a trademark of CodeDesign S.r.l.
+            </span>
           </p>
           {credited && <PoweredBy health={health} />}
         </div>

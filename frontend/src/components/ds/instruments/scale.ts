@@ -24,10 +24,13 @@ export function tidy(n: number) {
   return Math.round(n * 1e6) / 1e6;
 }
 
-/** Polar → cartesian, angle in degrees (0 = east, counter-clockwise positive, SVG y down). */
+/**
+ * Polar → cartesian, angle in degrees (0 = east, counter-clockwise positive, SVG y down). Rounded to 1/1000 px: the
+ * server and the browser print trig results to different last digits, which React reports as a hydration mismatch.
+ */
 export function polar(cx: number, cy: number, r: number, deg: number) {
   const a = (deg * Math.PI) / 180;
-  return { x: cx + r * Math.cos(a), y: cy - r * Math.sin(a) };
+  return { x: Math.round((cx + r * Math.cos(a)) * 1000) / 1000, y: Math.round((cy - r * Math.sin(a)) * 1000) / 1000 };
 }
 
 /** SVG arc path along a circle between two angles (degrees, as in `polar`), drawn clockwise from a0 to a1. */

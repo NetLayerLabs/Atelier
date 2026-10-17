@@ -1,6 +1,6 @@
 "use client";
 
-import { Badge, Disclosure, ProgressBar } from "@/components/ds";
+import { Badge, Disclosure, GlyphText, ProgressBar } from "@/components/ds";
 import type { CustomerEvidence as Evidence } from "@/lib/api";
 import { Quote } from "./CustomerVoice";
 
@@ -43,7 +43,9 @@ export function CustomerEvidence({ items }: { items?: Evidence[] }) {
                   <div className="min-w-0">
                     {e.instruction && (
                       <div className="mb-4 rounded-panel bg-accent-soft p-4">
-                        <p className="text-small leading-relaxed text-fg">{e.instruction}</p>
+                        <p className="text-small leading-relaxed text-fg">
+                          <GlyphText text={e.instruction} />
+                        </p>
                         {e.instructionBy && (
                           <p className="mt-1 font-mono text-micro text-fg-faint">drafted by {e.instructionBy}</p>
                         )}

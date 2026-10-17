@@ -21,6 +21,9 @@ import {
   Disclosure,
   Eyebrow,
   FileDrop,
+  GlyphRating,
+  GlyphStar,
+  GlyphText,
   IconArrowRight,
   IconCheck,
   IconChevronDown,
@@ -319,11 +322,15 @@ function VoiceResults({ insights }: { insights: VoiceInsights }) {
         </div>
         <StatGroup className="mt-8">
           <Stat label={insights.noun} count={insights.analysedCount} size="sm" />
-          {insights.avgRating != null && <Stat label="average rating" value={insights.avgRating.toFixed(1)} unit="★" size="sm" />}
+          {insights.avgRating != null && (
+            <Stat label="average rating" value={insights.avgRating.toFixed(1)} unit={<GlyphStar />} size="sm" />
+          )}
           {classes > 0 && <Stat label={classes === 1 ? "garment class" : "garment classes"} value={classes} size="sm" />}
           <Stat label="themes found" value={insights.themes.length} size="sm" />
         </StatGroup>
-        <p className="mt-8 max-w-4xl text-body-l text-pretty text-fg-muted">{insights.summary}</p>
+        <p className="mt-8 max-w-4xl text-body-l text-pretty text-fg-muted">
+          <GlyphText text={insights.summary} />
+        </p>
         {insights.phrasingError && (
           <InlineAlert tone="warn" className="mt-5" title="Not phrased by a model">
             {insights.phrasingError}. The counts and quotes below are computed from the data either way.
@@ -475,7 +482,15 @@ function ThemeDetail({ theme }: { theme: VoiceTheme }) {
       <p className="font-mono text-micro text-fg-muted">
         {theme.negativeCount} negative · {theme.positiveCount} positive
         {theme.neutralCount > 0 && ` · ${theme.neutralCount} unrated`}
-        {theme.avgRating != null && ` · avg ${theme.avgRating.toFixed(1)}★`}
+        {theme.avgRating != null && (
+          <>
+            {" · avg "}
+            <span className="whitespace-nowrap">
+              {theme.avgRating.toFixed(1)}
+              <GlyphStar />
+            </span>
+          </>
+        )}
         {theme.returnedCount > 0 && theme.id !== "returns.returned" && ` · ${theme.returnedCount} also returned`}
       </p>
       {theme.byClass.length > 0 && (
@@ -494,7 +509,10 @@ function ThemeDetail({ theme }: { theme: VoiceTheme }) {
   );
 }
 
-/** A real customer quote as an evidence card: the matched phrase highlighted, the record id and rating beneath. */
+/**
+ * A real customer quote as an evidence card: the matched phrase highlighted, the record id and rating beneath. The
+ * quote stays word for word (stars a customer typed included); only the rating row is drawn with glyphs.
+ */
 export function Quote({ quote, compact }: { quote: VoiceQuote; compact?: boolean }) {
   const { text, matchStart: a, matchEnd: b } = quote;
   const body =
@@ -517,12 +535,7 @@ export function Quote({ quote, compact }: { quote: VoiceQuote; compact?: boolean
       </blockquote>
       <figcaption className="mt-1.5 flex flex-wrap items-center gap-x-2 font-mono text-micro text-fg-faint">
         <span>{quote.recordId}</span>
-        {r != null && (
-          <span aria-label={`${r} of 5 stars`} className="text-fg-muted">
-            {"★".repeat(r)}
-            <span className="text-fg-faint/60">{"★".repeat(Math.max(0, 5 - r))}</span>
-          </span>
-        )}
+        {r != null && <GlyphRating value={r} className="text-fg-muted" />}
         {quote.garmentClass && <span>{quote.garmentClass}</span>}
         {quote.field !== "text" && <span>{quote.field}</span>}
       </figcaption>
@@ -642,13 +655,21 @@ function ChangeCard({
           )}
           {c.instruction && (
             <div className="mt-4 rounded-r-panel border-l-2 border-fg bg-paper-2 py-2.5 pr-3 pl-3.5">
-              <p className="text-small text-fg">{c.instruction}</p>
+              <p className="text-small text-fg">
+                <GlyphText text={c.instruction} />
+              </p>
               <p className="mt-1 font-mono text-micro text-fg-faint">drafted by {c.instructionBy ?? "the brain"}</p>
             </div>
           )}
 
-          <p className="mt-3 text-micro text-fg-faint">{ev.summary}.</p>
-          {c.rationale && <p className="mt-1 text-small text-fg-muted">{c.rationale}</p>}
+          <p className="mt-3 text-micro text-fg-faint">
+            <GlyphText text={`${ev.summary}.`} />
+          </p>
+          {c.rationale && (
+            <p className="mt-1 text-small text-fg-muted">
+              <GlyphText text={c.rationale} />
+            </p>
+          )}
           {conflictTitle && <p className="mt-2 text-micro font-medium text-bad">Contradicts “{conflictTitle}”: apply only one.</p>}
           <div className="mt-4 flex flex-wrap items-center gap-2">
             <Badge tone={CONFIDENCE[c.confidence]}>{c.confidence} confidence</Badge>

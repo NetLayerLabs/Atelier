@@ -18,6 +18,7 @@ import { AtelierLockup, AtelierMark, Badge, Button, Chip, Eyebrow, IconArrowUpRi
 import { cx, DUR, EASE } from "./ds/tokens";
 import { InferenceButton } from "./Inference";
 import { MenuButton } from "./Menu";
+import { CREDIT_LOGO_HEIGHT, PartnerLogo } from "./PartnerLogos";
 import { scrollToId } from "./ui";
 import { useWorkspaceStatus } from "./workspace/WorkspaceGate";
 
@@ -177,6 +178,9 @@ function PlacesToggle() {
 /**
  * v5: the credit line. Each part only when /api/health says a REAL (not fake) service of that kind is connected;
  * with neither, nothing (the wordmark already says "Atelier").
+ * v6: AMD and Evolus appear as their logos, in ink (AMD allows only a black or white logo), the AMD one at AMD's
+ * 72 px minimum width with its clear space. Each logo is hidden from screen readers and followed by its name as
+ * hidden text, so the line still reads "Powered by AMD GPUs · Orchestrated by Evolus".
  */
 export function PoweredBy({ health, className }: { health: HealthState; className?: string }) {
   const p = health.kind === "ok" ? health.data.poweredBy : undefined;
@@ -187,23 +191,33 @@ export function PoweredBy({ health, className }: { health: HealthState; classNam
   return (
     <span className={className}>
       {p.amd && (
-        <>
+        <span className="whitespace-nowrap">
           Powered by{" "}
-          <span className="text-fg-muted" title={p.hardware}>
-            {/instinct|\bmi\d{3}/i.test(p.hardware ?? "") ? "AMD Instinct" : "AMD GPUs"}
+          <span title={p.hardware}>
+            <PartnerLogo partner="amd" height={CREDIT_LOGO_HEIGHT.amd} decorative baseline className="mx-1.5 text-fg" />
+            <span className="sr-only">AMD</span>{" "}
+            <span className="text-fg-muted">{/instinct|\bmi\d{3}/i.test(p.hardware ?? "") ? "Instinct" : "GPUs"}</span>
           </span>
-        </>
+        </span>
       )}
       {unverified && (
         <span title="A model endpoint answers, but its hardware is not verified - set AMD_GPU_LABEL to the GPU it runs on">
           Model connected - hardware not verified
         </span>
       )}
-      {(p.amd || unverified) && p.evolus && <span className="mx-2 text-fg-faint">·</span>}
-      {p.evolus && (
+      {/* A no-break space before the dot and a plain one after: a wrapped line breaks after the dot, never before. */}
+      {(p.amd || unverified) && p.evolus && (
         <>
-          Orchestrated by <span className="text-fg-muted">Evolus</span>
+          {"\u00a0"}
+          <span className="mx-[5px] text-fg-faint">·</span>{" "}
         </>
+      )}
+      {p.evolus && (
+        <span className="whitespace-nowrap">
+          Orchestrated by{" "}
+          <PartnerLogo partner="evolus" height={CREDIT_LOGO_HEIGHT.evolus} decorative baseline className="ml-1 text-fg" />
+          <span className="sr-only">Evolus</span>
+        </span>
       )}
     </span>
   );

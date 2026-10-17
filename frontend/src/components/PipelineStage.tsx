@@ -13,6 +13,7 @@ import {
   EASE,
   Eyebrow,
   GarmentTag,
+  GlyphText,
   IconArrowUpRight,
   IconMail,
   IconRefresh,
@@ -389,7 +390,7 @@ function StepLog({ log, running }: { log: string[]; running: boolean }) {
   );
 }
 
-/** A log line that types itself out once, when it first arrives. */
+/** A log line that types itself out once, when it first arrives. The agent's status marks are drawn as glyphs. */
 function LogLine({ text, active }: { text: string; active: boolean }) {
   const reduce = useReducedMotion();
   const [shown, setShown] = useState(reduce ? text.length : 0);
@@ -419,7 +420,9 @@ function LogLine({ text, active }: { text: string; active: boolean }) {
         ›
       </span>
       <span className={cx("min-w-0", (typing || active) && "caret")}>
-        <span className={active ? "text-fg" : undefined}>{text.slice(0, shown)}</span>
+        <span className={active ? "text-fg" : undefined}>
+          <GlyphText text={text.slice(0, shown)} />
+        </span>
       </span>
     </motion.li>
   );
