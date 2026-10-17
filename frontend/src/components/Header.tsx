@@ -175,14 +175,18 @@ function PlacesToggle() {
  */
 export function PoweredBy({ health, className }: { health: HealthState; className?: string }) {
   const p = health.kind === "ok" ? health.data.poweredBy : undefined;
-  // "AMD" only when the hardware is verified (AMD_GPU_LABEL or the diffusion server naming an AMD device).
+  // "AMD" only when the hardware is verified (AMD_GPU_LABEL or the diffusion server naming an AMD device), and
+  // "AMD Instinct" only when that label names an Instinct GPU (AMD Token Factory doesn't say which GPUs it runs on).
   const unverified = !!p && !p.amd && !!p.modelConnected;
   if (!p || (!p.amd && !p.evolus && !unverified)) return null;
   return (
     <span className={className}>
       {p.amd && (
         <>
-          Powered by <span className="text-fg-muted" title={p.hardware}>AMD Instinct</span>
+          Powered by{" "}
+          <span className="text-fg-muted" title={p.hardware}>
+            {/instinct|\bmi\d{3}/i.test(p.hardware ?? "") ? "AMD Instinct" : "AMD GPUs"}
+          </span>
         </>
       )}
       {unverified && (

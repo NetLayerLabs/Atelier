@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { SiteFooter } from "@/components/SiteFooter";
 import { BrandWorkspace } from "@/components/workspace/BrandWorkspace";
 
 export const metadata: Metadata = {
@@ -7,5 +8,10 @@ export const metadata: Metadata = {
 };
 
 export default function WorkspacePage() {
-  return <BrandWorkspace />;
+  return (
+    <>
+      <BrandWorkspace />
+      <SiteFooter />
+    </>
+  );
 }

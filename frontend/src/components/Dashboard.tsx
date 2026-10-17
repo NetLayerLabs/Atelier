@@ -2,16 +2,16 @@
 
 import { MotionConfig } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import { useHealth } from "@/lib/health";
 import { useAtelier } from "@/lib/store";
 import { BackendBanner } from "./BackendBanner";
 import { CustomerVoice } from "./CustomerVoice";
 import { DemoController } from "./DemoController";
 import { IdeationStage } from "./Designs";
-import { AtelierLockup, Button, IconArrowRight, IconRefresh } from "./ds";
-import { Header, PoweredBy } from "./Header";
+import { Button, IconArrowRight, IconRefresh } from "./ds";
+import { Header } from "./Header";
 import { Landing } from "./landing/Landing";
 import { PipelineStage } from "./PipelineStage";
+import { SiteFooter } from "./SiteFooter";
 import { TrendAnalysisView } from "./TrendAnalysisView";
 import { AnalysisError, Analysing, TrendInput } from "./TrendStage";
 import { Chapter, scrollToId } from "./ui";
@@ -45,8 +45,6 @@ export function Dashboard() {
   const ideationMode = useAtelier((s) => s.ideationMode);
   const runCollection = useAtelier((s) => s.runCollection);
   const reset = useAtelier((s) => s.reset);
-  const health = useHealth((s) => s.health);
-  const credited = health.kind === "ok" && (health.data.poweredBy.amd || health.data.poweredBy.evolus);
 
   const [chooseAnother, setChooseAnother] = useState(false);
 
@@ -164,15 +162,7 @@ export function Dashboard() {
         )}
       </main>
 
-      <footer className="border-t border-line">
-        <div className="mx-auto flex max-w-[1400px] flex-col gap-2 px-4 py-8 text-micro text-fg-faint sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-12">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-6">
-            <AtelierLockup height={22} className="text-fg" title="Atelier" />
-            {credited && <PoweredBy health={health} />}
-          </div>
-          <p>Atelier · AMD Developer Hackathon ACT III</p>
-        </div>
-      </footer>
+      <SiteFooter />
     </MotionConfig>
   );
 }
