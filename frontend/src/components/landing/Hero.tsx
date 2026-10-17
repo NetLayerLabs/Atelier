@@ -138,7 +138,8 @@ export function Hero() {
 /** One honest line from GET /api/health: which services are connected, unreachable, not connected or fake. */
 export function StatusStrip({ className }: { className?: string }) {
   const health = useHealth((s) => s.health);
-  const services = health.kind === "ok" ? health.data.services : [];
+  // An optional backup that isn't connected is not part of the running system: not listed.
+  const services = health.kind === "ok" ? health.data.services.filter((s) => !s.optional || s.status === "connected") : [];
   const ordered = [
     ...SERVICE_ORDER.map((n) => services.find((s) => s.name === n)).filter((s) => !!s),
     ...services.filter((s) => !(SERVICE_ORDER as readonly string[]).includes(s.name)),

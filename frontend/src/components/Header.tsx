@@ -323,7 +323,7 @@ function HealthIndicator({ health, onRefresh }: { health: HealthState; onRefresh
             {health.kind === "ok" ? (
               <>
                 <ul className="mt-3 divide-y divide-line">
-                  {health.data.services.map((s) => (
+                  {health.data.services.filter((s) => !s.optional || s.status === "connected").map((s) => (
                     <li key={s.name} className="flex items-start justify-between gap-3 py-3">
                       <div className="min-w-0">
                         <p className="text-small font-medium text-fg">{serviceLabel(s.name)}</p>

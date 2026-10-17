@@ -62,8 +62,8 @@ export const AGENTS: AgentInfo[] = [
     input: "The approved design, its trend read and the creative direction",
     output:
       "Bill of materials, measurements, construction notes, colourway, costing and retail price, validated against a schema",
-    engine: "An Evolus agent on the AMD-hosted open model (Gemma 4), grounded in the brand book - or our own vLLM directly",
-    services: ["evolus_agent", "llm"],
+    engine: "An Evolus agent on the AMD-hosted open model (Gemma 4), grounded in the brand book",
+    services: ["evolus_agent"],
   },
   {
     n: "02",

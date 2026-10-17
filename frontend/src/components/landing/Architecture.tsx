@@ -44,7 +44,7 @@ export function Architecture() {
 
           <div className="flex flex-col gap-3">
             <Group title="AMD models" sub={<GpuLabel />}>
-              <Service name="llm" fallback="LLM" role="Tech pack, direction, RFQs, supplier rationale" />
+              <LlmBackup />
               <Service name="vision" fallback="Vision-language model" role="Reads the trend from the mood board" />
               <Service name="diffusion" fallback="Diffusion model" role="Concept and variation renders" />
             </Group>
@@ -128,6 +128,14 @@ function Group({ title, sub, children }: { title: string; sub: ReactNode; childr
       <ul className="mt-3 divide-y divide-line border-t border-line">{children}</ul>
     </Card>
   );
+}
+
+/** The direct vLLM path is a backup for the Evolus agent: shown only while it is actually connected. */
+function LlmBackup() {
+  const health = useHealth((s) => s.health);
+  const svc = health.kind === "ok" ? health.data.services.find((s) => s.name === "llm") : undefined;
+  if (svc?.status !== "connected") return null;
+  return <Service name="llm" fallback="LLM" role="Direct backup for the agent: tech pack, direction, RFQs" />;
 }
 
 function Service({ name, title, fallback, role }: { name: string; title?: string; fallback?: string; role: string }) {
