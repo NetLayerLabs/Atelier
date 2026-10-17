@@ -35,8 +35,9 @@ the admin token (as does applying customer-voice changes to a design). The steps
 - **The business model (planned).** A subscription per brand, plus a fee per drop or per purchase order. Not yet
   tested with a paying brand.
 
-**Pilot brand: UGO SARTORIA**: Igbo menswear with Italian tailoring, priced in EUR with a 6-week delivery promise.
-It has not run a real drop yet, and its two suppliers are demo entries routed to our own inbox. Its profile, brand
+**Pilot brand: UGO SARTORIA**, the founder's own label in the making: Igbo menswear with Italian tailoring, priced
+in EUR with a 6-week delivery promise. It is not an outside customer and has not run a real drop yet, and its two
+suppliers are demo entries routed to our own inbox. Its profile, brand
 book, two suppliers and guardrails are in the Brand workspace; its mood boards and brand-book images are AI-generated
 inspiration, labelled as such. No material price list or sales history is loaded yet, so tech-pack costs are the
 model's estimates.
