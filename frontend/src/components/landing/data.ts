@@ -117,13 +117,13 @@ export const PROBLEM_FIGURES: CitedFigure[] = [
   {
     value: "2.5–5",
     unit: "bn items",
-    label: "surplus garments produced in 2023, worth {USD}70–140 bn in sales",
+    label: "items of excess stock produced in 2023, worth {USD}70–140 bn in sales",
     source: "McKinsey & BoF, The State of Fashion 2025",
     href: "https://www.businessoffashion.com/articles/retail/the-state-of-fashion-2025-report-inventory-excess-stock-supply-chain/",
   },
   {
     value: "4–9%",
-    label: "of textiles on the EU market are destroyed before they are ever used",
+    label: "of textile products put on the market in Europe are destroyed before use",
     source: "European Environment Agency, March 2024",
     href: "https://www.eea.europa.eu/en/newsroom/news/many-returned-and-unsold-textiles",
   },
