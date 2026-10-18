@@ -1,0 +1,22 @@
+{
+ "live": {
+  "file": "footage/live.mp4",
+  "width": 1920,
+  "height": 1080,
+  "durationFrames": 16085,
+  "marks": {
+   "trend_done": 2295,
+   "sketch_done": 4867,
+   "techpack": 7275,
+   "rfqs": 7531,
+   "quotes": 10388,
+   "handoff": 11529,
+   "counter": 11815,
+   "revised": 13080,
+   "shopify": 14500,
+   "po_sent": 15400,
+   "inference": 15611,
+   "close": 15852
+  }
+ }
+}

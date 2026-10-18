@@ -49,7 +49,7 @@ model's estimates.
 3. [What works end to end today](#what-works-end-to-end-today)
 4. [Business model](#business-model)
 5. [How it works](#how-it-works)
-6. [Latest development (16–17 Oct 2026)](#latest-development-1617-oct-2026)
+6. [Latest development (16–18 Oct 2026)](#latest-development-1618-oct-2026)
 7. For developers: [Run it](#run-it) · [Run with Docker](#run-with-docker) · [Submission](#submission) ·
    [Layout](#layout) · [Tests](#tests)
 
@@ -390,7 +390,26 @@ Evolus it stays **"Draft - not sent"**, with a send button.
 fit them to the brand's own past launches by hand (past sales imported in the Brand workspace are stored, but the
 forecast does not read them yet).
 
-## Latest development (16–17 Oct 2026)
+## Latest development (16–18 Oct 2026)
+
+- **Demo film (17–18 Oct).** A 2:55 film of the live run, built in code in [`video/`](video/) (Remotion): real
+  footage of the hosted site, narration and music made with ElevenLabs, and real emails from the run's inbox (cropped,
+  no addresses). Model waits are shortened and marked; the agent's line is the app's real hand-off message, voiced.
+  What is real and how to rebuild it: [video/README.md](video/README.md).
+- **Outreach fix found while filming (17 Oct).** The email workflow reports a send as "handed to the Evolus mailer";
+  the audit's new partly-failed-send check had read that as "not sent" and stopped every run at the RFQ step. Only
+  "failed" or "not sent" with a reason now mark an RFQ as unsent. Caught on a rehearsal of the hosted site, fixed with
+  a regression test and redeployed the same hour. (c4987fd)
+- **Landing page motion (17 Oct).** One motion language from the brand's tailor's gauge: on load the gauge's needle
+  swings to 12 o'clock and becomes the Atelier mark; each section opens with a hairline drawn and a tick dropped;
+  seams sew where work changes hands; the agents' list carries a scroll-linked thread to the purchase-order
+  threshold; the architecture diagram assembles along the request path, and a dot travels it each time the real
+  `/api/health` answers (no timers); an xl-only tape rail reads your progress. Figures rise into place rather than
+  counting up. Reduced motion is fully static, and every word is visible without JavaScript. (438b1e7)
+- **Custom glyphs and official partner marks (17 Oct).** The stock ✓ ⚠ ✗ ✋ ↻ ★ in agent messages are drawn as
+  Atelier's own glyphs (a stitched tick, a cross-stitch, a dressmaker's pin, an open hand, a loop of thread, a star),
+  with accessible labels; verbatim customer quotes are left untouched. The credit and the footer use the official
+  AMD, Gemma and Evolus marks, sourced from each company's own site, with trademark attribution. (a82aba1)
 
 - **Live end-to-end run (17 Oct).** Mood board → sketch → customer voice → tech pack → bilingual RFQs → two
   guardrail hand-offs and a negotiation → Shopify pre-order → test order → PO-00001, on AMD Token Factory, Evolus and
@@ -400,7 +419,7 @@ forecast does not read them yet).
   approving and everything after it need the admin token. The dashboard calls its API on the same origin, so one build
   serves any domain pointed at the server. It runs with Docker Compose on a shared server: both containers listen only
   on 127.0.0.1 behind nginx over HTTPS, with memory caps of 768 MB for the API and 384 MB for the dashboard. Last
-  deployed on 17 October, after commit 5dd33c1. (95e0077, e8dab9d, 6637b5f)
+  deployed on 17 October, after commit c4987fd. (95e0077, e8dab9d, 6637b5f)
 - **Security hardening (17 Oct).** Model calls are limited per visitor (15 per 10 minutes by default, 40 on the
   hosted site) and to 120 per 10 minutes in total; a request rejected before it reaches the model doesn't count. For
   signed-out visitors, email addresses in API responses are masked to the first letter, three dots and the domain.
@@ -450,7 +469,7 @@ forecast does not read them yet).
 - **Forecast hardening (17 Oct).** The forecast refuses more than 1,000,000 observed pre-order units before
   allocating memory (in testing, an order list of 20,000 × 10,000 units froze the server). It also caps the size of
   its exact probability table and runs in a worker thread, so the API stays responsive. (d853c4d, e8dab9d)
-- **Tests and a clean build (17 Oct).** All 395 backend tests pass (`uv run pytest -q`, 44 s). They run against
+- **Tests and a clean build (17 Oct).** All 396 backend tests pass (`uv run pytest -q`, 44 s). They run against
   local test doubles of every upstream service, which mark their responses as fake, so no live service is called. A
   fresh clone (commit 5b447ec) built and started with `docker compose up --build`; the API reported healthy and, with
   no `.env`, every service showed "not connected". Later commits were not rebuilt from a clean clone.
@@ -572,6 +591,7 @@ and `CORS_ORIGINS=https://$HOST`), Docker Compose on the server, and `deploy/vps
 - [CONTRACT.md](CONTRACT.md): the API contract between backend and frontend
 - [PROJECT_SPEC.md](PROJECT_SPEC.md), [ARCHITECTURE.md](ARCHITECTURE.md): the original plan of 12 October, kept as
   history; the shipped stack differs
+- [video/](video/): the demo film, built in code (Remotion); outputs and footage are git-ignored
 - `dev.sh` and `docker-compose.yml`: local run. [LICENSE](LICENSE): MIT
 
 ## Tests

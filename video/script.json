@@ -1,0 +1,178 @@
+{
+ "title": "Atelier: make only what's already sold",
+ "model": "eleven_multilingual_v2",
+ "notes": "Numbers in {braces} are filled from the recorded live run (scripts/capture.mjs writes them to src/data.json) so the narration matches the footage. Every other number is sourced in the README. The agent's line is the app's real hand-off message, voiced: labelled on screen as a dramatisation.",
+ "voices": {
+  "narrator": {
+   "name": "Lily",
+   "id": "pFZP5JQG7iQjIQuC4Bku",
+   "settings": {
+    "stability": 0.45,
+    "similarity_boost": 0.8,
+    "style": 0.35,
+    "use_speaker_boost": true
+   }
+  },
+  "agent": {
+   "name": "Daniel",
+   "id": "onwK4e9ZLuTAKqWW03F9",
+   "settings": {
+    "stability": 0.8,
+    "similarity_boost": 0.8,
+    "style": 0.05,
+    "use_speaker_boost": true
+   }
+  }
+ },
+ "scenes": [
+  {
+   "id": "open",
+   "seconds": 13,
+   "lines": [
+    {
+     "voice": "narrator",
+     "text": "Fashion has a business model. It fits in one word. Guess."
+    },
+    {
+     "voice": "narrator",
+     "text": "Design it. Make hundreds of them. Hope somebody wants one."
+    }
+   ]
+  },
+  {
+   "id": "evidence",
+   "seconds": 15,
+   "lines": [
+    {
+     "voice": "narrator",
+     "text": "In twenty twenty-three, the industry guessed wrong on an estimated two and a half to five billion items."
+    },
+    {
+     "voice": "narrator",
+     "text": "And since July twenty twenty-six, large brands in the EU may no longer simply destroy what they didn't sell."
+    }
+   ]
+  },
+  {
+   "id": "gap",
+   "seconds": 13,
+   "lines": [
+    {
+     "voice": "narrator",
+     "text": "Small labels are spared the ban. Not the bill. They still pay for every unsold piece, after hours of specs and emails with factories, before a single customer has said yes."
+    }
+   ]
+  },
+  {
+   "id": "turn",
+   "seconds": 8,
+   "lines": [
+    {
+     "voice": "narrator",
+     "text": "So we built Atelier. Make only what's already sold."
+    }
+   ]
+  },
+  {
+   "id": "trend",
+   "seconds": 14,
+   "lines": [
+    {
+     "voice": "narrator",
+     "text": "Pick a mood board. Gemma 4, Google's open model, running on AMD GPUs, reads the trend. Silhouettes, palette, fabrics, and how sellable it is."
+    }
+   ]
+  },
+  {
+   "id": "sketch",
+   "seconds": 13,
+   "lines": [
+    {
+     "voice": "narrator",
+     "text": "Most designers already have a drawing. Atelier reads it like a pattern cutter. Mandarin collar. Half placket. Side slits."
+    }
+   ]
+  },
+  {
+   "id": "paperwork",
+   "seconds": 16,
+   "lines": [
+    {
+     "voice": "narrator",
+     "text": "Press approve, and the agents take the paperwork. A costed tech pack, grounded in the brand book. Quote requests to each mill, in the mill's own language."
+    },
+    {
+     "voice": "narrator",
+     "text": "On our first live run, that took one minute fifty-four."
+    }
+   ]
+  },
+  {
+   "id": "handoff",
+   "seconds": 22,
+   "lines": [
+    {
+     "voice": "narrator",
+     "text": "Then a quote comes back. 320 euros a piece, for a tunic that sells at 310 euros.",
+     "template": "Then a quote comes back. {quote} euros a piece, for a tunic that sells at {retail}."
+    },
+    {
+     "voice": "agent",
+     "text": "This quote breaks your margin floor and your cost cap. Your call."
+    },
+    {
+     "voice": "narrator",
+     "text": "The agent stops and asks. You choose negotiate. It drafts the counter-offer at the exact price your margin allows, and Evolus sends it."
+    }
+   ]
+  },
+  {
+   "id": "preorder",
+   "seconds": 14,
+   "lines": [
+    {
+     "voice": "narrator",
+     "text": "The revised quote passes. The pre-order goes live on Shopify. Real product, real checkout. And the factory order? It waits."
+    }
+   ]
+  },
+  {
+   "id": "po",
+   "seconds": 12,
+   "lines": [
+    {
+     "voice": "narrator",
+     "text": "Five pre-orders clear the demo threshold. Only then does the purchase order go to the mill."
+    }
+   ]
+  },
+  {
+   "id": "different",
+   "seconds": 22,
+   "lines": [
+    {
+     "voice": "narrator",
+     "text": "Three things make it different. Taste stays human: four creative calls, and every money decision is yours."
+    },
+    {
+     "voice": "narrator",
+     "text": "Rules, not vibes, decide the money. Margins are plain arithmetic, so the AI can't be sweet-talked."
+    },
+    {
+     "voice": "narrator",
+     "text": "And nothing is made up. Every model call is measured, live, on AMD."
+    }
+   ]
+  },
+  {
+   "id": "close",
+   "seconds": 11,
+   "lines": [
+    {
+     "voice": "narrator",
+     "text": "Atelier. Make only what's already sold. Built on AMD, Gemma 4 and Evolus."
+    }
+   ]
+  }
+ ]
+}

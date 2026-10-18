@@ -1,0 +1,2185 @@
+{
+ "fps": 30,
+ "totalFrames": 5242,
+ "bpm": 100,
+ "beats": [
+  1,
+  19,
+  37,
+  55,
+  73,
+  91,
+  109,
+  127,
+  145,
+  163,
+  181,
+  199,
+  217,
+  235,
+  253,
+  271,
+  289,
+  307,
+  325,
+  343,
+  361,
+  379,
+  397,
+  415,
+  433,
+  451,
+  469,
+  487,
+  505,
+  523,
+  541,
+  559,
+  577,
+  595,
+  613,
+  631,
+  649,
+  667,
+  685,
+  703,
+  721,
+  739,
+  757,
+  775,
+  793,
+  811,
+  829,
+  847,
+  865,
+  883,
+  901,
+  919,
+  937,
+  955,
+  973,
+  991,
+  1009,
+  1027,
+  1045,
+  1063,
+  1081,
+  1099,
+  1117,
+  1135,
+  1153,
+  1171,
+  1189,
+  1207,
+  1225,
+  1243,
+  1261,
+  1279,
+  1297,
+  1315,
+  1333,
+  1351,
+  1369,
+  1387,
+  1405,
+  1423,
+  1441,
+  1459,
+  1477,
+  1495,
+  1513,
+  1531,
+  1549,
+  1567,
+  1585,
+  1603,
+  1621,
+  1639,
+  1657,
+  1675,
+  1693,
+  1711,
+  1729,
+  1747,
+  1765,
+  1783,
+  1801,
+  1819,
+  1837,
+  1855,
+  1873,
+  1891,
+  1909,
+  1927,
+  1945,
+  1963,
+  1981,
+  1999,
+  2017,
+  2035,
+  2053,
+  2071,
+  2089,
+  2107,
+  2125,
+  2143,
+  2161,
+  2179,
+  2197,
+  2215,
+  2233,
+  2251,
+  2269,
+  2287,
+  2305,
+  2323,
+  2341,
+  2359,
+  2377,
+  2395,
+  2413,
+  2431,
+  2449,
+  2467,
+  2485,
+  2503,
+  2521,
+  2539,
+  2557,
+  2575,
+  2593,
+  2611,
+  2629,
+  2647,
+  2665,
+  2683,
+  2701,
+  2719,
+  2737,
+  2755,
+  2773,
+  2791,
+  2809,
+  2827,
+  2845,
+  2863,
+  2881,
+  2899,
+  2917,
+  2935,
+  2953,
+  2971,
+  2989,
+  3007,
+  3025,
+  3043,
+  3061,
+  3079,
+  3097,
+  3115,
+  3133,
+  3151,
+  3169,
+  3187,
+  3205,
+  3223,
+  3241,
+  3259,
+  3277,
+  3295,
+  3313,
+  3331,
+  3349,
+  3367,
+  3385,
+  3403,
+  3421,
+  3439,
+  3457,
+  3475,
+  3493,
+  3511,
+  3529,
+  3547,
+  3565,
+  3583,
+  3601,
+  3619,
+  3637,
+  3655,
+  3673,
+  3691,
+  3709,
+  3727,
+  3745,
+  3763,
+  3781,
+  3799,
+  3817,
+  3835,
+  3853,
+  3871,
+  3889,
+  3907,
+  3925,
+  3943,
+  3961,
+  3979,
+  3997,
+  4015,
+  4033,
+  4051,
+  4069,
+  4087,
+  4105,
+  4123,
+  4141,
+  4159,
+  4177,
+  4195,
+  4213,
+  4231,
+  4249,
+  4267,
+  4285,
+  4303,
+  4321,
+  4339,
+  4357,
+  4375,
+  4393,
+  4411,
+  4429,
+  4447,
+  4465,
+  4483,
+  4501,
+  4519,
+  4537,
+  4555,
+  4573,
+  4591,
+  4609,
+  4627,
+  4645,
+  4663,
+  4681,
+  4699,
+  4717,
+  4735,
+  4753,
+  4771,
+  4789,
+  4807,
+  4825,
+  4843,
+  4861,
+  4879,
+  4897,
+  4915,
+  4933,
+  4951,
+  4969,
+  4987,
+  5005,
+  5023,
+  5041,
+  5059,
+  5077,
+  5095,
+  5113,
+  5131,
+  5149,
+  5167,
+  5185,
+  5203,
+  5221,
+  5239
+ ],
+ "music": {
+  "file": "audio/music.mp3",
+  "source": "elevenlabs-music"
+ },
+ "scenes": [
+  {
+   "id": "open",
+   "from": 0,
+   "durationInFrames": 390,
+   "lines": [
+    {
+     "voice": "narrator",
+     "text": "Fashion has a business model. It fits in one word. Guess.",
+     "file": "audio/vo/open_0.mp3",
+     "startFrame": 12,
+     "durationFrames": 112,
+     "words": [
+      {
+       "word": "Fashion",
+       "start": 12,
+       "end": 25
+      },
+      {
+       "word": "has",
+       "start": 26,
+       "end": 30
+      },
+      {
+       "word": "a",
+       "start": 31,
+       "end": 32
+      },
+      {
+       "word": "business",
+       "start": 33,
+       "end": 43
+      },
+      {
+       "word": "model.",
+       "start": 44,
+       "end": 53
+      },
+      {
+       "word": "It",
+       "start": 54,
+       "end": 57
+      },
+      {
+       "word": "fits",
+       "start": 58,
+       "end": 65
+      },
+      {
+       "word": "in",
+       "start": 66,
+       "end": 68
+      },
+      {
+       "word": "one",
+       "start": 71,
+       "end": 75
+      },
+      {
+       "word": "word.",
+       "start": 76,
+       "end": 90
+      },
+      {
+       "word": "Guess.",
+       "start": 98,
+       "end": 123
+      }
+     ]
+    },
+    {
+     "voice": "narrator",
+     "text": "Design it. Make hundreds of them. Hope somebody wants one.",
+     "file": "audio/vo/open_1.mp3",
+     "startFrame": 139,
+     "durationFrames": 104,
+     "words": [
+      {
+       "word": "Design",
+       "start": 139,
+       "end": 154
+      },
+      {
+       "word": "it.",
+       "start": 156,
+       "end": 160
+      },
+      {
+       "word": "Make",
+       "start": 161,
+       "end": 167
+      },
+      {
+       "word": "hundreds",
+       "start": 169,
+       "end": 180
+      },
+      {
+       "word": "of",
+       "start": 181,
+       "end": 184
+      },
+      {
+       "word": "them.",
+       "start": 186,
+       "end": 193
+      },
+      {
+       "word": "Hope",
+       "start": 198,
+       "end": 205
+      },
+      {
+       "word": "somebody",
+       "start": 206,
+       "end": 215
+      },
+      {
+       "word": "wants",
+       "start": 217,
+       "end": 224
+      },
+      {
+       "word": "one.",
+       "start": 226,
+       "end": 242
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "evidence",
+   "from": 390,
+   "durationInFrames": 461,
+   "lines": [
+    {
+     "voice": "narrator",
+     "text": "In twenty twenty-three, the industry guessed wrong on an estimated two and a half to five billion items.",
+     "file": "audio/vo/evidence_0.mp3",
+     "startFrame": 402,
+     "durationFrames": 201,
+     "words": [
+      {
+       "word": "In",
+       "start": 402,
+       "end": 407
+      },
+      {
+       "word": "twenty",
+       "start": 409,
+       "end": 419
+      },
+      {
+       "word": "twenty-three,",
+       "start": 421,
+       "end": 444
+      },
+      {
+       "word": "the",
+       "start": 445,
+       "end": 448
+      },
+      {
+       "word": "industry",
+       "start": 450,
+       "end": 463
+      },
+      {
+       "word": "guessed",
+       "start": 465,
+       "end": 474
+      },
+      {
+       "word": "wrong",
+       "start": 475,
+       "end": 484
+      },
+      {
+       "word": "on",
+       "start": 486,
+       "end": 489
+      },
+      {
+       "word": "an",
+       "start": 491,
+       "end": 493
+      },
+      {
+       "word": "estimated",
+       "start": 495,
+       "end": 515
+      },
+      {
+       "word": "two",
+       "start": 517,
+       "end": 521
+      },
+      {
+       "word": "and",
+       "start": 524,
+       "end": 526
+      },
+      {
+       "word": "a",
+       "start": 528,
+       "end": 529
+      },
+      {
+       "word": "half",
+       "start": 531,
+       "end": 539
+      },
+      {
+       "word": "to",
+       "start": 541,
+       "end": 543
+      },
+      {
+       "word": "five",
+       "start": 547,
+       "end": 558
+      },
+      {
+       "word": "billion",
+       "start": 559,
+       "end": 571
+      },
+      {
+       "word": "items.",
+       "start": 575,
+       "end": 603
+      }
+     ]
+    },
+    {
+     "voice": "narrator",
+     "text": "And since July twenty twenty-six, large brands in the EU may no longer simply destroy what they didn't sell.",
+     "file": "audio/vo/evidence_1.mp3",
+     "startFrame": 619,
+     "durationFrames": 216,
+     "words": [
+      {
+       "word": "And",
+       "start": 619,
+       "end": 625
+      },
+      {
+       "word": "since",
+       "start": 627,
+       "end": 634
+      },
+      {
+       "word": "July",
+       "start": 635,
+       "end": 646
+      },
+      {
+       "word": "twenty",
+       "start": 649,
+       "end": 656
+      },
+      {
+       "word": "twenty-six,",
+       "start": 657,
+       "end": 680
+      },
+      {
+       "word": "large",
+       "start": 687,
+       "end": 697
+      },
+      {
+       "word": "brands",
+       "start": 698,
+       "end": 708
+      },
+      {
+       "word": "in",
+       "start": 710,
+       "end": 711
+      },
+      {
+       "word": "the",
+       "start": 712,
+       "end": 714
+      },
+      {
+       "word": "EU",
+       "start": 716,
+       "end": 731
+      },
+      {
+       "word": "may",
+       "start": 738,
+       "end": 743
+      },
+      {
+       "word": "no",
+       "start": 746,
+       "end": 752
+      },
+      {
+       "word": "longer",
+       "start": 754,
+       "end": 763
+      },
+      {
+       "word": "simply",
+       "start": 765,
+       "end": 775
+      },
+      {
+       "word": "destroy",
+       "start": 776,
+       "end": 791
+      },
+      {
+       "word": "what",
+       "start": 792,
+       "end": 796
+      },
+      {
+       "word": "they",
+       "start": 797,
+       "end": 801
+      },
+      {
+       "word": "didn't",
+       "start": 802,
+       "end": 811
+      },
+      {
+       "word": "sell.",
+       "start": 813,
+       "end": 835
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "gap",
+   "from": 851,
+   "durationInFrames": 397,
+   "lines": [
+    {
+     "voice": "narrator",
+     "text": "Small labels are spared the ban. Not the bill. They still pay for every unsold piece, after hours of specs and emails with factories, before a single customer has said yes.",
+     "file": "audio/vo/gap_0.mp3",
+     "startFrame": 863,
+     "durationFrames": 370,
+     "words": [
+      {
+       "word": "Small",
+       "start": 863,
+       "end": 873
+      },
+      {
+       "word": "labels",
+       "start": 875,
+       "end": 886
+      },
+      {
+       "word": "are",
+       "start": 887,
+       "end": 889
+      },
+      {
+       "word": "spared",
+       "start": 890,
+       "end": 899
+      },
+      {
+       "word": "the",
+       "start": 900,
+       "end": 902
+      },
+      {
+       "word": "ban.",
+       "start": 903,
+       "end": 919
+      },
+      {
+       "word": "Not",
+       "start": 932,
+       "end": 940
+      },
+      {
+       "word": "the",
+       "start": 941,
+       "end": 943
+      },
+      {
+       "word": "bill.",
+       "start": 945,
+       "end": 958
+      },
+      {
+       "word": "They",
+       "start": 973,
+       "end": 979
+      },
+      {
+       "word": "still",
+       "start": 981,
+       "end": 988
+      },
+      {
+       "word": "pay",
+       "start": 990,
+       "end": 996
+      },
+      {
+       "word": "for",
+       "start": 998,
+       "end": 1001
+      },
+      {
+       "word": "every",
+       "start": 1003,
+       "end": 1015
+      },
+      {
+       "word": "unsold",
+       "start": 1017,
+       "end": 1032
+      },
+      {
+       "word": "piece,",
+       "start": 1034,
+       "end": 1050
+      },
+      {
+       "word": "after",
+       "start": 1057,
+       "end": 1067
+      },
+      {
+       "word": "hours",
+       "start": 1069,
+       "end": 1079
+      },
+      {
+       "word": "of",
+       "start": 1081,
+       "end": 1082
+      },
+      {
+       "word": "specs",
+       "start": 1084,
+       "end": 1096
+      },
+      {
+       "word": "and",
+       "start": 1097,
+       "end": 1099
+      },
+      {
+       "word": "emails",
+       "start": 1102,
+       "end": 1115
+      },
+      {
+       "word": "with",
+       "start": 1116,
+       "end": 1120
+      },
+      {
+       "word": "factories,",
+       "start": 1121,
+       "end": 1144
+      },
+      {
+       "word": "before",
+       "start": 1149,
+       "end": 1158
+      },
+      {
+       "word": "a",
+       "start": 1159,
+       "end": 1160
+      },
+      {
+       "word": "single",
+       "start": 1163,
+       "end": 1175
+      },
+      {
+       "word": "customer",
+       "start": 1176,
+       "end": 1190
+      },
+      {
+       "word": "has",
+       "start": 1192,
+       "end": 1196
+      },
+      {
+       "word": "said",
+       "start": 1198,
+       "end": 1205
+      },
+      {
+       "word": "yes.",
+       "start": 1208,
+       "end": 1232
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "turn",
+   "from": 1248,
+   "durationInFrames": 240,
+   "lines": [
+    {
+     "voice": "narrator",
+     "text": "So we built Atelier. Make only what's already sold.",
+     "file": "audio/vo/turn_0.mp3",
+     "startFrame": 1260,
+     "durationFrames": 113,
+     "words": [
+      {
+       "word": "So",
+       "start": 1260,
+       "end": 1266
+      },
+      {
+       "word": "we",
+       "start": 1267,
+       "end": 1270
+      },
+      {
+       "word": "built",
+       "start": 1272,
+       "end": 1280
+      },
+      {
+       "word": "Atelier.",
+       "start": 1282,
+       "end": 1302
+      },
+      {
+       "word": "Make",
+       "start": 1315,
+       "end": 1322
+      },
+      {
+       "word": "only",
+       "start": 1323,
+       "end": 1329
+      },
+      {
+       "word": "what's",
+       "start": 1330,
+       "end": 1336
+      },
+      {
+       "word": "already",
+       "start": 1337,
+       "end": 1346
+      },
+      {
+       "word": "sold.",
+       "start": 1348,
+       "end": 1373
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "trend",
+   "from": 1488,
+   "durationInFrames": 420,
+   "lines": [
+    {
+     "voice": "narrator",
+     "text": "Pick a mood board. Gemma 4, Google's open model, running on AMD GPUs, reads the trend. Silhouettes, palette, fabrics, and how sellable it is.",
+     "file": "audio/vo/trend_0.mp3",
+     "startFrame": 1500,
+     "durationFrames": 354,
+     "words": [
+      {
+       "word": "Pick",
+       "start": 1500,
+       "end": 1508
+      },
+      {
+       "word": "a",
+       "start": 1509,
+       "end": 1509
+      },
+      {
+       "word": "mood",
+       "start": 1511,
+       "end": 1517
+      },
+      {
+       "word": "board.",
+       "start": 1519,
+       "end": 1533
+      },
+      {
+       "word": "Gemma",
+       "start": 1554,
+       "end": 1564
+      },
+      {
+       "word": "4,",
+       "start": 1566,
+       "end": 1579
+      },
+      {
+       "word": "Google's",
+       "start": 1583,
+       "end": 1596
+      },
+      {
+       "word": "open",
+       "start": 1598,
+       "end": 1607
+      },
+      {
+       "word": "model,",
+       "start": 1608,
+       "end": 1621
+      },
+      {
+       "word": "running",
+       "start": 1624,
+       "end": 1632
+      },
+      {
+       "word": "on",
+       "start": 1633,
+       "end": 1635
+      },
+      {
+       "word": "AMD",
+       "start": 1638,
+       "end": 1650
+      },
+      {
+       "word": "GPUs,",
+       "start": 1654,
+       "end": 1678
+      },
+      {
+       "word": "reads",
+       "start": 1685,
+       "end": 1694
+      },
+      {
+       "word": "the",
+       "start": 1696,
+       "end": 1698
+      },
+      {
+       "word": "trend.",
+       "start": 1700,
+       "end": 1716
+      },
+      {
+       "word": "Silhouettes,",
+       "start": 1729,
+       "end": 1755
+      },
+      {
+       "word": "palette,",
+       "start": 1761,
+       "end": 1780
+      },
+      {
+       "word": "fabrics,",
+       "start": 1786,
+       "end": 1808
+      },
+      {
+       "word": "and",
+       "start": 1812,
+       "end": 1817
+      },
+      {
+       "word": "how",
+       "start": 1819,
+       "end": 1825
+      },
+      {
+       "word": "sellable",
+       "start": 1828,
+       "end": 1841
+      },
+      {
+       "word": "it",
+       "start": 1842,
+       "end": 1844
+      },
+      {
+       "word": "is.",
+       "start": 1847,
+       "end": 1854
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "sketch",
+   "from": 1908,
+   "durationInFrames": 390,
+   "lines": [
+    {
+     "voice": "narrator",
+     "text": "Most designers already have a drawing. Atelier reads it like a pattern cutter. Mandarin collar. Half placket. Side slits.",
+     "file": "audio/vo/sketch_0.mp3",
+     "startFrame": 1920,
+     "durationFrames": 265,
+     "words": [
+      {
+       "word": "Most",
+       "start": 1920,
+       "end": 1929
+      },
+      {
+       "word": "designers",
+       "start": 1930,
+       "end": 1943
+      },
+      {
+       "word": "already",
+       "start": 1945,
+       "end": 1957
+      },
+      {
+       "word": "have",
+       "start": 1959,
+       "end": 1962
+      },
+      {
+       "word": "a",
+       "start": 1963,
+       "end": 1964
+      },
+      {
+       "word": "drawing.",
+       "start": 1965,
+       "end": 1980
+      },
+      {
+       "word": "Atelier",
+       "start": 1989,
+       "end": 2005
+      },
+      {
+       "word": "reads",
+       "start": 2008,
+       "end": 2015
+      },
+      {
+       "word": "it",
+       "start": 2016,
+       "end": 2018
+      },
+      {
+       "word": "like",
+       "start": 2019,
+       "end": 2023
+      },
+      {
+       "word": "a",
+       "start": 2023,
+       "end": 2024
+      },
+      {
+       "word": "pattern",
+       "start": 2026,
+       "end": 2036
+      },
+      {
+       "word": "cutter.",
+       "start": 2037,
+       "end": 2053
+      },
+      {
+       "word": "Mandarin",
+       "start": 2068,
+       "end": 2084
+      },
+      {
+       "word": "collar.",
+       "start": 2087,
+       "end": 2100
+      },
+      {
+       "word": "Half",
+       "start": 2110,
+       "end": 2119
+      },
+      {
+       "word": "placket.",
+       "start": 2120,
+       "end": 2139
+      },
+      {
+       "word": "Side",
+       "start": 2147,
+       "end": 2160
+      },
+      {
+       "word": "slits.",
+       "start": 2161,
+       "end": 2185
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "paperwork",
+   "from": 2298,
+   "durationInFrames": 480,
+   "lines": [
+    {
+     "voice": "narrator",
+     "text": "Press approve, and the agents take the paperwork. A costed tech pack, grounded in the brand book. Quote requests to each mill, in the mill's own language.",
+     "file": "audio/vo/paperwork_0.mp3",
+     "startFrame": 2310,
+     "durationFrames": 339,
+     "words": [
+      {
+       "word": "Press",
+       "start": 2310,
+       "end": 2319
+      },
+      {
+       "word": "approve,",
+       "start": 2320,
+       "end": 2338
+      },
+      {
+       "word": "and",
+       "start": 2345,
+       "end": 2350
+      },
+      {
+       "word": "the",
+       "start": 2351,
+       "end": 2354
+      },
+      {
+       "word": "agents",
+       "start": 2356,
+       "end": 2368
+      },
+      {
+       "word": "take",
+       "start": 2369,
+       "end": 2375
+      },
+      {
+       "word": "the",
+       "start": 2375,
+       "end": 2378
+      },
+      {
+       "word": "paperwork.",
+       "start": 2379,
+       "end": 2400
+      },
+      {
+       "word": "A",
+       "start": 2410,
+       "end": 2412
+      },
+      {
+       "word": "costed",
+       "start": 2414,
+       "end": 2427
+      },
+      {
+       "word": "tech",
+       "start": 2428,
+       "end": 2435
+      },
+      {
+       "word": "pack,",
+       "start": 2436,
+       "end": 2448
+      },
+      {
+       "word": "grounded",
+       "start": 2451,
+       "end": 2464
+      },
+      {
+       "word": "in",
+       "start": 2465,
+       "end": 2467
+      },
+      {
+       "word": "the",
+       "start": 2468,
+       "end": 2470
+      },
+      {
+       "word": "brand",
+       "start": 2472,
+       "end": 2482
+      },
+      {
+       "word": "book.",
+       "start": 2484,
+       "end": 2498
+      },
+      {
+       "word": "Quote",
+       "start": 2511,
+       "end": 2528
+      },
+      {
+       "word": "requests",
+       "start": 2538,
+       "end": 2554
+      },
+      {
+       "word": "to",
+       "start": 2556,
+       "end": 2558
+      },
+      {
+       "word": "each",
+       "start": 2561,
+       "end": 2568
+      },
+      {
+       "word": "mill,",
+       "start": 2570,
+       "end": 2583
+      },
+      {
+       "word": "in",
+       "start": 2591,
+       "end": 2596
+      },
+      {
+       "word": "the",
+       "start": 2597,
+       "end": 2599
+      },
+      {
+       "word": "mill's",
+       "start": 2601,
+       "end": 2612
+      },
+      {
+       "word": "own",
+       "start": 2614,
+       "end": 2621
+      },
+      {
+       "word": "language.",
+       "start": 2623,
+       "end": 2649
+      }
+     ]
+    },
+    {
+     "voice": "narrator",
+     "text": "On our first live run, that took one minute fifty-four.",
+     "file": "audio/vo/paperwork_1.mp3",
+     "startFrame": 2665,
+     "durationFrames": 94,
+     "words": [
+      {
+       "word": "On",
+       "start": 2665,
+       "end": 2670
+      },
+      {
+       "word": "our",
+       "start": 2671,
+       "end": 2674
+      },
+      {
+       "word": "first",
+       "start": 2676,
+       "end": 2685
+      },
+      {
+       "word": "live",
+       "start": 2687,
+       "end": 2694
+      },
+      {
+       "word": "run,",
+       "start": 2695,
+       "end": 2703
+      },
+      {
+       "word": "that",
+       "start": 2704,
+       "end": 2708
+      },
+      {
+       "word": "took",
+       "start": 2709,
+       "end": 2715
+      },
+      {
+       "word": "one",
+       "start": 2717,
+       "end": 2722
+      },
+      {
+       "word": "minute",
+       "start": 2723,
+       "end": 2729
+      },
+      {
+       "word": "fifty-four.",
+       "start": 2730,
+       "end": 2758
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "handoff",
+   "from": 2778,
+   "durationInFrames": 660,
+   "lines": [
+    {
+     "voice": "narrator",
+     "text": "Then a quote comes back. 320 euros a piece, for a tunic that sells at 310 euros.",
+     "file": "audio/vo/handoff_0.mp3",
+     "startFrame": 2790,
+     "durationFrames": 183,
+     "words": [
+      {
+       "word": "Then",
+       "start": 2790,
+       "end": 2796
+      },
+      {
+       "word": "a",
+       "start": 2797,
+       "end": 2798
+      },
+      {
+       "word": "quote",
+       "start": 2799,
+       "end": 2806
+      },
+      {
+       "word": "comes",
+       "start": 2807,
+       "end": 2814
+      },
+      {
+       "word": "back.",
+       "start": 2815,
+       "end": 2826
+      },
+      {
+       "word": "320",
+       "start": 2832,
+       "end": 2856
+      },
+      {
+       "word": "euros",
+       "start": 2857,
+       "end": 2867
+      },
+      {
+       "word": "a",
+       "start": 2868,
+       "end": 2869
+      },
+      {
+       "word": "piece,",
+       "start": 2870,
+       "end": 2883
+      },
+      {
+       "word": "for",
+       "start": 2888,
+       "end": 2892
+      },
+      {
+       "word": "a",
+       "start": 2894,
+       "end": 2894
+      },
+      {
+       "word": "tunic",
+       "start": 2896,
+       "end": 2905
+      },
+      {
+       "word": "that",
+       "start": 2907,
+       "end": 2911
+      },
+      {
+       "word": "sells",
+       "start": 2912,
+       "end": 2923
+      },
+      {
+       "word": "at",
+       "start": 2924,
+       "end": 2926
+      },
+      {
+       "word": "310",
+       "start": 2928,
+       "end": 2946
+      },
+      {
+       "word": "euros.",
+       "start": 2947,
+       "end": 2973
+      }
+     ]
+    },
+    {
+     "voice": "agent",
+     "text": "This quote breaks your margin floor and your cost cap. Your call.",
+     "file": "audio/vo/handoff_1.mp3",
+     "startFrame": 2989,
+     "durationFrames": 141,
+     "words": [
+      {
+       "word": "This",
+       "start": 2989,
+       "end": 2996
+      },
+      {
+       "word": "quote",
+       "start": 2998,
+       "end": 3005
+      },
+      {
+       "word": "breaks",
+       "start": 3007,
+       "end": 3015
+      },
+      {
+       "word": "your",
+       "start": 3017,
+       "end": 3021
+      },
+      {
+       "word": "margin",
+       "start": 3023,
+       "end": 3033
+      },
+      {
+       "word": "floor",
+       "start": 3035,
+       "end": 3045
+      },
+      {
+       "word": "and",
+       "start": 3052,
+       "end": 3058
+      },
+      {
+       "word": "your",
+       "start": 3059,
+       "end": 3064
+      },
+      {
+       "word": "cost",
+       "start": 3066,
+       "end": 3074
+      },
+      {
+       "word": "cap.",
+       "start": 3075,
+       "end": 3089
+      },
+      {
+       "word": "Your",
+       "start": 3099,
+       "end": 3105
+      },
+      {
+       "word": "call.",
+       "start": 3107,
+       "end": 3130
+      }
+     ]
+    },
+    {
+     "voice": "narrator",
+     "text": "The agent stops and asks. You choose negotiate. It drafts the counter-offer at the exact price your margin allows, and Evolus sends it.",
+     "file": "audio/vo/handoff_2.mp3",
+     "startFrame": 3146,
+     "durationFrames": 254,
+     "words": [
+      {
+       "word": "The",
+       "start": 3146,
+       "end": 3151
+      },
+      {
+       "word": "agent",
+       "start": 3153,
+       "end": 3162
+      },
+      {
+       "word": "stops",
+       "start": 3163,
+       "end": 3174
+      },
+      {
+       "word": "and",
+       "start": 3175,
+       "end": 3177
+      },
+      {
+       "word": "asks.",
+       "start": 3179,
+       "end": 3196
+      },
+      {
+       "word": "You",
+       "start": 3206,
+       "end": 3212
+      },
+      {
+       "word": "choose",
+       "start": 3214,
+       "end": 3222
+      },
+      {
+       "word": "negotiate.",
+       "start": 3223,
+       "end": 3245
+      },
+      {
+       "word": "It",
+       "start": 3255,
+       "end": 3259
+      },
+      {
+       "word": "drafts",
+       "start": 3260,
+       "end": 3270
+      },
+      {
+       "word": "the",
+       "start": 3271,
+       "end": 3273
+      },
+      {
+       "word": "counter-offer",
+       "start": 3274,
+       "end": 3292
+      },
+      {
+       "word": "at",
+       "start": 3293,
+       "end": 3295
+      },
+      {
+       "word": "the",
+       "start": 3296,
+       "end": 3298
+      },
+      {
+       "word": "exact",
+       "start": 3300,
+       "end": 3312
+      },
+      {
+       "word": "price",
+       "start": 3314,
+       "end": 3321
+      },
+      {
+       "word": "your",
+       "start": 3322,
+       "end": 3326
+      },
+      {
+       "word": "margin",
+       "start": 3327,
+       "end": 3335
+      },
+      {
+       "word": "allows,",
+       "start": 3337,
+       "end": 3351
+      },
+      {
+       "word": "and",
+       "start": 3356,
+       "end": 3361
+      },
+      {
+       "word": "Evolus",
+       "start": 3363,
+       "end": 3372
+      },
+      {
+       "word": "sends",
+       "start": 3374,
+       "end": 3383
+      },
+      {
+       "word": "it.",
+       "start": 3385,
+       "end": 3400
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "preorder",
+   "from": 3438,
+   "durationInFrames": 420,
+   "lines": [
+    {
+     "voice": "narrator",
+     "text": "The revised quote passes. The pre-order goes live on Shopify. Real product, real checkout. And the factory order? It waits.",
+     "file": "audio/vo/preorder_0.mp3",
+     "startFrame": 3450,
+     "durationFrames": 276,
+     "words": [
+      {
+       "word": "The",
+       "start": 3450,
+       "end": 3455
+      },
+      {
+       "word": "revised",
+       "start": 3457,
+       "end": 3468
+      },
+      {
+       "word": "quote",
+       "start": 3470,
+       "end": 3477
+      },
+      {
+       "word": "passes.",
+       "start": 3478,
+       "end": 3500
+      },
+      {
+       "word": "The",
+       "start": 3507,
+       "end": 3511
+      },
+      {
+       "word": "pre-order",
+       "start": 3512,
+       "end": 3527
+      },
+      {
+       "word": "goes",
+       "start": 3528,
+       "end": 3534
+      },
+      {
+       "word": "live",
+       "start": 3536,
+       "end": 3544
+      },
+      {
+       "word": "on",
+       "start": 3545,
+       "end": 3547
+      },
+      {
+       "word": "Shopify.",
+       "start": 3549,
+       "end": 3570
+      },
+      {
+       "word": "Real",
+       "start": 3579,
+       "end": 3586
+      },
+      {
+       "word": "product,",
+       "start": 3588,
+       "end": 3603
+      },
+      {
+       "word": "real",
+       "start": 3608,
+       "end": 3615
+      },
+      {
+       "word": "checkout.",
+       "start": 3618,
+       "end": 3639
+      },
+      {
+       "word": "And",
+       "start": 3647,
+       "end": 3652
+      },
+      {
+       "word": "the",
+       "start": 3653,
+       "end": 3655
+      },
+      {
+       "word": "factory",
+       "start": 3657,
+       "end": 3669
+      },
+      {
+       "word": "order?",
+       "start": 3671,
+       "end": 3685
+      },
+      {
+       "word": "It",
+       "start": 3697,
+       "end": 3701
+      },
+      {
+       "word": "waits.",
+       "start": 3703,
+       "end": 3726
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "po",
+   "from": 3858,
+   "durationInFrames": 360,
+   "lines": [
+    {
+     "voice": "narrator",
+     "text": "Five pre-orders clear the demo threshold. Only then does the purchase order go to the mill.",
+     "file": "audio/vo/po_0.mp3",
+     "startFrame": 3870,
+     "durationFrames": 164,
+     "words": [
+      {
+       "word": "Five",
+       "start": 3870,
+       "end": 3880
+      },
+      {
+       "word": "pre-orders",
+       "start": 3881,
+       "end": 3896
+      },
+      {
+       "word": "clear",
+       "start": 3898,
+       "end": 3906
+      },
+      {
+       "word": "the",
+       "start": 3907,
+       "end": 3909
+      },
+      {
+       "word": "demo",
+       "start": 3910,
+       "end": 3917
+      },
+      {
+       "word": "threshold.",
+       "start": 3919,
+       "end": 3940
+      },
+      {
+       "word": "Only",
+       "start": 3950,
+       "end": 3960
+      },
+      {
+       "word": "then",
+       "start": 3962,
+       "end": 3969
+      },
+      {
+       "word": "does",
+       "start": 3971,
+       "end": 3976
+      },
+      {
+       "word": "the",
+       "start": 3977,
+       "end": 3979
+      },
+      {
+       "word": "purchase",
+       "start": 3980,
+       "end": 3992
+      },
+      {
+       "word": "order",
+       "start": 3993,
+       "end": 4000
+      },
+      {
+       "word": "go",
+       "start": 4002,
+       "end": 4005
+      },
+      {
+       "word": "to",
+       "start": 4007,
+       "end": 4008
+      },
+      {
+       "word": "the",
+       "start": 4010,
+       "end": 4012
+      },
+      {
+       "word": "mill.",
+       "start": 4013,
+       "end": 4033
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "different",
+   "from": 4218,
+   "durationInFrames": 660,
+   "lines": [
+    {
+     "voice": "narrator",
+     "text": "Three things make it different. Taste stays human: four creative calls, and every money decision is yours.",
+     "file": "audio/vo/different_0.mp3",
+     "startFrame": 4230,
+     "durationFrames": 247,
+     "words": [
+      {
+       "word": "Three",
+       "start": 4230,
+       "end": 4240
+      },
+      {
+       "word": "things",
+       "start": 4241,
+       "end": 4250
+      },
+      {
+       "word": "make",
+       "start": 4252,
+       "end": 4257
+      },
+      {
+       "word": "it",
+       "start": 4258,
+       "end": 4260
+      },
+      {
+       "word": "different.",
+       "start": 4261,
+       "end": 4281
+      },
+      {
+       "word": "Taste",
+       "start": 4296,
+       "end": 4309
+      },
+      {
+       "word": "stays",
+       "start": 4311,
+       "end": 4322
+      },
+      {
+       "word": "human:",
+       "start": 4324,
+       "end": 4340
+      },
+      {
+       "word": "four",
+       "start": 4353,
+       "end": 4361
+      },
+      {
+       "word": "creative",
+       "start": 4363,
+       "end": 4379
+      },
+      {
+       "word": "calls,",
+       "start": 4380,
+       "end": 4398
+      },
+      {
+       "word": "and",
+       "start": 4403,
+       "end": 4408
+      },
+      {
+       "word": "every",
+       "start": 4411,
+       "end": 4421
+      },
+      {
+       "word": "money",
+       "start": 4423,
+       "end": 4429
+      },
+      {
+       "word": "decision",
+       "start": 4430,
+       "end": 4444
+      },
+      {
+       "word": "is",
+       "start": 4446,
+       "end": 4451
+      },
+      {
+       "word": "yours.",
+       "start": 4453,
+       "end": 4477
+      }
+     ]
+    },
+    {
+     "voice": "narrator",
+     "text": "Rules, not vibes, decide the money. Margins are plain arithmetic, so the AI can't be sweet-talked.",
+     "file": "audio/vo/different_1.mp3",
+     "startFrame": 4493,
+     "durationFrames": 190,
+     "words": [
+      {
+       "word": "Rules,",
+       "start": 4493,
+       "end": 4509
+      },
+      {
+       "word": "not",
+       "start": 4510,
+       "end": 4514
+      },
+      {
+       "word": "vibes,",
+       "start": 4517,
+       "end": 4533
+      },
+      {
+       "word": "decide",
+       "start": 4534,
+       "end": 4547
+      },
+      {
+       "word": "the",
+       "start": 4548,
+       "end": 4550
+      },
+      {
+       "word": "money.",
+       "start": 4551,
+       "end": 4564
+      },
+      {
+       "word": "Margins",
+       "start": 4571,
+       "end": 4585
+      },
+      {
+       "word": "are",
+       "start": 4586,
+       "end": 4588
+      },
+      {
+       "word": "plain",
+       "start": 4589,
+       "end": 4596
+      },
+      {
+       "word": "arithmetic,",
+       "start": 4597,
+       "end": 4616
+      },
+      {
+       "word": "so",
+       "start": 4617,
+       "end": 4619
+      },
+      {
+       "word": "the",
+       "start": 4621,
+       "end": 4623
+      },
+      {
+       "word": "AI",
+       "start": 4625,
+       "end": 4635
+      },
+      {
+       "word": "can't",
+       "start": 4637,
+       "end": 4645
+      },
+      {
+       "word": "be",
+       "start": 4647,
+       "end": 4649
+      },
+      {
+       "word": "sweet-talked.",
+       "start": 4650,
+       "end": 4682
+      }
+     ]
+    },
+    {
+     "voice": "narrator",
+     "text": "And nothing is made up. Every model call is measured, live, on AMD.",
+     "file": "audio/vo/different_2.mp3",
+     "startFrame": 4698,
+     "durationFrames": 150,
+     "words": [
+      {
+       "word": "And",
+       "start": 4698,
+       "end": 4703
+      },
+      {
+       "word": "nothing",
+       "start": 4705,
+       "end": 4714
+      },
+      {
+       "word": "is",
+       "start": 4716,
+       "end": 4718
+      },
+      {
+       "word": "made",
+       "start": 4720,
+       "end": 4726
+      },
+      {
+       "word": "up.",
+       "start": 4728,
+       "end": 4736
+      },
+      {
+       "word": "Every",
+       "start": 4742,
+       "end": 4752
+      },
+      {
+       "word": "model",
+       "start": 4754,
+       "end": 4762
+      },
+      {
+       "word": "call",
+       "start": 4765,
+       "end": 4773
+      },
+      {
+       "word": "is",
+       "start": 4775,
+       "end": 4778
+      },
+      {
+       "word": "measured,",
+       "start": 4780,
+       "end": 4791
+      },
+      {
+       "word": "live,",
+       "start": 4795,
+       "end": 4808
+      },
+      {
+       "word": "on",
+       "start": 4809,
+       "end": 4813
+      },
+      {
+       "word": "AMD.",
+       "start": 4816,
+       "end": 4847
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "close",
+   "from": 4878,
+   "durationInFrames": 364,
+   "lines": [
+    {
+     "voice": "narrator",
+     "text": "Atelier. Make only what's already sold. Built on AMD, Gemma 4 and Evolus.",
+     "file": "audio/vo/close_0.mp3",
+     "startFrame": 4890,
+     "durationFrames": 203,
+     "words": [
+      {
+       "word": "Atelier.",
+       "start": 4890,
+       "end": 4913
+      },
+      {
+       "word": "Make",
+       "start": 4923,
+       "end": 4931
+      },
+      {
+       "word": "only",
+       "start": 4933,
+       "end": 4940
+      },
+      {
+       "word": "what's",
+       "start": 4941,
+       "end": 4947
+      },
+      {
+       "word": "already",
+       "start": 4948,
+       "end": 4958
+      },
+      {
+       "word": "sold.",
+       "start": 4961,
+       "end": 4977
+      },
+      {
+       "word": "Built",
+       "start": 4984,
+       "end": 4993
+      },
+      {
+       "word": "on",
+       "start": 4995,
+       "end": 4997
+      },
+      {
+       "word": "AMD,",
+       "start": 4999,
+       "end": 5019
+      },
+      {
+       "word": "Gemma",
+       "start": 5025,
+       "end": 5035
+      },
+      {
+       "word": "4",
+       "start": 5038,
+       "end": 5046
+      },
+      {
+       "word": "and",
+       "start": 5052,
+       "end": 5059
+      },
+      {
+       "word": "Evolus.",
+       "start": 5061,
+       "end": 5092
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

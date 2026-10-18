@@ -1,0 +1,17 @@
+{
+ "note": "From the recorded live run run_4b3578223614 on https://atelier.netlayerlabs.com (17 Oct 2026).",
+ "trendName": "Modern Afro-Minimalist Tailoring",
+ "retail": 310,
+ "quote": 320,
+ "marginFloor": 60,
+ "costCap": 250,
+ "target": 124,
+ "revised": 119,
+ "poNumber": "PO-00001",
+ "poQty": 300,
+ "poTotal": 35700,
+ "threshold": 5,
+ "firstRunApproveToRfqs": "1:54",
+ "trendSecs": 13,
+ "sketchSecs": 26
+}

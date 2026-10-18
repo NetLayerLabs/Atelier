@@ -24,3 +24,11 @@ backend/static/quotes/
 
 # v5: the brand's data dir (Brand workspace SQLite + uploaded files + PO/style number sequences) — never committed
 backend/var/
+
+# demo film
+video/node_modules/
+video/out/
+video/.cache/
+video/public/footage/
+video/public/stills/
+video/public/audio/
