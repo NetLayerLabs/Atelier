@@ -6,6 +6,9 @@ agents do the paperwork: a costed tech pack; RFQs to the brand's mills, each in 
 read into data and checked against the brand's own rules, with the agent stopping for a person when a quote breaks
 one; a real Shopify pre-order; and the purchase order, sent to the mill only once real pre-orders clear the threshold.
 
+<img width="3006" height="1716" alt="image" src="https://github.com/user-attachments/assets/2a4bbf96-409a-4657-b9bf-2c732afcd4b3" />
+
+
 Built for the AMD Developer Hackathon: ACT III. Main track **Reinvent Commerce**, partner track **Evolus: Business
 Agents on AMD**, and also eligible for the **Vibe Generation** prize.
 
