@@ -18,6 +18,11 @@ the run that emails the brand's suppliers and opens a Shopify pre-order, so appr
 the admin token (as does applying customer-voice changes to a design). The steps after Approve are shown in
 [the 17 October run](#what-works-end-to-end-today).
 
+> **Judges: want to run it end to end yourself?** Email us at **netlayerlabs@gmail.com** and we'll send you the
+> admin token, plus the test quote documents the run waits for after the RFQs go out (its suppliers are demo entries
+> that route to our own inbox). We keep the token out of the repo because it can email suppliers and write to the
+> Shopify store.
+
 **In short**
 
 - **The problem, and why now.** The fashion industry produced an estimated 2.5–5 billion items of excess stock in
